@@ -251,12 +251,12 @@ void Fbx::RayCast(RayCastData& rayData)
 }
 
 
-void Fbx::Draw(Transform& transform, char SHADER_TYPE)
+void Fbx::Draw(Transform& transform, const Light* lightpos, char SHADER_TYPE)
 {
-	Draw(transform, XMFLOAT3(0.3f, 0.3f, 0.3f), UCHAR_MAX, UCHAR_MAX, SHADER_TYPE);
+	Draw(transform, XMFLOAT3(0.3f, 0.3f, 0.3f), UCHAR_MAX, UCHAR_MAX, lightpos, SHADER_TYPE);
 }
 
-void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, char SHADER_TYPE)
+void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos, char SHADER_TYPE)
 {
 	Direct3D::SetShader(SHADER_TYPE);
 
@@ -275,11 +275,18 @@ void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha,
 		cb.bright = Bright;
 		cb.diffuseColor = pMaterialList_[i].diffuse;
 
-		switch (SHADER_TYPE)
+		Light lpos;
+
+		if (lightpos == nullptr)
 		{
-		case 1: cb.light = XMFLOAT4(-0.5f, 0.7f, 1.0f, 0.0f); break;
-		case 2: cb.light = XMFLOAT4(transform.position_.x, transform.position_.y, transform.position_.z, 0); break;
+			lpos.SetLight({ -0.5f, 0.7f, 1.0f });
 		}
+		else
+		{
+			lpos = *lightpos;
+		}
+
+		cb.light = lpos.GetLight();
 		
 		/*XMFLOAT3 lgt;
 		XMStoreFloat3(&lgt, NormalDotLight(transform));

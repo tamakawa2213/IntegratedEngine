@@ -18,6 +18,10 @@ namespace Image
 	int Load(std::string filename);
 	void SetTransform(int hModel, Transform transform);
 	void Draw(int hModel);
+
+	/// <summary>画像とマウスカーソルが当たっているか</summary>
+	/// <param name="hModel">判定したいモデル番号</param>
+	/// <returns>当たっていればtrue</returns>
 	bool IsHitCursor(int hModel);
 
 	void Release();

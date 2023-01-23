@@ -59,12 +59,13 @@ float4 PS(VS_OUT inData) : SV_Target
 {
 	float4 diffuse;
 
-	float4 Light = inData.pos - light;
+	float4 Light = mul(light, matWVP);
+	Light = inData.pos - Light;
 	Light.a = 0;
 	Light = normalize(Light);
 
 	float dist = distance(inData.pos, light);
-
+	dist = clamp(dist, 1, 5);
 	float4 Color = clamp(dot(inData.normal, Light), 0, 1);
 
 	float Bright_ = (bright / 255.0f);
