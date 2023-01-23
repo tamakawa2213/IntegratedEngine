@@ -16,7 +16,8 @@ using namespace DirectX;
 enum SHADER_TYPE {
 	SHADER_2D = 0,	//2D用シェーダー
 	SHADER_3D,		//3D用シェーダー
-	SHADER_POINT,
+	SHADER_POINT,	//点光源シェーダー
+	SHADER_FOG,		//フォグ(霧)
 	SHADER_MAX	//これは使わない
 };
 
@@ -51,6 +52,7 @@ namespace Direct3D
 	HRESULT InitShader2D();
 	HRESULT InitShader3D();
 	HRESULT InitShaderPoint();
+	HRESULT InitShaderFog();
 
 	void SetShader(int type);
 

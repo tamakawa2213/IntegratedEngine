@@ -174,6 +174,9 @@ HRESULT Direct3D::InitShader()
 	hr = InitShaderPoint();
 	assert(hr == S_OK);
 
+	hr = InitShaderFog();
+	assert(hr == S_OK);
+
 	return S_OK;
 }
 
@@ -307,6 +310,50 @@ HRESULT Direct3D::InitShaderPoint()
 	rdc.FillMode = D3D11_FILL_SOLID;
 	rdc.FrontCounterClockwise = FALSE;
 	hr = pDevice->CreateRasterizerState(&rdc, &shader[SHADER_POINT].pRasterizerState);
+
+	HR_FAILED(hr, L"ラスタライザの作成に失敗しました");
+	return S_OK;
+}
+
+HRESULT Direct3D::InitShaderFog()
+{
+	HRESULT hr;
+
+	// 頂点シェーダ(VertexShader)の作成（コンパイル）
+	ID3DBlob* pCompileVS = nullptr;
+	D3DCompileFromFile(L"../IntegratedEngine/Shader/Fog.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
+	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[SHADER_FOG].pVertexShader);
+	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
+
+	//頂点インプットレイアウト
+	D3D11_INPUT_ELEMENT_DESC layout[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },						//位置
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT	, 0, sizeof(XMVECTOR), D3D11_INPUT_PER_VERTEX_DATA, 0 },		//UV座標
+		{ "NORMAL"	, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMVECTOR) * 2 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },	//法線
+	};
+	hr = pDevice->CreateInputLayout(layout, (UINT)std::size(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shader[SHADER_FOG].pVertexLayout);
+
+	HR_FAILED(hr, L"頂点インプットレイアウトの作成に失敗しました");
+
+	SAFE_RELEASE(pCompileVS);		//コンパイルした頂点シェーダを解放
+
+	// ピクセルシェーダ(PixelShader)の作成（コンパイル）
+	ID3DBlob* pCompilePS = nullptr;
+	D3DCompileFromFile(L"../IntegratedEngine/Shader/Fog.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+	assert(pCompilePS != nullptr);
+	hr = pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shader[SHADER_FOG].pPixelShader);
+
+	HR_FAILED_RELEASE(hr, L"ピクセルシェーダの作成に失敗しました", pCompilePS);
+
+	SAFE_RELEASE(pCompilePS);		//コンパイルしたピクセルシェーダを解放
+
+	//ラスタライザ作成
+	D3D11_RASTERIZER_DESC rdc = {};
+	rdc.CullMode = D3D11_CULL_BACK;
+	rdc.FillMode = D3D11_FILL_SOLID;
+	rdc.FrontCounterClockwise = FALSE;
+	hr = pDevice->CreateRasterizerState(&rdc, &shader[SHADER_FOG].pRasterizerState);
 
 	HR_FAILED(hr, L"ラスタライザの作成に失敗しました");
 	return S_OK;
