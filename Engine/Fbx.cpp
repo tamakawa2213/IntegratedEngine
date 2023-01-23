@@ -243,6 +243,10 @@ void Fbx::RayCast(RayCastData& rayData)
 
 			if (rayData.hit)
 			{
+				rayData.hitpos =
+					{ rayData.start.x + rayData.dir.x * rayData.dist,
+					rayData.start.y + rayData.dir.y * rayData.dist,
+					rayData.start.z + rayData.dir.z * rayData.dist };
 				return;
 			}
 		}
@@ -275,22 +279,20 @@ void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha,
 		cb.bright = Bright;
 		cb.diffuseColor = pMaterialList_[i].diffuse;
 
-		Light lpos;
-
-		if (lightpos == nullptr)
 		{
-			lpos.SetLight({ -0.5f, 0.7f, 1.0f });
-		}
-		else
-		{
-			lpos = *lightpos;
-		}
+			Light lpos;
 
-		cb.light = lpos.GetLight();
-		
-		/*XMFLOAT3 lgt;
-		XMStoreFloat3(&lgt, NormalDotLight(transform));
-		cb.light = XMFLOAT4(lgt.x, lgt.y, lgt.z, 0);*/
+			if (lightpos == nullptr)
+			{
+				lpos.SetLight({ -0.5f, 0.7f, 1.0f });
+			}
+			else
+			{
+				lpos = *lightpos;
+			}
+
+			cb.light = lpos.GetLight();
+		}
 
 		if (pMaterialList_[i].pTexture == nullptr) {
 			cb.isTexture = FALSE;

@@ -19,8 +19,9 @@ struct RayCastData
 	XMFLOAT3 dir;
 	float dist;
 	bool hit;
+	XMFLOAT3 hitpos;
 
-	RayCastData() : start(), dir(), dist(9999.0f), hit(false) {}
+	RayCastData() : start(), dir(), dist(9999.0f), hit(false), hitpos() {}
 };
 
 class Fbx

@@ -25,8 +25,8 @@ cbuffer global
 struct VS_OUT
 {
 	float4 pos	: SV_POSITION;	//位置
+	float4 posw : POSITION0;
 	float2 uv	: TEXCOORD;		//UV座標
-	//float4 color: COLOR;		//色（明るさ）
 	float4 normal: COLOR;		//色（明るさ）
 };
 
@@ -41,13 +41,12 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
+	outData.posw = mul(pos, matNormal);
 	outData.uv = uv;
 
 	//法線にワールド行列を掛けて回転
 	outData.normal = mul(normal, matNormal);
 
-	
-	//outData.color = clamp(dot(normal, Light), 0, 1);
 	//まとめて出力
 	return outData;
 }
@@ -59,14 +58,13 @@ float4 PS(VS_OUT inData) : SV_Target
 {
 	float4 diffuse;
 
-	float4 Light = mul(light, matWVP);
-	Light = inData.pos - Light;
+	float4 Light = light - inData.posw;
 	Light.a = 0;
+	float len = length(Light);
 	Light = normalize(Light);
 
-	float dist = distance(inData.pos, light);
-	dist = clamp(dist, 1, 5);
-	float4 Color = clamp(dot(inData.normal, Light), 0, 1);
+	float Attenuation = saturate(1.0f / (0.3f + 0.05f * len * len));
+	float4 Color = saturate(dot(normalize(inData.normal), Light)) * Attenuation;
 
 	float Bright_ = (bright / 255.0f);
 	Color.a = 1.0f;
