@@ -73,7 +73,7 @@ float4 PS(VS_OUT inData) : SV_Target
 	if (isTexture)
 	{
 		diffuse = chroma * g_texture.Sample(g_sampler, inData.uv) * Color;
-		return (chroma * (diffuse + ambient) * trans) + (backGround * 1 - (trans));
+		return (chroma * (diffuse + ambient) * trans) + (backGround * (1 - trans));
 	}
 	else
 	{
