@@ -3,7 +3,7 @@
 #include "GameObject.h"
 
 Transform::Transform():matTranslate_(XMMatrixIdentity()),matRotate_(XMMatrixIdentity()),matScale_(XMMatrixIdentity()),
-position_(0,0,0),rotate_(),scale_(1,1,1), pParent_(nullptr)
+position_(0, 0, 0), rotate_(), scale_(1, 1, 1), pParent_(nullptr)
 {
 }
 
@@ -39,4 +39,36 @@ XMMATRIX Transform::GetWorldMatrix()
 XMMATRIX Transform::GetNormalMatrix()
 {
     return (XMMatrixInverse(nullptr, matScale_) * matRotate_);
+}
+
+void Transform::LookAt(XMFLOAT3 target)
+{
+    XMVECTOR Sight = { target.x - position_.x, target.y - position_.y, target.z - position_.z };
+    Sight = XMVector3Normalize(Sight);
+    if (XMVectorGetZ(Sight) > 0)
+    {
+        rotate_.y = XMVectorGetX(Sight) * 90;
+    }
+    else
+    {
+        rotate_.y = (-XMVectorGetX(Sight) * 90) + 180;
+    }
+    rotate_.x = -XMVectorGetY(Sight) * 90;
+
+    while (rotate_.x < 0)
+    {
+        rotate_.x += 360;
+    }
+    while (rotate_.x > 360)
+    {
+        rotate_.x -= 360;
+    }
+    while (rotate_.y < 0)
+    {
+        rotate_.y += 360;
+    }
+    while (rotate_.y > 360)
+    {
+        rotate_.y -= 360;
+    }
 }

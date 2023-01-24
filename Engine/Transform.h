@@ -32,4 +32,6 @@ public:
 
 	//法線変形用行列を取得
 	XMMATRIX GetNormalMatrix();
+
+	void LookAt(XMFLOAT3 target);
 };
