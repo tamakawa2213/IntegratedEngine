@@ -74,16 +74,18 @@ namespace Math
 	float Func_Cubic(float Coord);
 
 	/// <summary>原点を通る任意軸回転</summary>
-	/// <param name="axis">原点以外の軸となる位置ベクトル</param>
 	/// <param name="pos">移動させたいものの位置</param>
 	/// <param name="rot">回転角度(度数法)</param>
-	void ArbRotationAxis(XMVECTOR axis, XMFLOAT3* pos, float rot);
+	/// <param name="axis">原点以外の軸となる位置ベクトル</param>
+	/// <param name="end">軸のもう一端の位置ベクトル(無指定で原点になる)</param>
+	void ArbRotationAxis(XMFLOAT3* pos, float rot, XMVECTOR axis, XMVECTOR end = {0,0,0,0});
 
 	/// <summary>原点を通る任意軸回転</summary>
-	/// <param name="axis">原点以外の軸となる位置ベクトル</param>
 	/// <param name="pos">移動させたいものの位置</param>
 	/// <param name="rad">回転角度(ラジアン)</param>
-	void ArbRotationAxisR(XMVECTOR axis, XMFLOAT3* pos, float rad);
+	/// <param name="axis">原点以外の軸となる位置ベクトル</param>
+	/// <param name="end">軸のもう一端の位置ベクトル(無指定で原点になる)</param>
+	void ArbRotationAxisR(XMFLOAT3* pos, float rad, XMVECTOR axis, XMVECTOR end = { 0,0,0,0 });
 
 	/// <summary>値を0~指定した値に合わせる関数</summary>
 	/// <param name="axis">調整したい値のポインタ</param>
