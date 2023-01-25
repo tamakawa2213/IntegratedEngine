@@ -43,32 +43,22 @@ XMMATRIX Transform::GetNormalMatrix()
 
 void Transform::LookAt(XMFLOAT3 target)
 {
-    XMVECTOR Sight = { target.x - position_.x, target.y - position_.y, target.z - position_.z };
+    float SightX = target.x - position_.x;
+    float SightY = target.y - position_.y;
+    float SightZ = target.z - position_.z;
+
+    XMVECTOR axisY = XMVectorSet(SightX, 0, SightZ, 0);
+    axisY = XMVector3Normalize(axisY);
+
+    XMVECTOR Sight = XMVectorSet(SightX, SightY, SightZ, 0);
     Sight = XMVector3Normalize(Sight);
-    if (XMVectorGetZ(Sight) > 0)
+    if (SightZ > 0)
     {
-        rotate_.y = XMVectorGetX(Sight) * 90;
+        rotate_.y = XMVectorGetX(axisY) * 90;
     }
     else
     {
-        rotate_.y = (-XMVectorGetX(Sight) * 90) + 180;
+        rotate_.y = (-XMVectorGetX(axisY) * 90) + 180;
     }
     rotate_.x = -XMVectorGetY(Sight) * 90;
-
-    while (rotate_.x < 0)
-    {
-        rotate_.x += 360;
-    }
-    while (rotate_.x > 360)
-    {
-        rotate_.x -= 360;
-    }
-    while (rotate_.y < 0)
-    {
-        rotate_.y += 360;
-    }
-    while (rotate_.y > 360)
-    {
-        rotate_.y -= 360;
-    }
 }
