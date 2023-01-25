@@ -164,6 +164,14 @@ HRESULT Texture::Load(LPCWSTR fileName)
 	return hr;
 }
 
+HRESULT Texture::Load(std::string fileName)
+{
+	wchar_t file[CHAR_MAX];
+	size_t ret;
+	mbstowcs_s(&ret, file, fileName.c_str(), fileName.length());
+	return Load(file);
+}
+
 void Texture::Release()
 {
 	SAFE_RELEASE(pSampler_);

@@ -7,7 +7,7 @@ namespace Camera {
 	XMVECTOR target_;	//見る位置（焦点）
 	XMMATRIX viewMatrix_;	//ビュー行列
 	XMMATRIX projMatrix_;	//プロジェクション行列
-
+	XMMATRIX billboard_;
 
 //初期化
 	void Initialize(int winW, int winH)
@@ -22,6 +22,9 @@ namespace Camera {
 	{
 		//ビュー行列の作成(カメラ固定のゲームならInitializeに書く)
 		viewMatrix_ = XMMatrixLookAtLH(position_, target_, XMVectorSet(0, 1, 0, 0));
+
+		billboard_ = XMMatrixLookAtLH(XMVectorSet(0, 0, 0, 0), target_ - position_, XMVectorSet(0, 1, 0, 0));
+		billboard_ = XMMatrixInverse(nullptr, billboard_);
 	}
 
 	//位置を設定
@@ -39,6 +42,11 @@ namespace Camera {
 	void SetTarget(XMVECTOR target)
 	{
 		target_ = target;
+	}
+
+	void SetTarget(XMFLOAT3 target)
+	{
+		target_ = XMLoadFloat3(&target);
 	}
 
 	//ビュー行列を取得
@@ -81,5 +89,12 @@ namespace Camera {
 	void SetProjMatrix(int winW, int winH, int split)
 	{
 		projMatrix_ = XMMatrixPerspectiveFovLH(XM_PIDIV4, (FLOAT)winW / (FLOAT)winH / split, 0.1f, 1000.0f);
+	}
+
+
+	//ビルボード用回転行列を取得
+	XMMATRIX GetBillboardMatrix()
+	{
+		return billboard_;
 	}
 }

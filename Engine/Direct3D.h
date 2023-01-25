@@ -18,6 +18,7 @@ enum SHADER_TYPE {
 	SHADER_3D,		//3D用シェーダー
 	SHADER_POINT,	//点光源シェーダー
 	SHADER_FOG,		//フォグ(霧)
+	SHADER_BILLBOARD,
 	SHADER_MAX	//これは使わない
 };
 
@@ -36,9 +37,16 @@ enum SPLIT_SCREEN
 	SCREEN_MAX
 };
 
+enum BLEND_MODE	//ブレンドモードの指定
+{
+	BLEND_DEFAULT,
+	BLEND_ADD,
+	BLEND_MAX
+};
+
 namespace Direct3D
 {
-//extern = どこかで生成されていて、複数回生成されないようにするためのもの
+	//extern = どこかで生成されていて、複数回生成されないようにするためのもの
 	extern ID3D11Device* pDevice;			//デバイス
 	extern ID3D11DeviceContext* pContext;	//デバイスコンテキスト
 	extern int scrWidth, scrHeight;			//スクリーンの幅と高さ
@@ -53,6 +61,7 @@ namespace Direct3D
 	HRESULT InitShader3D();
 	HRESULT InitShaderPoint();
 	HRESULT InitShaderFog();
+	HRESULT InitShaderBillboard();
 
 	void SetShader(int type);
 
@@ -66,6 +75,9 @@ namespace Direct3D
 	void Release();
 
 	void SetViewPort(char lr);
+
+	void SetBlendMode(char blendMode);
 };
 
 //#endif
+

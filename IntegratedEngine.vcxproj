@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\BillBoard.h" />
     <ClInclude Include="Engine\CallDef.h" />
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\Direct3D.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Engine\Math.h" />
     <ClInclude Include="Engine\Model.h" />
     <ClInclude Include="Engine\Image.h" />
+    <ClInclude Include="Engine\Particle.h" />
     <ClInclude Include="Engine\RootJob.h" />
     <ClInclude Include="Engine\SphereCollider.h" />
     <ClInclude Include="Engine\Sprite.h" />
@@ -166,6 +168,7 @@
     <ClInclude Include="Graphics\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\BillBoard.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\Direct3D.cpp" />
     <ClCompile Include="Engine\Fbx.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="Engine\Math.cpp" />
     <ClCompile Include="Engine\Model.cpp" />
     <ClCompile Include="Engine\Image.cpp" />
+    <ClCompile Include="Engine\Particle.cpp" />
     <ClCompile Include="Engine\RootJob.cpp" />
     <ClCompile Include="Engine\SphereCollider.cpp" />
     <ClCompile Include="Engine\Sprite.cpp" />

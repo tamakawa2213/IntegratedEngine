@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <string>
 
 using namespace DirectX;
 
@@ -15,6 +16,7 @@ public:
 	Texture();
 	~Texture();
 	HRESULT Load(LPCWSTR fileName);
+	HRESULT Load(std::string fileName);
 	void Release();
 
 	ID3D11SamplerState* GetSampler() { return pSampler_; }
