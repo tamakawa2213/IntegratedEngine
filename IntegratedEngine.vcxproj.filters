@@ -51,9 +51,6 @@
     <ClInclude Include="Engine\Image.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\RootJob.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\SphereCollider.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -102,6 +99,12 @@
     <ClInclude Include="Engine\Particle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\CsvReader.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PoryLine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Camera.cpp">
@@ -129,9 +132,6 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Image.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\RootJob.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\SphereCollider.cpp">
@@ -175,6 +175,12 @@
     </ClCompile>
     <ClCompile Include="Engine\Particle.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\CsvReader.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PoryLine.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
