@@ -43,6 +43,10 @@ void GameObject::FixedUpdateSub()
 {
 	FixedUpdate();
 
+#if _DEBUG
+	ShowGraphical();
+#endif
+
 	for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
 		(*itr)->FixedUpdateSub();
 	}

@@ -64,6 +64,9 @@ public:
 	void Collision(GameObject* pTarget);					//当たり判定を行う
 	virtual void OnCollision(GameObject* pTarget) {}		//当たったらこれが呼ばれる(override専用)
 
+	//////////////////////////////////////////////////Debugモード専用///////////////////////////////////////////////////////////
+	virtual void ShowGraphical() {}							//ImGui表示
+
 	//クラステンプレート
 	template <class T>
 	T* Instantiate(GameObject* pParent)
