@@ -169,6 +169,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	BlendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 	BlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
 	pDevice->CreateBlendState(&BlendDesc, &pBlendState[BLEND_ADD]);
+	pContext->OMSetBlendState(pBlendState[BLEND_ADD], blendFactor, UINT_MAX);
 
 	//データを画面に描画するための一通りの設定（パイプライン）
 	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);	// データの入力種類を指定

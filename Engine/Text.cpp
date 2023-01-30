@@ -17,7 +17,7 @@ HRESULT Text::InitChar(LPCWSTR c)
     HRESULT hr;
     // フォントハンドルの設定
     UINT fontWeight = 1000;
-    LPCWSTR font = L"ＭＳ ゴシック";
+    LPCSTR font = "ＭＳ ゴシック";
     LOGFONT lf =
     {
         (LONG)fontSize, 0, 0, 0,
@@ -155,6 +155,7 @@ void Text::Initialize(std::string text)
 
     // 頂点データ用バッファの設定
     D3D11_BUFFER_DESC bd_vertex;
+    ZeroMemory(&bd_vertex, sizeof(bd_vertex));
     bd_vertex.ByteWidth = sizeof(vertices);
     bd_vertex.Usage = D3D11_USAGE_DEFAULT;
     bd_vertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -181,6 +182,16 @@ void Text::Initialize(std::string text)
     InitData.SysMemPitch = 0;
     InitData.SysMemSlicePitch = 0;
     Direct3D::pDevice->CreateBuffer(&bd, &InitData, &pIndexBuffer_);
+
+    // 定数情報の追加
+    D3D11_BUFFER_DESC bufferDesc;
+    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    bufferDesc.ByteWidth = sizeof(CONSTANT_BUFFER);
+    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    bufferDesc.CPUAccessFlags = 0;
+
+    // 定数バッファを作成
+    Direct3D::pDevice->CreateBuffer(&bufferDesc, nullptr, &pConstantBuffer_);
 
     //コンスタントバッファ作成
     D3D11_BUFFER_DESC cb;
@@ -213,7 +224,12 @@ void Text::Initialize(std::string text)
     // フォントテキスト初期化
     for (int i = 0; i < stringList.length(); i++)
     {
-        InitChar(stringList);
+        TCHAR b[32];
+        wchar_t file[CHAR_MAX];
+        size_t ret;
+        mbstowcs_s(&ret, file, stringList.c_str(), stringList.length());
+        lstrcpy(b, file);
+        InitChar(b);
     }
 }
 
@@ -242,6 +258,7 @@ void Text::Draw()
     stride = sizeof(int);
     offset = 0;
     Direct3D::pContext->IASetIndexBuffer(pIndexBuffer_, DXGI_FORMAT_R32_UINT, 0);
+    Direct3D::pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     //コンスタントバッファ
     Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
