@@ -1,4 +1,5 @@
 #include "Text.h"
+#include "CallDef.h"
 #include "Direct3D.h"
 #include "Sprite.h"
 
@@ -10,24 +11,29 @@ Text::Text()
 
 Text::~Text()
 {
+    SAFE_RELEASE(m_layerBuffer);
+    SAFE_RELEASE(m_shaderResourceView);
+    SAFE_RELEASE(pConstantBuffer_);
+    SAFE_RELEASE(pVertexBuffer_);
+    SAFE_RELEASE(pIndexBuffer_);
+    SAFE_RELEASE(pSampler_);
 }
 
 HRESULT Text::InitChar(LPCWSTR c)
 {
     HRESULT hr;
     // フォントハンドルの設定
-    UINT fontWeight = 1000;
-    LPCSTR font = "ＭＳ ゴシック";
+    //LPCSTR font = "ＭＳ ゴシック";
     LOGFONT lf =
     {
         (LONG)fontSize, 0, 0, 0,
-        (LONG)fontWeight, 0, 0, 0,
+        FW_NORMAL, 0, 0, 0,
         SHIFTJIS_CHARSET,
         OUT_TT_ONLY_PRECIS,
         CLIP_DEFAULT_PRECIS,
         PROOF_QUALITY,
         DEFAULT_PITCH | FF_MODERN,
-        (WCHAR)font,
+        NULL,
     };
 
     // フォントハンドルを生成
@@ -89,27 +95,29 @@ HRESULT Text::InitChar(LPCWSTR c)
     {
         return hr;
     }
-    BYTE* pBits = static_cast<BYTE*>(mappedSubrsrc.pData);
-    INT iOfs_x = gm.gmptGlyphOrigin.x;
-    INT iOfs_y = tm.tmAscent - gm.gmptGlyphOrigin.y;
-    INT iBmp_w = gm.gmBlackBoxX + (4 - (gm.gmBlackBoxX % 4)) % 4;
-    INT iBmp_h = gm.gmBlackBoxY;
-    INT Level = 17;
-    INT x, y;
-    DWORD Alpha, Color;
-    size_t memsize = mappedSubrsrc.RowPitch * tm.tmHeight;
-    memset(pBits, 0, memsize);
-    for (y = iOfs_y; y < iOfs_y + iBmp_h; y++)
+
     {
-        for (x = iOfs_x; x < iOfs_x + iBmp_w; x++)
+        BYTE* pBits = static_cast<BYTE*>(mappedSubrsrc.pData);
+        INT iOfs_x = gm.gmptGlyphOrigin.x;
+        INT iOfs_y = tm.tmAscent - gm.gmptGlyphOrigin.y;
+        INT iBmp_w = gm.gmBlackBoxX + (4 - (gm.gmBlackBoxX % 4)) % 4;
+        INT iBmp_h = gm.gmBlackBoxY;
+        INT Level = 17;
+        INT x, y;
+        DWORD Alpha, Color;
+        int mem = (int)mappedSubrsrc.RowPitch * (int)tm.tmHeight;
+        memset(pBits, 0, mem);
+        for (y = iOfs_y; y < iOfs_y + iBmp_h; y++)
         {
-            Alpha = (255 * pMono[x - iOfs_x + iBmp_w * (y - iOfs_y)]) / (Level - 1);
-            Color = 0x00ffffff | (Alpha << 24);
-            size_t RP = mappedSubrsrc.RowPitch * y;
-            int f = 4 * x;
-            memcpy(static_cast<BYTE*>(pBits) + RP + f, &Color, sizeof(DWORD));
+            for (x = iOfs_x; x < iOfs_x + iBmp_w; x++)
+            {
+                Alpha = (255 * pMono[x - iOfs_x + iBmp_w * (y - iOfs_y)]) / (Level - 1);
+                Color = 0x00ffffff | (Alpha << 24);
+                memcpy(static_cast<BYTE*>(pBits) + mappedSubrsrc.RowPitch * y + 4 * x, &Color, sizeof(DWORD));
+            }
         }
     }
+
     Direct3D::pContext->Unmap(m_layerBuffer, 0);
     // フォント情報の書き込み
     // iOfs_x, iOfs_y : 書き出し位置(左上)
@@ -122,10 +130,12 @@ HRESULT Text::InitChar(LPCWSTR c)
     // シェーダリソースビューの設定
     D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
     ZeroMemory(&srvDesc, sizeof(srvDesc));
-    srvDesc.Format = rtDesc.Format;
+    //srvDesc.Format = rtDesc.Format;
+    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
     srvDesc.Texture2D.MostDetailedMip = 0;
-    srvDesc.Texture2D.MipLevels = rtDesc.MipLevels;
+    //srvDesc.Texture2D.MipLevels = rtDesc.MipLevels;
+    srvDesc.Texture2D.MipLevels = 1;
 
     // シェーダリソースビューを作成
     hr = Direct3D::pDevice->CreateShaderResourceView(m_layerBuffer, &srvDesc, &m_shaderResourceView);
@@ -210,13 +220,13 @@ void Text::Initialize(std::string text)
     samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
     samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
     samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    samplerDesc.BorderColor[0] = 1.0f;		// ホワイト
-    samplerDesc.BorderColor[1] = 1.0f;		// ..
-    samplerDesc.BorderColor[2] = 1.0f;		// ..
-    samplerDesc.BorderColor[3] = 1.0f;		// ..
-    samplerDesc.MinLOD = 0;
-    samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+    //samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    //samplerDesc.BorderColor[0] = 1.0f;		// ホワイト
+    //samplerDesc.BorderColor[1] = 1.0f;		// ..
+    //samplerDesc.BorderColor[2] = 1.0f;		// ..
+    //samplerDesc.BorderColor[3] = 1.0f;		// ..
+    //samplerDesc.MinLOD = 0;
+    //samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
     // サンプラステートを作成
     Direct3D::pDevice->CreateSamplerState(&samplerDesc, &pSampler_);
@@ -229,7 +239,7 @@ void Text::Initialize(std::string text)
         size_t ret;
         mbstowcs_s(&ret, file, stringList.c_str(), stringList.length());
         lstrcpy(b, file);
-        InitChar(b);
+        InitChar(&b[i]);
     }
 }
 
@@ -240,12 +250,12 @@ void Text::Draw()
 
     cb.matW = XMMatrixTranspose(XMMatrixScaling(1.0f / Direct3D::scrWidth, 1.0f / Direct3D::scrHeight, 1.0f));
 
-    Direct3D::pContext->PSSetSamplers(0, 1, &pSampler_);
-    Direct3D::pContext->PSSetShaderResources(0, 1, &m_shaderResourceView);
-
     D3D11_MAPPED_SUBRESOURCE pdata;
     Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
     memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));		// データを値を送る
+
+    Direct3D::pContext->PSSetSamplers(0, 1, &pSampler_);
+    Direct3D::pContext->PSSetShaderResources(0, 1, &m_shaderResourceView);
 
     Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
 
@@ -256,7 +266,6 @@ void Text::Draw()
 
     //インデックスバッファをセット
     stride = sizeof(int);
-    offset = 0;
     Direct3D::pContext->IASetIndexBuffer(pIndexBuffer_, DXGI_FORMAT_R32_UINT, 0);
     Direct3D::pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

@@ -12,6 +12,7 @@ namespace GameTime
 {
 	void Update()
 	{
+#if _DEBUG
 		ImGui::Begin("GameTime");
 		ImGui::SliderFloat("RelativeTime", &RelativeTime, 1.0f, 10.0f);
 
@@ -28,9 +29,12 @@ namespace GameTime
 			{
 				Stop = true;
 			}
-		NumberOfUpdate += RelativeTime;
 		}
 		ImGui::End();
+#endif
+
+		if(!Stop)
+		NumberOfUpdate += RelativeTime;
 	}
 
 	float GetRelativeTime()

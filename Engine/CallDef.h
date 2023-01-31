@@ -22,6 +22,10 @@
 //引数 : 格納したいモデル番号 ファイル名
 #define MLoad(hModel, filename) hModel = Model::Load(filename); assert(hModel >= 0);
 
+//画像をロードするもの
+//引数 : 格納したい画像番号 ファイル名
+#define ILoad(hPict, filename) hPict = Image::Load(filename); assert(hPict >= 0);
+
 //XMFLOAT3の要素をまとめて反転させる
 //引数 : 逆転後のXMFLOAT3 元となるXMFLOAT3
 #define RE_XMFLOAT3(Rev, Orig) Rev = {-Orig.x, -Orig.y, -Orig.z};
