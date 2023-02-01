@@ -49,6 +49,7 @@ namespace Direct3D
 	//extern = どこかで生成されていて、複数回生成されないようにするためのもの
 	extern ID3D11Device* pDevice;			//デバイス
 	extern ID3D11DeviceContext* pContext;	//デバイスコンテキスト
+	extern IDXGISwapChain* pSwapChain;		//スワップチェイン
 	extern int scrWidth, scrHeight;			//スクリーンの幅と高さ
 	extern char SplitScrMode;
 

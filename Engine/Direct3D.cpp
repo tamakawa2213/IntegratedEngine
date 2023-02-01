@@ -70,7 +70,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 		nullptr,						// どのビデオアダプタを使用するか？既定ならばnullptrで
 		D3D_DRIVER_TYPE_HARDWARE,		// ドライバのタイプを渡す。ふつうはHARDWARE
 		nullptr,						// 上記をD3D_DRIVER_TYPE_SOFTWAREに設定しないかぎりnullptr
-		0,								// 何らかのフラグを指定する。（デバッグ時はD3D11_CREATE_DEVICE_DEBUG？）
+		D3D11_CREATE_DEVICE_BGRA_SUPPORT,								// 何らかのフラグを指定する。（デバッグ時はD3D11_CREATE_DEVICE_DEBUG？）
 		nullptr,						// デバイス、コンテキストのレベルを設定。nullptrにしとけばOK
 		0,								// 上の引数でレベルを何個指定したか
 		D3D11_SDK_VERSION,				// SDKのバージョン。必ずこの値

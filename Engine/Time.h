@@ -20,6 +20,6 @@ namespace Time
 	//ŒÄ‚Ño‚µ“_‚ÌŠÔ‚ğæ“¾
 	int GetTimei();
 	float GetTimef();
-	double GetTimew();
+	double GetTime();
 };
 

@@ -1,276 +1,116 @@
 #include "Text.h"
 #include "CallDef.h"
 #include "Direct3D.h"
-#include "Sprite.h"
 
-Text::Text()
-	: m_layerBuffer(nullptr), m_shaderResourceView(nullptr), pConstantBuffer_(nullptr), pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pSampler_(nullptr),
-    stringList("")
+std::wstring Text::StringToWString(std::string str)
 {
+	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, (wchar_t*)NULL, 0);
+
+	wchar_t* cpUCS2 = new wchar_t[iBufferSize];
+
+	MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, cpUCS2, iBufferSize);
+
+	std::wstring Ret(cpUCS2, cpUCS2 + iBufferSize - 1);
+
+	SAFE_DELETE_ARRAY(cpUCS2);
+
+	return Ret;
 }
 
-Text::~Text()
+Text::Text(Font font, IDWriteFontCollection* fontcollection, DWRITE_FONT_WEIGHT fontweight, DWRITE_FONT_STYLE fontstyle, DWRITE_FONT_STRETCH fontstretch, FLOAT fontsize, WCHAR const* localename, DWRITE_TEXT_ALIGNMENT textalignment, D2D1_COLOR_F color)
 {
-    SAFE_RELEASE(m_layerBuffer);
-    SAFE_RELEASE(m_shaderResourceView);
-    SAFE_RELEASE(pConstantBuffer_);
-    SAFE_RELEASE(pVertexBuffer_);
-    SAFE_RELEASE(pIndexBuffer_);
-    SAFE_RELEASE(pSampler_);
+	Setting->font = font;
+	Setting->fontCollection = fontcollection;
+	Setting->fontWeight = fontweight;
+	Setting->fontStyle = fontstyle;
+	Setting->fontStretch = fontstretch;
+	Setting->fontSize = fontsize;
+	Setting->localeName = localename;
+	Setting->textAlignment = textalignment;
+	Setting->Color = color;
 }
 
-HRESULT Text::InitChar(LPCWSTR c)
+void Text::SetFont(FontData* set)
 {
-    HRESULT hr;
-    // フォントハンドルの設定
-    //LPCSTR font = "ＭＳ ゴシック";
-    LOGFONT lf =
-    {
-        (LONG)fontSize, 0, 0, 0,
-        FW_NORMAL, 0, 0, 0,
-        SHIFTJIS_CHARSET,
-        OUT_TT_ONLY_PRECIS,
-        CLIP_DEFAULT_PRECIS,
-        PROOF_QUALITY,
-        DEFAULT_PITCH | FF_MODERN,
-        NULL,
-    };
-
-    // フォントハンドルを生成
-    HFONT hFont = CreateFontIndirectW(&lf);
-
-    // 現在のウィンドウに適用
-    HDC hdc = GetDC(NULL);
-    HFONT oldFont = static_cast<HFONT>(SelectObject(hdc, hFont));
-    // デバイスにフォントを持たせないとGetGlyphOutlineW関数はエラーとなる。
-
-    // 出力する文字(一文字だけ)
-    UINT code = static_cast<UINT>(*c);
-
-    // 17階調のグレーのグリフビットマップ
-    const UINT gradFlag = GGO_GRAY4_BITMAP;
-
-    // ビットマップの設定
-    GLYPHMETRICS gm;
-    TEXTMETRIC tm;
-    GetTextMetrics(hdc, &tm);
-    CONST MAT2 mat = { {0,1},{0,0},{0,0},{0,1} };
-
-    // フォントビットマップを取得
-    DWORD size = GetGlyphOutlineW(hdc, code, gradFlag, &gm, 0, NULL, &mat);
-    BYTE* pMono = new BYTE[size];
-    GetGlyphOutlineW(hdc, code, gradFlag, &gm, size, pMono, &mat);
-
-    // フォントの幅と高さ
-    INT fontWidth = gm.gmCellIncX;
-    INT fontHeight = tm.tmHeight;
-
-    // レンダーターゲットの設定
-    D3D11_TEXTURE2D_DESC rtDesc;
-    ZeroMemory(&rtDesc, sizeof(rtDesc));
-    rtDesc.Width = fontWidth;
-    rtDesc.Height = fontHeight;
-    rtDesc.MipLevels = 1;
-    rtDesc.ArraySize = 1;
-    rtDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    rtDesc.SampleDesc.Count = 1;
-    rtDesc.SampleDesc.Quality = 0;
-    rtDesc.Usage = D3D11_USAGE_DYNAMIC;
-    rtDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-    rtDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    rtDesc.MiscFlags = 0;
-
-    // フォント用テクスチャを作成
-    hr = Direct3D::pDevice->CreateTexture2D(&rtDesc, nullptr, &m_layerBuffer);
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-    assert(m_layerBuffer != 0);
-
-    // フォント用テクスチャリソースにテクスチャ情報をコピー
-    D3D11_MAPPED_SUBRESOURCE mappedSubrsrc;
-    hr = Direct3D::pContext->Map(m_layerBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedSubrsrc);
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-
-    {
-        BYTE* pBits = static_cast<BYTE*>(mappedSubrsrc.pData);
-        INT iOfs_x = gm.gmptGlyphOrigin.x;
-        INT iOfs_y = tm.tmAscent - gm.gmptGlyphOrigin.y;
-        INT iBmp_w = gm.gmBlackBoxX + (4 - (gm.gmBlackBoxX % 4)) % 4;
-        INT iBmp_h = gm.gmBlackBoxY;
-        INT Level = 17;
-        INT x, y;
-        DWORD Alpha, Color;
-        int mem = (int)mappedSubrsrc.RowPitch * (int)tm.tmHeight;
-        memset(pBits, 0, mem);
-        for (y = iOfs_y; y < iOfs_y + iBmp_h; y++)
-        {
-            for (x = iOfs_x; x < iOfs_x + iBmp_w; x++)
-            {
-                Alpha = (255 * pMono[x - iOfs_x + iBmp_w * (y - iOfs_y)]) / (Level - 1);
-                Color = 0x00ffffff | (Alpha << 24);
-                memcpy(static_cast<BYTE*>(pBits) + mappedSubrsrc.RowPitch * y + 4 * x, &Color, sizeof(DWORD));
-            }
-        }
-    }
-
-    Direct3D::pContext->Unmap(m_layerBuffer, 0);
-    // フォント情報の書き込み
-    // iOfs_x, iOfs_y : 書き出し位置(左上)
-    // iBmp_w, iBmp_h : フォントビットマップの幅高
-    // Level : α値の段階 (GGO_GRAY4_BITMAPなので17段階)
-
-    // メモリ解放
-    delete[] pMono;
-
-    // シェーダリソースビューの設定
-    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-    ZeroMemory(&srvDesc, sizeof(srvDesc));
-    //srvDesc.Format = rtDesc.Format;
-    srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    srvDesc.Texture2D.MostDetailedMip = 0;
-    //srvDesc.Texture2D.MipLevels = rtDesc.MipLevels;
-    srvDesc.Texture2D.MipLevels = 1;
-
-    // シェーダリソースビューを作成
-    hr = Direct3D::pDevice->CreateShaderResourceView(m_layerBuffer, &srvDesc, &m_shaderResourceView);
-
-    return hr;
+	pDWriteFactory->CreateTextFormat(FontList[(int)set->font], set->fontCollection, set->fontWeight, set->fontStyle, set->fontStretch, set->fontSize, set->localeName, &pTextFormat);
+	pTextFormat->SetTextAlignment(set->textAlignment);
+	pRT->CreateSolidColorBrush(set->Color, &pSolidBrush);
 }
 
-HRESULT Text::InitChar(std::string c)
+void Text::SetFont(Font font, IDWriteFontCollection* fontcollection, DWRITE_FONT_WEIGHT fontweight, DWRITE_FONT_STYLE fontstyle, DWRITE_FONT_STRETCH fontstretch, FLOAT fontsize, WCHAR const* localename, DWRITE_TEXT_ALIGNMENT textalignment, D2D1_COLOR_F color)
 {
-    wchar_t file[CHAR_MAX];
-    size_t ret;
-    mbstowcs_s(&ret, file, c.c_str(), c.length());
-    return InitChar(file);
+	pDWriteFactory->CreateTextFormat(FontList[(int)font], fontcollection, fontweight, fontstyle, fontstretch, fontsize, localename, &pTextFormat);
+	pTextFormat->SetTextAlignment(textalignment);
+	pRT->CreateSolidColorBrush(color, &pSolidBrush);
 }
 
-void Text::Initialize(std::string text)
+void Text::Draw(std::string str, XMFLOAT3 pos, D2D1_DRAW_TEXT_OPTIONS options)
 {
-    stringList = text;
-    // 頂点情報
-    VERTEX vertices[] =
-    {
-        { XMVectorSet(-1.0f,  1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },	// 四角形の頂点（左上）
-        { XMVectorSet(1.0f,  1.0f, 0.0f, 0.0f), XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },	// 四角形の頂点（右上）
-        { XMVectorSet(1.0f, -1.0f, 0.0f, 0.0f), XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f) },	// 四角形の頂点（右下）
-        { XMVectorSet(-1.0f, -1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },	// 四角形の頂点（左下）
-    };
+	//文字列の変換
+	std::wstring wstr = StringToWString(str);
 
-    // 頂点データ用バッファの設定
-    D3D11_BUFFER_DESC bd_vertex;
-    ZeroMemory(&bd_vertex, sizeof(bd_vertex));
-    bd_vertex.ByteWidth = sizeof(vertices);
-    bd_vertex.Usage = D3D11_USAGE_DEFAULT;
-    bd_vertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    bd_vertex.CPUAccessFlags = 0;
-    bd_vertex.MiscFlags = 0;
-    bd_vertex.StructureByteStride = 0;
-    D3D11_SUBRESOURCE_DATA data_vertex;
-    data_vertex.pSysMem = vertices;
-    Direct3D::pDevice->CreateBuffer(&bd_vertex, &data_vertex, &pVertexBuffer_);
+	//ターゲットサイズの取得
+	D2D1_SIZE_F TargetSize = pRT->GetSize();
 
-    //インデックス情報
-    int index[] = { 0,1,2, 0,2,3 };
+	//テキストレイアウトを作成
+	pDWriteFactory->CreateTextLayout(wstr.c_str(), (UINT32)wstr.size(), pTextFormat, TargetSize.width, TargetSize.height, &pTextLayout);
+	assert(pTextLayout != nullptr);
 
-    // インデックスバッファを生成する
-    D3D11_BUFFER_DESC   bd;
-    bd.ByteWidth = sizeof(index);
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    bd.CPUAccessFlags = 0;
-    bd.MiscFlags = 0;
+	//描画位置の確定
+	D2D1_POINT_2F pounts;
+	pounts.x = pos.x;
+	pounts.y = pos.y;
 
-    D3D11_SUBRESOURCE_DATA InitData;
-    InitData.pSysMem = index;
-    InitData.SysMemPitch = 0;
-    InitData.SysMemSlicePitch = 0;
-    Direct3D::pDevice->CreateBuffer(&bd, &InitData, &pIndexBuffer_);
+	//描画開始
+	pRT->BeginDraw();
 
-    // 定数情報の追加
-    D3D11_BUFFER_DESC bufferDesc;
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.ByteWidth = sizeof(CONSTANT_BUFFER);
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
+	//描画処理
+	pRT->DrawTextLayout(pounts, pTextLayout, pSolidBrush, options);
 
-    // 定数バッファを作成
-    Direct3D::pDevice->CreateBuffer(&bufferDesc, nullptr, &pConstantBuffer_);
-
-    //コンスタントバッファ作成
-    D3D11_BUFFER_DESC cb;
-    cb.ByteWidth = sizeof(CONSTANT_BUFFER);
-    cb.Usage = D3D11_USAGE_DYNAMIC;
-    cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    cb.MiscFlags = 0;
-    cb.StructureByteStride = 0;
-    Direct3D::pDevice->CreateBuffer(&cb, nullptr, &pConstantBuffer_);
-
-    // サンプラの設定
-    D3D11_SAMPLER_DESC samplerDesc;
-    ZeroMemory(&samplerDesc, sizeof(samplerDesc));
-    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-    //samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    //samplerDesc.BorderColor[0] = 1.0f;		// ホワイト
-    //samplerDesc.BorderColor[1] = 1.0f;		// ..
-    //samplerDesc.BorderColor[2] = 1.0f;		// ..
-    //samplerDesc.BorderColor[3] = 1.0f;		// ..
-    //samplerDesc.MinLOD = 0;
-    //samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-    // サンプラステートを作成
-    Direct3D::pDevice->CreateSamplerState(&samplerDesc, &pSampler_);
-
-    // フォントテキスト初期化
-    for (int i = 0; i < stringList.length(); i++)
-    {
-        TCHAR b[32];
-        wchar_t file[CHAR_MAX];
-        size_t ret;
-        mbstowcs_s(&ret, file, stringList.c_str(), stringList.length());
-        lstrcpy(b, file);
-        InitChar(&b[i]);
-    }
+	//描画終了
+	pRT->EndDraw();
 }
 
-void Text::Draw()
+void Text::Initialize()
 {
-    Direct3D::SetShader(SHADER_2D);
-    CONSTANT_BUFFER cb;
+	//Direct2D, DirectWriteの初期化
+	D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory);
 
-    cb.matW = XMMatrixTranspose(XMMatrixScaling(1.0f / Direct3D::scrWidth, 1.0f / Direct3D::scrHeight, 1.0f));
+	Direct3D::pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
 
-    D3D11_MAPPED_SUBRESOURCE pdata;
-    Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
-    memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));		// データを値を送る
+	//レンダーターゲットの作成
+	D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), (FLOAT)Direct3D::scrWidth, (FLOAT)Direct3D::scrHeight);
 
-    Direct3D::pContext->PSSetSamplers(0, 1, &pSampler_);
-    Direct3D::pContext->PSSetShaderResources(0, 1, &m_shaderResourceView);
+	//サーフェスに描画するレンダーターゲットを作成
+	pD2DFactory->CreateDxgiSurfaceRenderTarget(pBackBuffer, &props, &pRT);
 
-    Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
+	//アンチエイリアシングモード
+	pRT->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE);
 
-    //頂点バッファ
-    UINT stride = sizeof(VERTEX);
-    UINT offset = 0;
-    Direct3D::pContext->IASetVertexBuffers(0, 1, &pVertexBuffer_, &stride, &offset);
+	//IDWriteFactoryの作成
+	DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pDWriteFactory));
 
-    //インデックスバッファをセット
-    stride = sizeof(int);
-    Direct3D::pContext->IASetIndexBuffer(pIndexBuffer_, DXGI_FORMAT_R32_UINT, 0);
-    Direct3D::pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pDWriteFactory->CreateTextFormat(FontList[(int)Setting->font],
+		Setting->fontCollection,
+		Setting->fontWeight,
+		Setting->fontStyle,
+		Setting->fontStretch,
+		Setting->fontSize,
+		Setting->localeName,
+		&pTextFormat);
 
-    //コンスタントバッファ
-    Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
-    Direct3D::pContext->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
-    Direct3D::pContext->DrawIndexed(6, 0, 0);
+	pTextFormat->SetTextAlignment(Setting->textAlignment);
+
+	pRT->CreateSolidColorBrush(Setting->Color, &pSolidBrush);
+}
+
+void Text::Release()
+{
+	SAFE_RELEASE(pBackBuffer);
+	SAFE_RELEASE(pSolidBrush);
+	SAFE_RELEASE(pRT);
+	SAFE_RELEASE(pTextFormat);
+	SAFE_RELEASE(pDWriteFactory);
+	SAFE_RELEASE(pD2DFactory);
+	SAFE_RELEASE(pTextLayout);
 }

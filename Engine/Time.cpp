@@ -87,7 +87,7 @@ namespace Time
 	{
 		return (float)Seconds_;
 	}
-	double GetTimew()
+	double GetTime()
 	{
 		return Seconds_;
 	}
