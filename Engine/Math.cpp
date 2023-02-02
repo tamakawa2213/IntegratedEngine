@@ -1,5 +1,6 @@
 #include "Math.h"
 #include "CallDef.h"
+#include "Direct3D.h"
 #include "Transform.h"
 #include <random>
 
@@ -266,5 +267,22 @@ namespace Math
         {
             *axis += value;
         }
+    }
+
+    XMFLOAT3 TransformToPixel(XMFLOAT3 transform)
+    {
+        //position_Ç0~1Ç…ïœçX
+        XMFLOAT3 pos = { (transform.x + 1) / 2, (-transform.y + 1) / 2, transform.z };
+
+        pos = { pos.x * Direct3D::scrWidth, pos.y * Direct3D::scrHeight, pos.z };
+
+        return pos;
+    }
+
+    XMFLOAT3 PixelToTransform(XMFLOAT3 pixel)
+    {
+        XMFLOAT3 pos = { pixel.x / Direct3D::scrWidth, pixel.y / Direct3D::scrHeight, pixel.z };
+        pos = { pos.x * 2 - 1, -pos.y * 2 + 1, pos.z };
+        return pos;
     }
 }

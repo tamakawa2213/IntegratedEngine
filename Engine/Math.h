@@ -91,4 +91,9 @@ namespace Math
 	/// <param name="axis">調整したい値のポインタ</param>
 	/// <param name="value">調整したい値の最大値</param>
 	void FixValue(float* axis, int value);
+
+	//画像のTransformの位置をピクセルに変換
+	XMFLOAT3 TransformToPixel(XMFLOAT3 transform);
+	//画像のピクセルをTransformに変換
+	XMFLOAT3 PixelToTransform(XMFLOAT3 pixel);
 };
