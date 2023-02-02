@@ -57,7 +57,6 @@ namespace Input
 		pMouseDevice->Acquire();
 		memcpy(&prevMouseState, &mouseState, sizeof(mouseState));
 		pMouseDevice->GetDeviceState(sizeof(mouseState), &mouseState);
-		prevMousePosition = mousePosition;
 
 		//コントローラー
 		prevControllerState_ = controllerState_;
@@ -161,6 +160,7 @@ namespace Input
 
 	void SetMousePosition(int x, int y)
 	{
+		prevMousePosition = mousePosition;
 		mousePosition = DirectX::XMFLOAT3((float)x, (float)y, 0);
 	}
 

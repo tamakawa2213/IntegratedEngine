@@ -66,6 +66,7 @@ public:
 
 	//////////////////////////////////////////////////Debugモード専用///////////////////////////////////////////////////////////
 	virtual void ShowGraphical() {}							//ImGui表示
+	virtual void DebugMode() {}								//デバッグモードで操作すること
 
 	//クラステンプレート
 	template <class T>

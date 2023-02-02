@@ -44,6 +44,7 @@ void GameObject::FixedUpdateSub()
 	FixedUpdate();
 
 #if _DEBUG
+	DebugMode();
 	ShowGraphical();
 #endif
 

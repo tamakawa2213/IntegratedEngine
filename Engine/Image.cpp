@@ -49,6 +49,16 @@ namespace Image
         FileSet[hPicture]->transform = transform;
     }
 
+    void SetPosition(int hModel, XMFLOAT3 pos)
+    {
+        FileSet[hModel]->transform.position_ = pos;
+    }
+
+    XMFLOAT3 GetPosition(int hModel)
+    {
+        return FileSet[hModel]->transform.position_;
+    }
+
     void Draw(int hModel)
     {
         FileSet[hModel]->pSprite->Draw(FileSet[hModel]->transform);
@@ -68,6 +78,16 @@ namespace Image
             return true;
         }
         return false;
+    }
+
+    int IsHitCursorAny()
+    {
+        for (int i = 0; i < FileSet.size(); i++)
+        {
+            if (IsHitCursor(i))
+                return i;
+        }
+        return -1;
     }
 
     void Release()
