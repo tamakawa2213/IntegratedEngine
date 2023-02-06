@@ -44,34 +44,39 @@ namespace Image
         return Load(file);
     }
 
-    void SetTransform(int hPicture, Transform transform)
+    void SetTransform(int hPict, Transform transform)
     {
-        FileSet[hPicture]->transform = transform;
+        FileSet[hPict]->transform = transform;
     }
 
-    void SetPosition(int hModel, XMFLOAT3 pos)
+    void SetPosition(int hPict, XMFLOAT3 pos)
     {
-        FileSet[hModel]->transform.position_ = pos;
+        FileSet[hPict]->transform.position_ = pos;
     }
 
-    XMFLOAT3 GetPosition(int hModel)
+    XMFLOAT3 GetPosition(int hPict)
     {
-        return FileSet[hModel]->transform.position_;
+        return FileSet[hPict]->transform.position_;
     }
 
-    void Draw(int hModel)
+    LPCWSTR GetFileName(int hPict)
     {
-        FileSet[hModel]->pSprite->Draw(FileSet[hModel]->transform);
+        return FileSet[hPict]->FileName;
     }
 
-    bool IsHitCursor(int hModel)
+    void Draw(int hPict)
     {
-        UINT wid = (UINT)(FileSet[hModel]->pSprite->GetImgWidth() * FileSet[hModel]->transform.scale_.x / 2);
-        UINT hgt = (UINT)(FileSet[hModel]->pSprite->GetImgHeight() * FileSet[hModel]->transform.scale_.y / 2);
-        float Left = (FileSet[hModel]->transform.position_.x + 1) * (Direct3D::scrWidth / 2) - wid;
-        float Right = (FileSet[hModel]->transform.position_.x + 1) * (Direct3D::scrWidth / 2) + wid;
-        float Top = (-FileSet[hModel]->transform.position_.y + 1) * (Direct3D::scrHeight / 2) - hgt;
-        float Bottom = (-FileSet[hModel]->transform.position_.y + 1) * (Direct3D::scrHeight / 2) + hgt;
+        FileSet[hPict]->pSprite->Draw(FileSet[hPict]->transform);
+    }
+
+    bool IsHitCursor(int hPict)
+    {
+        UINT wid = (UINT)(FileSet[hPict]->pSprite->GetImgWidth() * FileSet[hPict]->transform.scale_.x / 2);
+        UINT hgt = (UINT)(FileSet[hPict]->pSprite->GetImgHeight() * FileSet[hPict]->transform.scale_.y / 2);
+        float Left = (FileSet[hPict]->transform.position_.x + 1) * (Direct3D::scrWidth / 2) - wid;
+        float Right = (FileSet[hPict]->transform.position_.x + 1) * (Direct3D::scrWidth / 2) + wid;
+        float Top = (-FileSet[hPict]->transform.position_.y + 1) * (Direct3D::scrHeight / 2) - hgt;
+        float Bottom = (-FileSet[hPict]->transform.position_.y + 1) * (Direct3D::scrHeight / 2) + hgt;
         if (Left <= Input::GetMousePosition().x && Input::GetMousePosition().x <= Right &&
             Top <= Input::GetMousePosition().y && Input::GetMousePosition().y <= Bottom)
         {
