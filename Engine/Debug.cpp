@@ -3,10 +3,12 @@
 #if _DEBUG
 #include "Direct3D.h"
 #include "Image.h"
+#include "IniOperator.h"
 #include "Input.h"
 #include "GameTime.h"
 #include "Math.h"
 #include "../Graphics/imgui.h"
+#include <list>
 
 
 namespace
@@ -14,7 +16,9 @@ namespace
 	int SelectingImage = -1;	//選択中の画像番号
 	XMFLOAT3 pos = {};			//選択している画像の位置
 	XMFLOAT3 InitialPos = {};	//選択した画像の初期位置
-	int MovementUnit = 1;		//移動単位
+	int MovementUnit_x = 1;		//x軸の移動単位
+	int MovementUnit_y = 1;		//y軸の移動単位
+	std::list<int> ChangedImageStatus = {};	//変更を加えた画像番号
 }
 
 namespace Debug
@@ -31,7 +35,12 @@ namespace Debug
 		{
 			ImGui::Begin("ImageData");
 			ImGui::Text("Selecting = %d", SelectingImage);
-			ImGui::SliderInt("MovementUnit", &MovementUnit, 1, 100);
+			ImGui::SliderInt("MovementUnit_x", &MovementUnit_x, 1, 100);
+			ImGui::SliderInt("MovementUnit_y", &MovementUnit_y, 1, 100);
+
+			ImGui::Text("You can save by pressing ctrl + S");
+			if ((Input::IsKey(DIK_LCONTROL) || Input::IsKey(DIK_RCONTROL)) && Input::IsKeyDown(DIK_S))
+				Overwrite();
 
 			if (Input::IsMouse(0))
 			{
@@ -39,12 +48,13 @@ namespace Debug
 				if (Input::IsMouseDown(0))
 				{
 					SelectingImage = Image::IsHitCursorAny();
-
+					
 					if (SelectingImage != -1)
 					{
 						XMFLOAT3 iPos = Math::TransformToPixel(Image::GetPosition(SelectingImage));
 						XMFLOAT3 mPos = Input::GetMousePosition();
 						InitialPos = { mPos.x - iPos.x, mPos.y - iPos.y,0 };
+						ChangedImageStatus.push_back(SelectingImage);
 					}
 				}
 
@@ -55,7 +65,7 @@ namespace Debug
 					pos = { pos.x - InitialPos.x, pos.y - InitialPos.y, 0 };
 
 					//移動単位で調整
-					pos = { pos.x - ((int)pos.x % MovementUnit), pos.y - ((int)pos.y % MovementUnit) , pos.z };
+					pos = { pos.x - ((int)pos.x % MovementUnit_x), pos.y - ((int)pos.y % MovementUnit_y) , pos.z };
 
 					//Transform単位に変換
 					XMFLOAT3 trans = Math::PixelToTransform(pos);
@@ -63,9 +73,6 @@ namespace Debug
 					Image::SetPosition(SelectingImage, trans);
 				}
 			}
-
-			if (ImGui::Button("Save"))
-				Overwrite();
 
 			//何かしらの画像を選択していればその画像の位置が表示される
 			if (SelectingImage != -1)
@@ -76,11 +83,14 @@ namespace Debug
 
 	void Overwrite()
 	{
-		//後で名前を設定できるようにする
-		WritePrivateProfileStringA("IMAGE", "Easy_x", std::to_string((int)pos.x).c_str(), "Assets\\Setting.ini");
-		WritePrivateProfileStringA("IMAGE", "Easy_y", std::to_string((int)pos.y).c_str(), "Assets\\Setting.ini");
-		//WritePrivateProfileStringA("IMAGE", "Hard_x", 0, "Assets\\Setting.ini");
-		//WritePrivateProfileStringA("IMAGE", "Hard_y", 0, "Assets\\Setting.ini");
+		ChangedImageStatus.unique();
+		for (auto itr : ChangedImageStatus)
+		{
+			//LPCSTR file = (LPCSTR)Image::GetFileName(itr);
+			IniOperator::SetValue(0, "x", (int)pos.x);
+			IniOperator::SetValue(0, "y", (int)pos.y);
+		}
+		ChangedImageStatus.clear();
 	}
 };
 
