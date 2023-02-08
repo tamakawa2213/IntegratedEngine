@@ -8,7 +8,8 @@
 #include "GameTime.h"
 #include "Math.h"
 #include "../Graphics/imgui.h"
-#include <list>
+//#include <list>
+#include <map>
 
 
 namespace
@@ -18,7 +19,7 @@ namespace
 	XMFLOAT3 InitialPos = {};	//選択した画像の初期位置
 	int MovementUnit_x = 1;		//x軸の移動単位
 	int MovementUnit_y = 1;		//y軸の移動単位
-	std::list<int> ChangedImageStatus = {};	//変更を加えた画像番号
+	std::map<int, XMFLOAT3> ChangedImageStatus = {};	//変更を加えた画像番号
 }
 
 namespace Debug
@@ -38,8 +39,7 @@ namespace Debug
 			ImGui::SliderInt("MovementUnit_x", &MovementUnit_x, 1, 100);
 			ImGui::SliderInt("MovementUnit_y", &MovementUnit_y, 1, 100);
 
-			ImGui::Text("You can save by pressing ctrl + S");
-			if ((Input::IsKey(DIK_LCONTROL) || Input::IsKey(DIK_RCONTROL)) && Input::IsKeyDown(DIK_S))
+			if (ImGui::Button("Save"))
 				Overwrite();
 
 			if (Input::IsMouse(0))
@@ -54,7 +54,6 @@ namespace Debug
 						XMFLOAT3 iPos = Math::TransformToPixel(Image::GetPosition(SelectingImage));
 						XMFLOAT3 mPos = Input::GetMousePosition();
 						InitialPos = { mPos.x - iPos.x, mPos.y - iPos.y,0 };
-						ChangedImageStatus.push_back(SelectingImage);
 					}
 				}
 
@@ -65,12 +64,21 @@ namespace Debug
 					pos = { pos.x - InitialPos.x, pos.y - InitialPos.y, 0 };
 
 					//移動単位で調整
-					pos = { pos.x - ((int)pos.x % MovementUnit_x), pos.y - ((int)pos.y % MovementUnit_y) , pos.z };
+					pos = { (float)((int)pos.x - ((int)pos.x % MovementUnit_x)), (float)((int)pos.y - ((int)pos.y % MovementUnit_y)) , pos.z };
 
 					//Transform単位に変換
 					XMFLOAT3 trans = Math::PixelToTransform(pos);
 
 					Image::SetPosition(SelectingImage, trans);
+				}
+			}
+
+			//マウスを離した時にその画像の位置が一時保存される
+			if (Input::IsMouseUp(0))
+			{
+				if (SelectingImage != -1)
+				{
+					ChangedImageStatus.insert_or_assign(SelectingImage, pos);
 				}
 			}
 
@@ -83,12 +91,13 @@ namespace Debug
 
 	void Overwrite()
 	{
-		ChangedImageStatus.unique();
 		for (auto itr : ChangedImageStatus)
 		{
-			//LPCSTR file = (LPCSTR)Image::GetFileName(itr);
-			IniOperator::SetValue(0, "x", (int)pos.x);
-			IniOperator::SetValue(0, "y", (int)pos.y);
+			//"Assets\\"を省いた文字列を取得
+			std::string file = Image::GetFileName(itr.first).substr(7);
+			int num = IniOperator::AddList("Assets\\ImageStatus.ini", file);
+			IniOperator::SetValue(num, "x", (int)itr.second.x);
+			IniOperator::SetValue(num, "y", (int)itr.second.y);
 		}
 		ChangedImageStatus.clear();
 	}

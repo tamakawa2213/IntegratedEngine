@@ -8,20 +8,19 @@ struct ImageSet
 {
 	Sprite* pSprite = nullptr;	//Spriteのポインタ
 	Transform transform;		//transformクラス
-	LPCWSTR FileName = L"";		//ファイルの名前
+	std::string FileName = "";		//ファイルの名前
 	bool FindFbx = false;		//Fbxファイルを事前にロードしているか
 };
 
 namespace Image
 {
-	int Load(LPCWSTR filename);
 	int Load(std::string filename);
 	void SetTransform(int hPict, Transform transform);
 	void SetPosition(int hPict, XMFLOAT3 pos);
 
 	//指定した画像番号の位置を取得
 	XMFLOAT3 GetPosition(int hPict);
-	LPCWSTR GetFileName(int hPict);
+	std::string GetFileName(int hPict);
 
 	void Draw(int hModel);
 

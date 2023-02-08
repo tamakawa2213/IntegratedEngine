@@ -9,11 +9,16 @@ namespace
 
 namespace Image
 {
-    int Load(LPCWSTR filename)
+    int Load(std::string filename)
     {
         HRESULT hr;
         ImageSet* File = new ImageSet;
         File->FileName = filename;
+
+        wchar_t file[CHAR_MAX];
+        size_t ret;
+        mbstowcs_s(&ret, file, filename.c_str(), filename.length());
+
         for (auto itr = FileSet.begin(); itr != FileSet.end(); itr++)
         {
             //同じ名前のファイルをすでにロードしていた場合
@@ -25,7 +30,7 @@ namespace Image
         }
         //見つからなかった場合、新しくロードする
         File->pSprite = new Sprite;
-        hr = File->pSprite->Initialize(filename);
+        hr = File->pSprite->Initialize(file);
         if (FAILED(hr)) //ロードに失敗した場合
         {
             SAFE_DELETE(File->pSprite);
@@ -34,14 +39,6 @@ namespace Image
 
         FileSet.push_back(File);
         return (int)FileSet.size() - 1;
-    }
-
-    int Load(std::string filename)
-    {
-        wchar_t file[CHAR_MAX];
-        size_t ret;
-        mbstowcs_s(&ret, file, filename.c_str(), filename.length());
-        return Load(file);
     }
 
     void SetTransform(int hPict, Transform transform)
@@ -59,7 +56,7 @@ namespace Image
         return FileSet[hPict]->transform.position_;
     }
 
-    LPCWSTR GetFileName(int hPict)
+    std::string GetFileName(int hPict)
     {
         return FileSet[hPict]->FileName;
     }

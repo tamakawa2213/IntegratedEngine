@@ -21,13 +21,13 @@ namespace IniOperator
 		ManagementSet* List = new ManagementSet;
 		List->FileName = filename;
 		List->SectionName = sectionname;
-		for (auto itr : SetList)
+		for (auto itr = SetList.begin(); itr != SetList.end(); itr++)
 		{
 			//ファイル名、セクション名ともに一致していた場合
-			if (List->FileName == (*itr).FileName && List->SectionName == (*itr).SectionName)
+			if (List->FileName == (*itr)->FileName && List->SectionName == (*itr)->SectionName)
 			{
 				//その番号を返す
-				return (int)std::distance(SetList.front(), itr);
+				return (int)std::distance(SetList.begin(), itr);
 			}
 		}
 
