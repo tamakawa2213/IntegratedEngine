@@ -86,4 +86,9 @@ namespace Model
 
         FileSet[hModel]->pFbx->RayCast(Raydata);
     }
+
+    void SetTexture(int hModel, Texture* tex)
+    {
+        FileSet[hModel]->pFbx->SetTexture(tex);
+    }
 }

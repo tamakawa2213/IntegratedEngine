@@ -104,4 +104,9 @@ namespace Image
         }
         FileSet.clear();
     }
+
+    const Texture* GetpTexture(int hPict)
+    {
+        return FileSet[hPict]->pSprite->GetpTexture();
+    }
 }

@@ -36,4 +36,5 @@ public:
 	void Release();						//‰ð•ú
 	UINT GetImgWidth();
 	UINT GetImgHeight();
+	const Texture* GetpTexture() { return pTexture_; }
 };

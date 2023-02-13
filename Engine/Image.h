@@ -34,4 +34,7 @@ namespace Image
 	int IsHitCursorAny();
 
 	void Release();
+
+	//テクスチャのconstポインタを取得する
+	const Texture* GetpTexture(int hPict);
 }

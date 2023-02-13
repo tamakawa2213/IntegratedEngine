@@ -348,6 +348,14 @@ void Fbx::Release()
 	SAFE_RELEASE(pVertexBuffer_);
 }
 
+void Fbx::SetTexture(Texture* tex)
+{
+	for (int i = 0; i < materialCount_; i++)
+	{
+		pMaterialList_[i].pTexture = tex;
+	}
+}
+
 XMVECTOR Fbx::NormalDotLight(Transform tr)
 {
 	XMMATRIX matInv = XMMatrixInverse(nullptr, tr.GetWorldMatrix());

@@ -24,4 +24,6 @@ namespace Model
 	void Release();
 
 	void RayCast(int hModel, RayCastData& Raydata);
+
+	void SetTexture(int hModel, Texture* tex);
 }
