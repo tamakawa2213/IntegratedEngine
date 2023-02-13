@@ -348,11 +348,11 @@ void Fbx::Release()
 	SAFE_RELEASE(pVertexBuffer_);
 }
 
-void Fbx::SetTexture(Texture* tex)
+void Fbx::SetTexture(const Texture* tex)
 {
 	for (int i = 0; i < materialCount_; i++)
 	{
-		pMaterialList_[i].pTexture = tex;
+		pMaterialList_[i].pTexture = (Texture*)tex;
 	}
 }
 

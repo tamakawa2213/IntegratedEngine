@@ -25,5 +25,5 @@ namespace Model
 
 	void RayCast(int hModel, RayCastData& Raydata);
 
-	void SetTexture(int hModel, Texture* tex);
+	void SetTexture(int hModel, const Texture* tex);
 }

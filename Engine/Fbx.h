@@ -73,7 +73,7 @@ public:
 	void Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos = nullptr, char SHADER_TYPE = 1);	//transform, RGBÇÃíl, ñæìx(0 Å`255)
 	void Release();
 
-	void SetTexture(Texture* tex);
+	void SetTexture(const Texture* tex);
 
 	XMVECTOR NormalDotLight(Transform tr);
 };
