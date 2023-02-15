@@ -9,7 +9,6 @@
 #include "Math.h"
 #include "../Graphics/imgui.h"
 #include <map>
-#include <functional>
 
 
 namespace
@@ -21,7 +20,7 @@ namespace
 	int MovementUnit_y = 1;		//y²‚ÌˆÚ“®’PˆÊ
 	std::map<int, XMFLOAT3> ChangedImageStatus = {};	//•ÏX‚ğ‰Á‚¦‚½‰æ‘œ”Ô†
 
-	std::map<DEBUG_MODE, std::function<void()>> data = { DEBUG_MODE::IMAGE_POSITIONING, Debug::ImagePositioning };
+	std::map<DEBUG_MODE, void(*)()> data = { {DEBUG_MODE::IMAGE_POSITIONING, &Debug::ImagePositioning} };
 
 	DEBUG_MODE Mode = DEBUG_MODE::IMAGE_POSITIONING;
 }
@@ -95,7 +94,7 @@ namespace Debug
 
 	void BranchMode()
 	{
-		data[Mode];
+		data[Mode]();
 	}
 
 	void SetDebugMode(DEBUG_MODE mode)
