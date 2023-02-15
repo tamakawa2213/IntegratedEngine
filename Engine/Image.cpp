@@ -1,10 +1,17 @@
 #include "Image.h"
 #include "CallDef.h"
 #include "Input.h"
+#include "IniOperator.h"
+#include "Math.h"
 
 namespace
 {
     std::vector<ImageSet*> FileSet;      //Fbxの構造体の動的配列
+}
+
+namespace Image
+{
+    void CallStatus(int hPict); //iniファイルに保存された初期位置を呼び出す
 }
 
 namespace Image
@@ -19,15 +26,28 @@ namespace Image
         size_t ret;
         mbstowcs_s(&ret, file, filename.c_str(), filename.length());
 
-        for (auto itr = FileSet.begin(); itr != FileSet.end(); itr++)
+        //同じファイルを使っていないか検索
+        auto itr = std::find(FileSet.begin(), FileSet.end(), File);
+        if (itr != FileSet.end())
         {
             //同じ名前のファイルをすでにロードしていた場合
-            if (File->FileName == (*itr)->FileName)
-            {
-                File->pSprite = (*itr)->pSprite;
-                break;
-            }
+            File->pSprite = (*itr)->pSprite;
+            File->FindFbx = true;
+            int pic = (int)std::distance(FileSet.begin(), itr);
+            return (int)std::distance(FileSet.begin(), itr);
         }
+
+        //for (auto itr = FileSet.begin(); itr != FileSet.end(); itr++)
+        //{
+        //    //同じ名前のファイルをすでにロードしていた場合
+        //    if (File->FileName == (*itr)->FileName)
+        //    {
+        //        File->pSprite = (*itr)->pSprite;
+        //        File->FindFbx = true;
+        //        break;
+        //    }
+        //}
+        // 
         //見つからなかった場合、新しくロードする
         File->pSprite = new Sprite;
         hr = File->pSprite->Initialize(file);
@@ -35,9 +55,10 @@ namespace Image
         {
             SAFE_DELETE(File->pSprite);
             SAFE_DELETE(File);
+            return -1;
         }
-
         FileSet.push_back(File);
+        CallStatus((int)FileSet.size() - 1);
         return (int)FileSet.size() - 1;
     }
 
@@ -108,5 +129,30 @@ namespace Image
     const Texture* GetpTexture(int hPict)
     {
         return FileSet[hPict]->pSprite->GetpTexture();
+    }
+
+    void CallStatus(int hPict)
+    {
+        /*nlohmann::json j =
+        {
+            { FileSet[hPict]->FileName.substr(7),
+            {"Size_x", 1},
+            {"Size_y", 1},
+            {"Pos_x", FileSet[hPict]->transform.position_.x},
+            {"Pos_y", FileSet[hPict]->transform.position_.y}
+            }
+        };
+        std::ofstream f("Assets\\ImageStatus.json");
+        f << j.dump(4);
+        std::ifstream f("Assets\\ImageStatus.json");
+        nlohmann::json a;
+        f >> a;*/
+        
+        //"Assets\\"を省いた文字列を取得
+        std::string file = FileSet[hPict]->FileName.substr(7);
+        int i = IniOperator::AddList("Assets\\ImageStatus.ini", file);
+        FileSet[hPict]->transform.position_ = Math::PixelToTransform({
+        (float)IniOperator::GetValue(i, "x", 0),
+        (float)IniOperator::GetValue(i, "y", 0), 0 });
     }
 }
