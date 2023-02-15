@@ -8,8 +8,8 @@
 #include "GameTime.h"
 #include "Math.h"
 #include "../Graphics/imgui.h"
-//#include <list>
 #include <map>
+#include <functional>
 
 
 namespace
@@ -20,6 +20,10 @@ namespace
 	int MovementUnit_x = 1;		//x²‚ÌˆÚ“®’PˆÊ
 	int MovementUnit_y = 1;		//y²‚ÌˆÚ“®’PˆÊ
 	std::map<int, XMFLOAT3> ChangedImageStatus = {};	//•ÏX‚ğ‰Á‚¦‚½‰æ‘œ”Ô†
+
+	std::map<DEBUG_MODE, std::function<void()>> data = { DEBUG_MODE::IMAGE_POSITIONING, Debug::ImagePositioning };
+
+	DEBUG_MODE Mode = DEBUG_MODE::IMAGE_POSITIONING;
 }
 
 namespace Debug
@@ -87,6 +91,16 @@ namespace Debug
 				ImGui::Text("position x = %g, y = %g", pos.x, pos.y);
 			ImGui::End();
 		}
+	}
+
+	void BranchMode()
+	{
+		data[Mode];
+	}
+
+	void SetDebugMode(DEBUG_MODE mode)
+	{
+		Mode = mode;
 	}
 
 	void Overwrite()

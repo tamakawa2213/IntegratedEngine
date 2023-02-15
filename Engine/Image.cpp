@@ -47,7 +47,7 @@ namespace Image
         //        break;
         //    }
         //}
-        // 
+        
         //見つからなかった場合、新しくロードする
         File->pSprite = new Sprite;
         hr = File->pSprite->Initialize(file);
@@ -133,21 +133,6 @@ namespace Image
 
     void CallStatus(int hPict)
     {
-        /*nlohmann::json j =
-        {
-            { FileSet[hPict]->FileName.substr(7),
-            {"Size_x", 1},
-            {"Size_y", 1},
-            {"Pos_x", FileSet[hPict]->transform.position_.x},
-            {"Pos_y", FileSet[hPict]->transform.position_.y}
-            }
-        };
-        std::ofstream f("Assets\\ImageStatus.json");
-        f << j.dump(4);
-        std::ifstream f("Assets\\ImageStatus.json");
-        nlohmann::json a;
-        f >> a;*/
-        
         //"Assets\\"を省いた文字列を取得
         std::string file = FileSet[hPict]->FileName.substr(7);
         int i = IniOperator::AddList("Assets\\ImageStatus.ini", file);
