@@ -135,15 +135,23 @@ namespace Math
 
     std::vector<int> MakePrime(int article)
     {
+
         std::vector<int> ans;   //最終的に答えとなる配列
         ans.clear();            //初期化
+
+        //0以下の場合そのまま返す
+        if (article <= 0)
+        {
+            return ans;
+        }
+
         ans.reserve(article);   //配列の要素数を確保
 
         std::vector<int> sieve; //エラトステネスの篩
         sieve.clear();          //初期化
         sieve.push_back(2);     //2から検索開始する
 
-        ans.push_back(2);       //呼び出しは1以上の値を前提とするので予め2を入れる
+        ans.push_back(2);
 
         int PrimeNumber = 3;    //検索対象の数値 : 初期値は3にする
 
@@ -162,17 +170,6 @@ namespace Math
                     sieve.push_back(ans.at(sieve.size()));  //sieveにその値を格納
                 }
             }
-
-            //sieveの要素毎に判定させる
-            //for (int i = 0; i < sieve.size(); i++)
-            //{
-            //    //sieveの要素の値で割り切れたら
-            //    if (PrimeNumber % sieve.at(i) == 0)
-            //    {
-            //        IsPrime = false;    //IsPrimeを倒して
-            //        break;              //強制終了
-            //    }
-            //}
 
             for (const auto& it : sieve)
             {
