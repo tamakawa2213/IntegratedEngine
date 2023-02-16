@@ -4,14 +4,12 @@
 //デバッグモード専用
 enum class DEBUG_MODE
 {
-	IMAGE_POSITIONING = 0
+	IMAGE_POSITIONING = 0,
+	TEXT_WRITING
 };
 
 namespace Debug
 {
-	//画像の位置調整
-	void ImagePositioning();
-
 	void BranchMode();
 
 	void SetDebugMode(DEBUG_MODE mode);

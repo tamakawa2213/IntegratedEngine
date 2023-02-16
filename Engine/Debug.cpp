@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "GameTime.h"
 #include "Math.h"
+#include "Text.h"
 #include "../Graphics/imgui.h"
 #include <map>
 
@@ -20,14 +21,28 @@ namespace
 	int MovementUnit_y = 1;		//y軸の移動単位
 	std::map<int, XMFLOAT3> ChangedImageStatus = {};	//変更を加えた画像番号
 
-	std::map<DEBUG_MODE, void(*)()> data = { {DEBUG_MODE::IMAGE_POSITIONING, &Debug::ImagePositioning} };
+	//デバッグモードをキーとして関数を呼び出すmap
+	std::map<DEBUG_MODE, void(*)()> data = {
+		{DEBUG_MODE::IMAGE_POSITIONING, &Debug::ImagePositioning},
+		{DEBUG_MODE::TEXT_WRITING, &Debug::WriteText}
+	};
 
-	DEBUG_MODE Mode = DEBUG_MODE::IMAGE_POSITIONING;
+	DEBUG_MODE Mode = DEBUG_MODE::IMAGE_POSITIONING;	//現在のデバッグモード
+
+	FontData* font;	//文字情報を格納する構造体
+	Text text(font);
 }
 
 namespace Debug
 {
-	void Overwrite();	//画像位置の上書き
+	//画像の位置調整
+	void ImagePositioning();
+
+	//画像位置の上書き
+	void Overwrite();
+
+	//指定したピクセルを始点とする文字情報を出力
+	void WriteText();
 }
 
 namespace Debug
@@ -94,6 +109,11 @@ namespace Debug
 
 	void BranchMode()
 	{
+		ImGui::Begin("DebugMode");
+		ImGui::BeginCombo("Mode", "ImagePositioning");
+		ImGui::Combo("Mode", (int*)Mode, "WriteText");
+		ImGui::EndCombo();
+		
 		data[Mode]();
 	}
 
@@ -113,6 +133,15 @@ namespace Debug
 			IniOperator::SetValue(num, "y", (int)itr.second.y);
 		}
 		ChangedImageStatus.clear();
+	}
+
+	void WriteText()
+	{
+		ImGui::Begin("TextData");
+		ImGui::InputFloat("TextSize", (float*)&font->fontSize);	//フォントサイズを変更
+		char* data;	//文字情報を格納する
+		ImGui::InputText("TextBox", data, sizeof(data));
+		ImGui::End();
 	}
 };
 
