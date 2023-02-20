@@ -10,15 +10,14 @@ namespace Model
         HRESULT hr;
         Fileset* File = new Fileset;
         File->FileName = filename;
-        for (auto itr = FileSet.begin(); itr != FileSet.end(); itr++)
+
+        auto itr = std::find(FileSet.begin(), FileSet.end(), File);
+        //同じ名前のファイルをすでにロードしていた場合
+        if (itr != FileSet.end())
         {
-            //同じ名前のファイルをすでにロードしていた場合
-            if (File->FileName == (*itr)->FileName)
-            {
-                File->pFbx = (*itr)->pFbx;
-                File->FindFbx = true;
-                break;
-            }
+            File->pFbx = (*itr)->pFbx;
+            File->FindFbx = true;
+            return (int)std::distance(FileSet.begin(), itr);
         }
         //見つからなかった場合、新しくロードする
         if (!File->FindFbx)
@@ -29,6 +28,7 @@ namespace Model
             {
                 SAFE_DELETE(File->pFbx);
                 SAFE_DELETE(File);
+                return -1;
             }
         }
 

@@ -11,6 +11,18 @@
 #include "../Graphics/imgui.h"
 #include <map>
 
+//外部から呼び出させない関数の前方宣言
+namespace Debug
+{
+	//画像の位置調整
+	void ImagePositioning();
+
+	//画像位置の上書き
+	void Overwrite();
+
+	//指定したピクセルを始点とする文字情報を出力
+	void WriteText();
+}
 
 namespace
 {
@@ -33,17 +45,6 @@ namespace
 	Text text(font);
 }
 
-namespace Debug
-{
-	//画像の位置調整
-	void ImagePositioning();
-
-	//画像位置の上書き
-	void Overwrite();
-
-	//指定したピクセルを始点とする文字情報を出力
-	void WriteText();
-}
 
 namespace Debug
 {
@@ -109,10 +110,10 @@ namespace Debug
 
 	void BranchMode()
 	{
-		ImGui::Begin("DebugMode");
+		/*ImGui::Begin("DebugMode");
 		ImGui::BeginCombo("Mode", "ImagePositioning");
 		ImGui::Combo("Mode", (int*)Mode, "WriteText");
-		ImGui::EndCombo();
+		ImGui::EndCombo();*/
 		
 		data[Mode]();
 	}
@@ -137,11 +138,11 @@ namespace Debug
 
 	void WriteText()
 	{
-		ImGui::Begin("TextData");
-		ImGui::InputFloat("TextSize", (float*)&font->fontSize);	//フォントサイズを変更
-		char* data;	//文字情報を格納する
-		ImGui::InputText("TextBox", data, sizeof(data));
-		ImGui::End();
+		//ImGui::Begin("TextData");
+		//ImGui::InputFloat("TextSize", (float*)&font->fontSize);	//フォントサイズを変更
+		//char* data;	//文字情報を格納する
+		//ImGui::InputText("TextBox", data, sizeof(data));
+		//ImGui::End();
 	}
 };
 

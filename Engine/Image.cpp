@@ -33,7 +33,6 @@ namespace Image
             //同じ名前のファイルをすでにロードしていた場合
             File->pSprite = (*itr)->pSprite;
             File->FindFbx = true;
-            int pic = (int)std::distance(FileSet.begin(), itr);
             return (int)std::distance(FileSet.begin(), itr);
         }
 
