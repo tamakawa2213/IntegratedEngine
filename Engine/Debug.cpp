@@ -48,74 +48,77 @@ namespace
 
 namespace Debug
 {
+	bool CallDebug_ = false;	//trueならデバッグモードを表示
+
 	//画像の位置調整
 	void ImagePositioning()
 	{
-		if (GameTime::IsStop())
+		ImGui::Begin("ImageData");
+		ImGui::Text("Selecting = %d", SelectingImage);
+		ImGui::SliderInt("MovementUnit_x", &MovementUnit_x, 1, 100);
+		ImGui::SliderInt("MovementUnit_y", &MovementUnit_y, 1, 100);
+
+		if (ImGui::Button("Save"))
+			Overwrite();
+
+		if (Input::IsMouse(0))
 		{
-			ImGui::Begin("ImageData");
-			ImGui::Text("Selecting = %d", SelectingImage);
-			ImGui::SliderInt("MovementUnit_x", &MovementUnit_x, 1, 100);
-			ImGui::SliderInt("MovementUnit_y", &MovementUnit_y, 1, 100);
-
-			if (ImGui::Button("Save"))
-				Overwrite();
-
-			if (Input::IsMouse(0))
+			//マウスを左クリックした時点で選択している画像番号が入る
+			if (Input::IsMouseDown(0))
 			{
-				//マウスを左クリックした時点で選択している画像番号が入る
-				if (Input::IsMouseDown(0))
-				{
-					SelectingImage = Image::IsHitCursorAny();
-					
-					if (SelectingImage != -1)
-					{
-						XMFLOAT3 iPos = Math::TransformToPixel(Image::GetPosition(SelectingImage));
-						XMFLOAT3 mPos = Input::GetMousePosition();
-						InitialPos = { mPos.x - iPos.x, mPos.y - iPos.y,0 };
-					}
-				}
+				SelectingImage = Image::IsHitCursorAny();
 
-				//何らかの画像を選択している場合
 				if (SelectingImage != -1)
 				{
-					pos = Input::GetMousePosition();
-					pos = { pos.x - InitialPos.x, pos.y - InitialPos.y, 0 };
-
-					//移動単位で調整
-					pos = { (float)((int)pos.x - ((int)pos.x % MovementUnit_x)), (float)((int)pos.y - ((int)pos.y % MovementUnit_y)) , pos.z };
-
-					//Transform単位に変換
-					XMFLOAT3 trans = Math::PixelToTransform(pos);
-
-					Image::SetPosition(SelectingImage, trans);
+					XMFLOAT3 iPos = Math::TransformToPixel(Image::GetPosition(SelectingImage));
+					XMFLOAT3 mPos = Input::GetMousePosition();
+					InitialPos = { mPos.x - iPos.x, mPos.y - iPos.y,0 };
 				}
 			}
 
-			//マウスを離した時にその画像の位置が一時保存される
-			if (Input::IsMouseUp(0))
-			{
-				if (SelectingImage != -1)
-				{
-					ChangedImageStatus.insert_or_assign(SelectingImage, pos);
-				}
-			}
-
-			//何かしらの画像を選択していればその画像の位置が表示される
+			//何らかの画像を選択している場合
 			if (SelectingImage != -1)
-				ImGui::Text("position x = %g, y = %g", pos.x, pos.y);
-			ImGui::End();
+			{
+				pos = Input::GetMousePosition();
+				pos = { pos.x - InitialPos.x, pos.y - InitialPos.y, 0 };
+
+				//移動単位で調整
+				pos = { (float)((int)pos.x - ((int)pos.x % MovementUnit_x)), (float)((int)pos.y - ((int)pos.y % MovementUnit_y)) , pos.z };
+
+				//Transform単位に変換
+				XMFLOAT3 trans = Math::PixelToTransform(pos);
+
+				Image::SetPosition(SelectingImage, trans);
+			}
 		}
+
+		//マウスを離した時にその画像の位置が一時保存される
+		if (Input::IsMouseUp(0))
+		{
+			if (SelectingImage != -1)
+			{
+				ChangedImageStatus.insert_or_assign(SelectingImage, pos);
+			}
+		}
+
+		//何かしらの画像を選択していればその画像の位置が表示される
+		if (SelectingImage != -1)
+			ImGui::Text("position x = %g, y = %g", pos.x, pos.y);
+		ImGui::End();
+
 	}
 
 	void BranchMode()
 	{
-		/*ImGui::Begin("DebugMode");
-		ImGui::BeginCombo("Mode", "ImagePositioning");
-		ImGui::Combo("Mode", (int*)Mode, "WriteText");
-		ImGui::EndCombo();*/
-		
-		data[Mode]();
+		if (CallDebug_)
+		{
+			/*ImGui::Begin("DebugMode");
+			ImGui::BeginCombo("Mode", "ImagePositioning");
+			ImGui::Combo("Mode", (int*)Mode, "WriteText");
+			ImGui::EndCombo();*/
+
+			data[Mode]();
+		}
 	}
 
 	void SetDebugMode(DEBUG_MODE mode)

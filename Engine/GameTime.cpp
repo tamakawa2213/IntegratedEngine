@@ -1,5 +1,6 @@
 #include "GameTime.h"
 #include "../Graphics/imgui.h"
+#include "Debug.h"
 
 namespace
 {
@@ -21,6 +22,16 @@ namespace GameTime
 			if (ImGui::Button("Start"))
 			{
 				Stop = false;
+			}
+
+			//ゲームタイムが停止しているときのみデバッグモード使用可能
+			if (!Debug::CallDebug_ && ImGui::Button("DebugMode"))
+			{
+				Debug::CallDebug_ = true;
+			}
+			else if (Debug::CallDebug_ && ImGui::Button("EndDebug"))
+			{
+				Debug::CallDebug_ = false;
 			}
 		}
 		else
