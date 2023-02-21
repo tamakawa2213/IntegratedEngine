@@ -1,11 +1,12 @@
 #include <math.h>
 #include "GameObject.h"
 
-GameObject::GameObject() : childList_(), transform_(), pParent_(nullptr), objectName_(""), KILL(false), Collision_(nullptr)
+GameObject::GameObject() : GameObject(nullptr, "")
 {
 }
 
-GameObject::GameObject(GameObject* parent, const std::string& name) : childList_(), transform_(), pParent_(parent), objectName_(name), KILL(false), Collision_(nullptr)
+GameObject::GameObject(GameObject* parent, const std::string& name)
+	: childList_(), transform_(), pParent_(parent), objectName_(name), KILL(false), Collision_(nullptr), assFunc_()
 {
 	if (parent)
 	{
@@ -47,6 +48,7 @@ void GameObject::FixedUpdateSub()
 	DebugMode();
 	ShowGraphical();
 #endif
+	assFunc_.Update();
 
 	for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
 		(*itr)->FixedUpdateSub();

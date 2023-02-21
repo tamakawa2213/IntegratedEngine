@@ -52,6 +52,7 @@ namespace Direct3D
 	extern IDXGISwapChain* pSwapChain;		//スワップチェイン
 	extern int scrWidth, scrHeight;			//スクリーンの幅と高さ
 	extern char SplitScrMode;
+	extern float BackGroundColor[4];
 
 	//初期化
 	HRESULT Initialize(int winW, int winH, HWND hWnd);

@@ -54,7 +54,7 @@ namespace Model
 
     void Draw(int hModel, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos, char SHADER_TYPE)
     {
-        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, Chroma, Bright, Alpha, lightpos, SHADER_TYPE);
+        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, Chroma, Bright, FileSet[hModel]->Alpha, lightpos, SHADER_TYPE);
     }
 
     void Release()
@@ -90,5 +90,13 @@ namespace Model
     void SetTexture(int hModel, const Texture* tex)
     {
         FileSet[hModel]->pFbx->SetTexture(tex);
+    }
+
+    void AllAlterAlpha(float alpha)
+    {
+        for (int i = 0; i < FileSet.size(); i++)
+        {
+            FileSet[i]->Alpha = alpha;
+        }
     }
 }

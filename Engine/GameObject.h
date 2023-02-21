@@ -4,6 +4,7 @@
 
 #include <list>
 #include <string>
+#include "AssignmentFunction.h"
 #include "CallDef.h"
 #include "Transform.h"
 #include "SphereCollider.h"
@@ -15,6 +16,7 @@ class GameObject
 	bool KILL;							//trueならオブジェクト消滅
 
 protected:
+	AssignmentFunction assFunc_;				//関数の指定回数実行クラス
 	Transform	transform_;						//Transform
 	std::list<GameObject*> childList_;			//ゲームオブジェクトのリスト構造
 	std::list<SphereCollider*> Colliderlist_;	//Colliderのリスト構造

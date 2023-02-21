@@ -11,6 +11,7 @@ struct Fileset
 	Transform transform;		//transformクラス
 	std::string FileName;		//ファイルの名前
 	bool FindFbx = false;		//Fbxファイルを事前にロードしているか
+	float Alpha = 1.0f;			//モデルの透明度
 };
 
 namespace Model
@@ -26,4 +27,7 @@ namespace Model
 	void RayCast(int hModel, RayCastData& Raydata);
 
 	void SetTexture(int hModel, const Texture* tex);
+
+	//現在ロードされている全てのモデルの透明度を変更
+	void AllAlterAlpha(float alpha);
 }

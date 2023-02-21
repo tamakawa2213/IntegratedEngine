@@ -8,8 +8,9 @@ struct ImageSet
 {
 	Sprite* pSprite = nullptr;	//Spriteのポインタ
 	Transform transform;		//transformクラス
-	std::string FileName = "";		//ファイルの名前
+	std::string FileName = "";	//ファイルの名前
 	bool FindFbx = false;		//Fbxファイルを事前にロードしているか
+	float Alpha = 1.0f;			//画像の透明度
 };
 
 namespace Image
@@ -37,4 +38,7 @@ namespace Image
 
 	//テクスチャのconstポインタを取得する
 	const Texture* GetpTexture(int hPict);
+
+	//現在ロードされている全ての画像の透明度を変更
+	void AllAlterAlpha(float alpha);
 }

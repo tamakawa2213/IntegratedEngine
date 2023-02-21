@@ -90,7 +90,7 @@ HRESULT Sprite::Load(LPCWSTR filename) {
 	return hr;
 }
 
-void Sprite::Draw(Transform& transform)
+void Sprite::Draw(Transform& transform, float alpha)
 {
 	Direct3D::SetShader(SHADER_2D);
 	CONSTANT_BUFFER cb;
@@ -99,6 +99,7 @@ void Sprite::Draw(Transform& transform)
 	transform.Calclation();
 	XMMATRIX mat = XMMatrixScaling(1.0f / Direct3D::scrWidth, 1.0f / Direct3D::scrHeight, 1.0f);
 	cb.matW = XMMatrixTranspose(pTexture_->GetSize() * mat * transform.GetWorldMatrix());
+	cb.alpha = alpha;
 
 	D3D11_MAPPED_SUBRESOURCE pdata;
 	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

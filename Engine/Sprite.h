@@ -10,6 +10,7 @@ protected:
 	struct CONSTANT_BUFFER
 	{
 		XMMATRIX matW;
+		float alpha;
 	};
 
 	//’¸“_î•ñ
@@ -32,8 +33,8 @@ public:
 	HRESULT ConBuf(LPCWSTR filename);
 	virtual HRESULT Load(LPCWSTR filename);
 	//Transform‚ğˆø”‚É‚Æ‚é
-	void Draw(Transform& transform);	//•`‰æ
-	void Release();						//‰ğ•ú
+	void Draw(Transform& transform, float alpha);	//•`‰æ
+	void Release();									//‰ğ•ú
 	UINT GetImgWidth();
 	UINT GetImgHeight();
 	const Texture* GetpTexture() { return pTexture_; }

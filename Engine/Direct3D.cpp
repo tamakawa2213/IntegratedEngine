@@ -29,6 +29,9 @@ namespace Direct3D
 
 	char SplitScrMode = SCREEN_FULL;
 
+	//”wŒiF
+	float BackGroundColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
+
 	D3D11_VIEWPORT vp[VP_MAX];
 }
 
@@ -483,11 +486,8 @@ void Direct3D::SetBlendMode(char blendMode)
 //•`‰æŠJŽn
 void Direct3D::BeginDraw()
 {
-	//”wŒi‚ÌF
-	float clearColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
-
 	//‰æ–Ê‚ðƒNƒŠƒA
-	pContext->ClearRenderTargetView(pRenderTargetView, clearColor);
+	pContext->ClearRenderTargetView(pRenderTargetView, BackGroundColor);
 	
 	Camera::Update();
 

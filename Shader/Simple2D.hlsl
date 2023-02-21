@@ -11,6 +11,7 @@ SamplerState	g_sampler : register(s0);	//サンプラー
 cbuffer global
 {
 	float4x4	matW;			//ワールド行列
+	float alpha;
 };
 
 //───────────────────────────────────────
@@ -44,5 +45,6 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	return g_texture.Sample(g_sampler, inData.uv);
+	float4 color = { 1, 1, 1, alpha};
+	return g_texture.Sample(g_sampler, inData.uv) * color;
 }

@@ -35,17 +35,6 @@ namespace Image
             File->FindFbx = true;
             return (int)std::distance(FileSet.begin(), itr);
         }
-
-        //for (auto itr = FileSet.begin(); itr != FileSet.end(); itr++)
-        //{
-        //    //同じ名前のファイルをすでにロードしていた場合
-        //    if (File->FileName == (*itr)->FileName)
-        //    {
-        //        File->pSprite = (*itr)->pSprite;
-        //        File->FindFbx = true;
-        //        break;
-        //    }
-        //}
         
         //見つからなかった場合、新しくロードする
         File->pSprite = new Sprite;
@@ -83,7 +72,7 @@ namespace Image
 
     void Draw(int hPict)
     {
-        FileSet[hPict]->pSprite->Draw(FileSet[hPict]->transform);
+        FileSet[hPict]->pSprite->Draw(FileSet[hPict]->transform, FileSet[hPict]->Alpha);
     }
 
     bool IsHitCursor(int hPict)
@@ -128,6 +117,14 @@ namespace Image
     const Texture* GetpTexture(int hPict)
     {
         return FileSet[hPict]->pSprite->GetpTexture();
+    }
+
+    void AllAlterAlpha(float alpha)
+    {
+        for (int i = 0; i < FileSet.size(); i++)
+        {
+            FileSet[i]->Alpha = alpha;
+        }
     }
 
     void CallStatus(int hPict)
