@@ -10,24 +10,29 @@ namespace
 }
 
 AssignmentFunction::AssignmentFunction()
-	:Fadeout_(3)
+	:Fadeout_(0)
 {
 	func_.clear();
-	func_.insert({ Fadeout_, &AssignmentFunction::FadeOut });
+	func_.push_back({ &Fadeout_, &AssignmentFunction::FadeOut });
 }
 
 AssignmentFunction::~AssignmentFunction()
 {
+	func_.clear();
 }
 
 void AssignmentFunction::Update()
 {
 	for (auto itr = func_.begin(); itr != func_.end(); itr++)
 	{
-		if (itr->first > 0)
+		//イテレータが指してる変数が0より大きい場合
+		if (*itr->first > 0)
 		{
-			itr->second;
-			//itr->first--;
+			//関連する関数を実行
+			(this->*func_.at((int)std::distance(func_.begin(), itr)).second)();
+
+			//デクリメント
+			(*itr->first)--;
 		}
 	}
 	
@@ -42,11 +47,15 @@ void AssignmentFunction::SetFadeout(int frame)
 
 void AssignmentFunction::FadeOut()
 {
-	float alp = fabsf((0.5f - Fadeout_ / SettingFade * ChangeRate) * 2);
+	//0で割らないように
+	if (SettingFade == 0)
+		return;
+
+	float alp = fabsf((float)Fadeout_ / SettingFade * 2 - 1);
 	Image::AllAlterAlpha(alp);
 	Model::AllAlterAlpha(alp);
-	Direct3D::BackGroundColor[0] = alp;
-	Direct3D::BackGroundColor[1] = alp;
-	Direct3D::BackGroundColor[2] = alp;
+	Direct3D::BackGroundColor[0] = 0;
+	Direct3D::BackGroundColor[1] = alp / 2;
+	Direct3D::BackGroundColor[2] = alp / 2;
 	Direct3D::BackGroundColor[3] = 1.0f;
 }

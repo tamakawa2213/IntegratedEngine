@@ -69,7 +69,7 @@ public:
 	HRESULT IntConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
 	void RayCast(RayCastData& rayData);
-	void Draw(Transform& transform, const Light *lightpos = nullptr, char SHADER_TYPE = 1);
+	void Draw(Transform& transform, float Alpha, const Light *lightpos = nullptr, char SHADER_TYPE = 1);
 	void Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos = nullptr, char SHADER_TYPE = 1);	//transform, RGBÇÃíl, ñæìx(0 Å`255)
 	void Release();
 

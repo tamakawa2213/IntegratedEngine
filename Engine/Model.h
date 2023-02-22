@@ -20,7 +20,7 @@ namespace Model
 	void SetTransform(int hModel, Transform transform);
 	void Draw(int hModel, const Light* lightpos = nullptr, char SHADER_TYPE = 1);
 	void Draw(int hModel, Transform transform, const Light* lightpos = nullptr, char SHADER_TYPE = 1);
-	void Draw(int hModel, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos = nullptr, char SHADER_TYPE = 1);
+	void Draw(int hModel, XMFLOAT3 Chroma, float Bright, const Light* lightpos = nullptr, char SHADER_TYPE = 1);
 
 	void Release();
 

@@ -255,9 +255,9 @@ void Fbx::RayCast(RayCastData& rayData)
 }
 
 
-void Fbx::Draw(Transform& transform, const Light* lightpos, char SHADER_TYPE)
+void Fbx::Draw(Transform& transform, float Alpha, const Light* lightpos, char SHADER_TYPE)
 {
-	Draw(transform, XMFLOAT3(0.3f, 0.3f, 0.3f), UCHAR_MAX, UCHAR_MAX, lightpos, SHADER_TYPE);
+	Draw(transform, XMFLOAT3(0.3f, 0.3f, 0.3f), UCHAR_MAX, Alpha, lightpos, SHADER_TYPE);
 }
 
 void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos, char SHADER_TYPE)
