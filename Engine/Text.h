@@ -69,7 +69,7 @@ class Text
     IDXGISurface* pBackBuffer = nullptr;
 
     //フォントデータ
-    FontData* Setting = new FontData();
+    FontData* Setting = nullptr;
 
     //string->wstring変換
     std::wstring StringToWString(std::string str);
@@ -80,54 +80,46 @@ public:
     //コンストラクタ
     Text(FontData* set) : Setting(set) {};
 
-    /// <summary>コンストラクタ</summary>
-    /// <param name="font">フォント名</param>
-    /// <param name="fontcollection">フォントコレクション</param>
-    /// <param name="fontweight">フォントの太さ</param>
-    /// <param name="fontstyle">フォントスタイル</param>
-    /// <param name="fontstretch">フォントの幅</param>
-    /// <param name="fontsize">フォントサイズ</param>
-    /// <param name="localename">ロケール名</param>
-    /// <param name="textalignment">テキストの配置</param>
-    /// <param name="color">フォントの色</param>
-    Text(Font font,
-        IDWriteFontCollection* fontcollection,
-        DWRITE_FONT_WEIGHT fontweight,
-        DWRITE_FONT_STYLE fontstyle,
-        DWRITE_FONT_STRETCH fontstretch,
-        FLOAT fontsize,
-        WCHAR const* localename,
-        DWRITE_TEXT_ALIGNMENT textalignment,
-        D2D1_COLOR_F color);
+    //デストラクタ
+    ~Text();
 
     //フォント設定
     void SetFont(FontData* set);
 
-    /// <summary>フォント設定</summary>
-    /// <param name="font">フォント名</param>
-    /// <param name="fontcollection">フォントコレクション</param>
-    /// <param name="fontweight">フォントの太さ</param>
-    /// <param name="fontstyle">フォントスタイル</param>
-    /// <param name="fontstretch">フォントの幅</param>
-    /// <param name="fontsize">フォントサイズ</param>
-    /// <param name="localename">ロケール名</param>
-    /// <param name="textalignment">テキストの配置</param>
-    /// <param name="color">フォントの色</param>
-    void SetFont(Font font,
-        IDWriteFontCollection* fontcollection,
-        DWRITE_FONT_WEIGHT fontweight,
-        DWRITE_FONT_STYLE fontstyle,
-        DWRITE_FONT_STRETCH fontstretch,
-        FLOAT fontsize,
-        WCHAR const* localename,
-        DWRITE_TEXT_ALIGNMENT textalignment,
-        D2D1_COLOR_F color);
-
     /// <summary>描画</summary>
-    /// <param name="str">表示したい文字列</param>
     /// <param name="pos">描画位置</param>
-    /// <param name="options">テキストの整形</param>
-    void Draw(std::string str, XMFLOAT3 pos, D2D1_DRAW_TEXT_OPTIONS options = D2D1_DRAW_TEXT_OPTIONS_NONE);
+    /// <param name="fmt">表示したい文字列</param>
+    template <typename ... Args>
+    void Draw(XMFLOAT2 pos, const std::string& fmt, Args ... args)
+    {
+        size_t len = snprintf(nullptr, 0, fmt.c_str(), args ...);
+        std::string buf;
+        snprintf(&buf[0], len + 1, fmt.c_str(), args ...);
+
+        //文字列の変換
+        std::wstring wstr = StringToWString(buf);
+
+        //ターゲットサイズの取得
+        D2D1_SIZE_F TargetSize = pRT->GetSize();
+
+        //テキストレイアウトを作成
+        pDWriteFactory->CreateTextLayout(wstr.c_str(), (UINT32)wstr.size(), pTextFormat, TargetSize.width, TargetSize.height, &pTextLayout);
+        assert(pTextLayout != nullptr);
+
+        //描画位置の確定
+        D2D1_POINT_2F pounts;
+        pounts.x = pos.x;
+        pounts.y = pos.y;
+
+        //描画開始
+        pRT->BeginDraw();
+
+        //描画処理
+        pRT->DrawTextLayout(pounts, pTextLayout, pSolidBrush, D2D1_DRAW_TEXT_OPTIONS_NONE);
+
+        //描画終了
+        pRT->EndDraw();
+    }
 
     void Initialize();
 
