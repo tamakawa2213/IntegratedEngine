@@ -2,7 +2,7 @@
 #include "CallDef.h"
 #include "Direct3D.h"
 
-std::wstring Text::StringToWString(std::string str)
+std::wstring Text::StringToWString(std::string& str)
 {
 	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, (wchar_t*)NULL, 0);
 

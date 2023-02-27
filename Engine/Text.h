@@ -72,7 +72,7 @@ class Text
     FontData* Setting = nullptr;
 
     //string->wstring変換
-    std::wstring StringToWString(std::string str);
+    std::wstring StringToWString(std::string& str);
 public:
     //デフォルトコンストラクタを制限
     Text() = delete;
@@ -94,10 +94,13 @@ public:
     {
         size_t len = snprintf(nullptr, 0, fmt.c_str(), args ...);
         std::string buf;
+        buf.reserve(len);
         snprintf(&buf[0], len + 1, fmt.c_str(), args ...);
 
         //文字列の変換
-        std::wstring wstr = StringToWString(buf);
+        std::wstring wstr;
+        wstr.reserve(buf.size());
+        wstr = StringToWString(buf);
 
         //ターゲットサイズの取得
         D2D1_SIZE_F TargetSize = pRT->GetSize();
