@@ -1,4 +1,5 @@
 #include <math.h>
+#include "Debug.h"
 #include "GameObject.h"
 
 GameObject::GameObject() : GameObject(nullptr, "")
@@ -47,22 +48,27 @@ void GameObject::FixedUpdateSub()
 #if _DEBUG
 	DebugMode();
 	ShowGraphical();
+
+	//デバッグモードを呼び出していないとき実行
+	if (!Debug::CallDebug_)
 #endif
-	assFunc_.Update();
+	{
+		assFunc_.Update();
 
-	for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
-		(*itr)->FixedUpdateSub();
-	}
-
-	for (auto itr = childList_.begin(); itr != childList_.end();) {
-		if ((*itr)->KILL) {
-			(*itr)->ReleaseSub();
-			SAFE_DELETE(*itr);
-			itr = childList_.erase(itr);
+		for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
+			(*itr)->FixedUpdateSub();
 		}
-		else {
-			(*itr)->Collision(GetRootJob());
-			itr++;
+
+		for (auto itr = childList_.begin(); itr != childList_.end();) {
+			if ((*itr)->KILL) {
+				(*itr)->ReleaseSub();
+				SAFE_DELETE(*itr);
+				itr = childList_.erase(itr);
+			}
+			else {
+				(*itr)->Collision(GetRootJob());
+				itr++;
+			}
 		}
 	}
 }
