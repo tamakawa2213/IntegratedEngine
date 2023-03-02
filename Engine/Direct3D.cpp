@@ -217,11 +217,7 @@ HRESULT Direct3D::InitShader2D()
 
 	// 頂点シェーダ(VertexShader)の作成（コンパイル）
 	ID3DBlob* pCompileVS = nullptr;
-#if _DEBUG
 	D3DCompileFromFile(L"../IntegratedEngine/Shader/Simple2D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-#else
-	D3DCompileFromFile(L"Simple2D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-#endif
 	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
 	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[SHADER_2D].pVertexShader);
 
@@ -240,11 +236,7 @@ HRESULT Direct3D::InitShader2D()
 
 	// ピクセルシェーダ(PixelShader)の作成（コンパイル）
 	ID3DBlob* pCompilePS = nullptr;
-#if _DEBUG
 	D3DCompileFromFile(L"../IntegratedEngine/Shader/Simple2D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
-#else
-	D3DCompileFromFile(L"Simple2D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
-#endif
 	assert(pCompilePS != nullptr);
 	hr = pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shader[SHADER_2D].pPixelShader);
 
@@ -271,11 +263,7 @@ HRESULT Direct3D::InitShader3D()
 
 	// 頂点シェーダ(VertexShader)の作成（コンパイル）
 	ID3DBlob* pCompileVS = nullptr;
-#if _DEBUG
 	D3DCompileFromFile(L"../IntegratedEngine/Shader/Simple3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-#else
-	D3DCompileFromFile(L"Simple3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-#endif
 	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
 	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[SHADER_3D].pVertexShader);
 	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
@@ -294,11 +282,7 @@ HRESULT Direct3D::InitShader3D()
 
 	// ピクセルシェーダ(PixelShader)の作成（コンパイル）
 	ID3DBlob* pCompilePS = nullptr;
-#if _DEBUG
 	D3DCompileFromFile(L"../IntegratedEngine/Shader/Simple3D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
-#else
-	D3DCompileFromFile(L"Simple3D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
-#endif
 	assert(pCompilePS != nullptr);
 	hr = pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shader[SHADER_3D].pPixelShader);
 
@@ -323,11 +307,7 @@ HRESULT Direct3D::InitShaderPoint()
 
 	// 頂点シェーダ(VertexShader)の作成（コンパイル）
 	ID3DBlob* pCompileVS = nullptr;
-#if _DEBUG
 	D3DCompileFromFile(L"../IntegratedEngine/Shader/Point3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-#else
-	D3DCompileFromFile(L"Point3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-#endif
 	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
 	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[SHADER_POINT].pVertexShader);
 	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
@@ -346,11 +326,7 @@ HRESULT Direct3D::InitShaderPoint()
 
 	// ピクセルシェーダ(PixelShader)の作成（コンパイル）
 	ID3DBlob* pCompilePS = nullptr;
-#if _DEBUG
 	D3DCompileFromFile(L"../IntegratedEngine/Shader/Point3D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
-#else
-	D3DCompileFromFile(L"Point3D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
-#endif
 	assert(pCompilePS != nullptr);
 	hr = pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shader[SHADER_POINT].pPixelShader);
 
@@ -375,11 +351,7 @@ HRESULT Direct3D::InitShaderFog()
 
 	// 頂点シェーダ(VertexShader)の作成（コンパイル）
 	ID3DBlob* pCompileVS = nullptr;
-#if _DEBUG
 	D3DCompileFromFile(L"../IntegratedEngine/Shader/Fog.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-#else
-	D3DCompileFromFile(L"Fog.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-#endif
 	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
 	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[SHADER_FOG].pVertexShader);
 	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
@@ -398,11 +370,7 @@ HRESULT Direct3D::InitShaderFog()
 
 	// ピクセルシェーダ(PixelShader)の作成（コンパイル）
 	ID3DBlob* pCompilePS = nullptr;
-#if _DEBUG
 	D3DCompileFromFile(L"../IntegratedEngine/Shader/Fog.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
-#else
-	D3DCompileFromFile(L"Fog.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
-#endif
 	assert(pCompilePS != nullptr);
 	hr = pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL, &shader[SHADER_FOG].pPixelShader);
 

@@ -1,5 +1,4 @@
 #pragma once
-#if _DEBUG
 
 //デバッグモード専用
 enum class DEBUG_MODE
@@ -18,5 +17,3 @@ namespace Debug
 	//デバッグモードの変更
 	void SetDebugMode(DEBUG_MODE mode);
 };
-
-#endif

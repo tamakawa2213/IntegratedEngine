@@ -1,6 +1,5 @@
 #include "Debug.h"
 
-#if _DEBUG
 #include "Direct3D.h"
 #include "Image.h"
 #include "IniOperator.h"
@@ -148,5 +147,3 @@ namespace Debug
 		//ImGui::End();
 	}
 };
-
-#endif
