@@ -8,7 +8,7 @@ namespace
 
 	std::chrono::steady_clock::time_point Prev = std::chrono::steady_clock::now();	//前フレームのシステム時間を保存
 	std::chrono::steady_clock::time_point Now = std::chrono::steady_clock::now();	//現在のシステム時間を保存
-	std::chrono::milliseconds MilliSeconds_{ 0 };	//経過時間
+	std::chrono::milliseconds MilliSeconds_ = std::chrono::milliseconds::zero();	//経過時間
 }
 
 namespace Time
