@@ -24,8 +24,8 @@ void GameObject::UpdateSub()
 {
 	Update();
 
-	for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
-		(*itr)->UpdateSub();
+	for (auto itr : childList_) {
+		itr->UpdateSub();
 	}
 
 	for (auto itr = childList_.begin(); itr != childList_.end();) {
@@ -55,8 +55,8 @@ void GameObject::FixedUpdateSub()
 	{
 		assFunc_.Update();
 
-		for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
-			(*itr)->FixedUpdateSub();
+		for (auto itr : childList_) {
+			itr->FixedUpdateSub();
 		}
 
 		for (auto itr = childList_.begin(); itr != childList_.end();) {
@@ -77,8 +77,8 @@ void GameObject::DrawSub()
 {
 	Draw();
 
-	for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
-		(*itr)->DrawSub();
+	for (auto itr : childList_) {
+		itr->DrawSub();
 	}
 }
 
@@ -86,8 +86,8 @@ void GameObject::DrawUniqueSub()
 {
 	DrawUnique();
 
-	for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
-		(*itr)->DrawUniqueSub();
+	for (auto itr : childList_) {
+		itr->DrawUniqueSub();
 	}
 }
 
@@ -95,8 +95,8 @@ void GameObject::ReleaseSub()
 {
 	Release();
 
-	for (auto itr = childList_.begin(); itr != childList_.end(); itr++) {
-		(*itr)->ReleaseSub();
+	for (auto itr : childList_) {
+		itr->ReleaseSub();
 	}
 }
 
@@ -125,16 +125,16 @@ void GameObject::KillAllChildren(GameObject* object)
 
 GameObject* GameObject::FindChildObject(std::string ObjectName)
 {
-	for (auto itr = childList_.begin(); itr != childList_.end(); itr++)
+	for (auto itr : childList_)
 	{
-		if ((*itr)->objectName_ == ObjectName)
+		if (itr->objectName_ == ObjectName)
 		{
 			//thisを返すと該当オブジェクトの親のアドレスが返ってきてしまう
-			return *itr;
+			return itr;
 		}
 		else
 		{
-			GameObject* obj = (*itr)->FindChildObject(ObjectName);
+			GameObject* obj = itr->FindChildObject(ObjectName);
 			if (obj != nullptr)
 			{
 				return obj;
@@ -191,9 +191,9 @@ void GameObject::Collision(GameObject* pTarget)
 		//子オブジェクトの判定も呼ぶ
 		if (!pTarget->childList_.empty())
 		{
-			for (auto itr = pTarget->childList_.begin(); itr != pTarget->childList_.end(); itr++)
+			for (auto itr : pTarget->childList_)
 			{	//listの数だけ回帰処理
-				Collision(*itr);
+				Collision(itr);
 			}
 		}
 	

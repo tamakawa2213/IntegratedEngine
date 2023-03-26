@@ -28,7 +28,7 @@ namespace Image
 
         //同じファイルを使っていないか検索
         auto itr = std::find(FileSet.begin(), FileSet.end(), File);
-        if (itr != FileSet.end())
+        if (itr != end(FileSet))
         {
             //同じ名前のファイルをすでにロードしていた場合
             File->pSprite = (*itr)->pSprite;
@@ -103,13 +103,13 @@ namespace Image
 
     void Release()
     {
-        for (int i = 0; i < FileSet.size(); i++)
+        for (auto i : FileSet)
         {
-            if (!FileSet[i]->FindFbx)
+            if (!i->FindFbx)
             {
-                SAFE_DELETE(FileSet[i]->pSprite);
+                SAFE_DELETE(i->pSprite);
             }
-            SAFE_DELETE(FileSet[i]);
+            SAFE_DELETE(i);
         }
         FileSet.clear();
     }
@@ -121,9 +121,9 @@ namespace Image
 
     void AllAlterAlpha(float alpha)
     {
-        for (int i = 0; i < FileSet.size(); i++)
+        for (auto i : FileSet)
         {
-            FileSet[i]->Alpha = alpha;
+            i->Alpha = alpha;
         }
     }
 

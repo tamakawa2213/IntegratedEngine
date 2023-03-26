@@ -59,13 +59,13 @@ namespace Model
 
     void Release()
     {
-        for (int i = 0; i < FileSet.size(); i++)
+        for (auto i : FileSet)
         {
-            if (!FileSet[i]->FindFbx)
+            if (!i->FindFbx)
             {
-                SAFE_DELETE(FileSet[i]->pFbx);
+                SAFE_DELETE(i->pFbx);
             }
-            SAFE_DELETE(FileSet[i]);
+            SAFE_DELETE(i);
         }
         FileSet.clear();
     }
