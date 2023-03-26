@@ -1,72 +1,35 @@
 #include "Time.h"
-#include <vector>
-
-//定数宣言
-namespace
-{
-	//60進法
-	const char HEX = 60;
-}
+#include <chrono>
 
 //変数
 namespace
 {
-	char Hours_;
-	char Minuts_;
-	double Seconds_;
 	bool Lock_ = true;		//現在の状態で固定するか
-	std::vector<int> CountFps_;	//現在のフレームレートを格納しておくもの
-	int FPS_;		//初期化時に最大フレームレートを格納しておく
-	int LookAt_;	//配列のどこを見るか
+
+	std::chrono::steady_clock::time_point Prev = std::chrono::steady_clock::now();	//前フレームのシステム時間を保存
+	std::chrono::steady_clock::time_point Now = std::chrono::steady_clock::now();	//現在のシステム時間を保存
+	std::chrono::milliseconds MilliSeconds_{ 0 };	//経過時間
 }
 
 namespace Time
 {
-	void Initialize(int FPS)
-	{
-		Hours_ = 0;
-		Minuts_ = 0;
-		Seconds_ = 0;
-		FPS_ = FPS;
-		LookAt_ = 0;
-
-		CountFps_.clear();		//念のための初期化
-		CountFps_.reserve(FPS);	//要素数を確保しておく
-
-		while (CountFps_.size() != CountFps_.capacity())
-		{
-			CountFps_.push_back(FPS);
-		}
-	}
-
 	void Update()
 	{
-		for (int i = 0; i < CountFps_.size(); i++)
-		{
-			//最大フレームレートを超えることはないので
-			if (CountFps_.at(i) < FPS_)
-				CountFps_.at(i)++;
-		}
-
-		LookAt_++;
-		if (LookAt_ >= FPS_)
-			LookAt_ -= FPS_;
+		//2つのシステム時間を更新
+		Prev = Now;
+		Now = std::chrono::steady_clock::now();
 
 		//Lockされていたら更新しない
-		if (!Lock_)
-		{
-			float fps = CountFps_.at(LookAt_) * 0.98f;
-			Seconds_ += 1.0 / fps;
-		}
+		if (Lock_)
+			return;
 
-		CountFps_.at(LookAt_) = 0;
+		//現在と直前の差を加算
+		MilliSeconds_ += std::chrono::duration_cast<std::chrono::milliseconds>(Now - Prev);
 	}
 
 	void Reset()
 	{
-		Hours_ = 0;
-		Minuts_ = 0;
-		Seconds_ = 0;
+		MilliSeconds_ = std::chrono::milliseconds::zero();
 	}
 
 	void Lock()
@@ -81,14 +44,22 @@ namespace Time
 
 	int GetTimei()
 	{
-		return (int)Seconds_;
+		return (int)std::chrono::duration_cast<std::chrono::seconds>(MilliSeconds_).count();
 	}
 	float GetTimef()
 	{
-		return (float)Seconds_;
+		return (float)MilliSeconds_.count() / 1000;
 	}
 	double GetTime()
 	{
-		return Seconds_;
+		return (double)MilliSeconds_.count() / 1000;
+	}
+	int GetMinutes()
+	{
+		return (int)std::chrono::duration_cast<std::chrono::minutes>(MilliSeconds_).count();
+	}
+	int GetHours()
+	{
+		return (int)std::chrono::duration_cast<std::chrono::hours>(MilliSeconds_).count();
 	}
 }
