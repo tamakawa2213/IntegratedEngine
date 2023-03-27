@@ -83,8 +83,8 @@ namespace Image
         float Right = (FileSet[hPict]->transform.position_.x + 1) * (Direct3D::scrWidth / 2) + wid;
         float Top = (-FileSet[hPict]->transform.position_.y + 1) * (Direct3D::scrHeight / 2) - hgt;
         float Bottom = (-FileSet[hPict]->transform.position_.y + 1) * (Direct3D::scrHeight / 2) + hgt;
-        if (Left <= Input::GetMousePosition().x && Input::GetMousePosition().x <= Right &&
-            Top <= Input::GetMousePosition().y && Input::GetMousePosition().y <= Bottom)
+        if (Left <= Input::Mouse::GetPosition().x && Input::Mouse::GetPosition().x <= Right &&
+            Top <= Input::Mouse::GetPosition().y && Input::Mouse::GetPosition().y <= Bottom)
         {
             return true;
         }

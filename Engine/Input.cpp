@@ -64,234 +64,240 @@ namespace Input
 	}
 
 	///////////////////////////////////////////////////キーボード関連///////////////////////////////////////////
-
-	bool IsKey(int keyCode)
+	namespace Keyboard
 	{
-		if (keyState[keyCode] & 0x80)	//16進数80との論理積
+		bool IsPush(int keyCode)
 		{
-			return true;
+			if (keyState[keyCode] & 0x80)	//16進数80との論理積
+			{
+				return true;
+			}
+
+			return false;
 		}
 
-		return false;
-	}
-
-	bool IsKeyDown(int keyCode)
-	{
-		//今は押してて、前回は押してない
-		if (IsKey(keyCode) && !(prevKeyState[keyCode] & 0x80))
+		bool Down(int keyCode)
 		{
-			return true;
+			//今は押してて、前回は押してない
+			if (IsPush(keyCode) && !(prevKeyState[keyCode] & 0x80))
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
-	bool IsKeyUp(int keyCode)
-	{
-		//前回は押してて、今は押してない
-		if ((prevKeyState[keyCode] & 0x80) && !IsKey(keyCode))
+		bool Up(int keyCode)
 		{
-			return true;
+			//前回は押してて、今は押してない
+			if ((prevKeyState[keyCode] & 0x80) && !IsPush(keyCode))
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
 
-	bool IsKeyAny()
-	{
-		if (std::find(keyState, keyState + 256, 0x80) != keyState + 256)
+		bool AnyPush()
 		{
-			return true;
+			if (std::find(keyState, keyState + 256, 0x80) != keyState + 256)
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
-	bool IsKeyAnyDown()
-	{
-		if (IsKeyAny() && !(std::find(prevKeyState, prevKeyState + 256, 0x80) != prevKeyState + 256))
+		bool AnyDown()
 		{
-			return true;
+			if (AnyPush() && !(std::find(prevKeyState, prevKeyState + 256, 0x80) != prevKeyState + 256))
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
-	bool IsKeyAnyUp()
-	{
-		if ((std::find(prevKeyState, prevKeyState + 256, 0x80) != prevKeyState + 256) && !IsKeyAny())
+		bool AnyUp()
 		{
-			return true;
+			if ((std::find(prevKeyState, prevKeyState + 256, 0x80) != prevKeyState + 256) && !AnyPush())
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
-	bool IsKeyAdd()
-	{
-		int push, prev;
-		std::thread th_a([&] { push = (int)std::count(keyState, keyState + 256, 0x80); });
-		std::thread th_b([&] { prev = (int)std::count(prevKeyState, prevKeyState + 256, 0x80); });
-		th_a.join();
-		th_b.join();
-		if (push > prev)
+		bool Add()
 		{
-			return true;
+			int push, prev;
+			std::thread th_a([&] { push = (int)std::count(keyState, keyState + 256, 0x80); });
+			std::thread th_b([&] { prev = (int)std::count(prevKeyState, prevKeyState + 256, 0x80); });
+			th_a.join();
+			th_b.join();
+			if (push > prev)
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
-	bool IsKeyRemove()
-	{
-		int push, prev;
-		std::thread th_a([&] { push = (int)std::count(keyState, keyState + 256, 0x80); });
-		std::thread th_b([&] { prev = (int)std::count(prevKeyState, prevKeyState + 256, 0x80); });
-		th_a.join();
-		th_b.join();
-		if (push < prev)
+		bool Remove()
 		{
-			return true;
+			int push, prev;
+			std::thread th_a([&] { push = (int)std::count(keyState, keyState + 256, 0x80); });
+			std::thread th_b([&] { prev = (int)std::count(prevKeyState, prevKeyState + 256, 0x80); });
+			th_a.join();
+			th_b.join();
+			if (push < prev)
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
 	}
 
 	///////////////////////////////////////////////////////マウス関連//////////////////////////////////////////////////
-
-	DirectX::XMFLOAT3 GetMousePosition()
+	namespace Mouse
 	{
-		return mousePosition;
-	}
+		DirectX::XMFLOAT3 GetPosition()
+		{
+			return mousePosition;
+		}
 
-	void SetMousePosition(int x, int y)
-	{
-		prevMousePosition = mousePosition;
-		mousePosition = DirectX::XMFLOAT3((float)x, (float)y, 0);
-	}
+		void SetPosition(int x, int y)
+		{
+			prevMousePosition = mousePosition;
+			mousePosition = DirectX::XMFLOAT3((float)x, (float)y, 0);
+		}
 
-	void SetMouseWheel(int r)
-	{
-		MouseWheel = r;
-	}
+		void SetWheel(int r)
+		{
+			MouseWheel = r;
+		}
 
-	int GetMouseWheel()
-	{
-		int r = MouseWheel;
-		MouseWheel = 0;
-		return r;
-	}
+		int GetWheel()
+		{
+			int r = MouseWheel;
+			MouseWheel = 0;
+			return r;
+		}
 
-	DirectX::XMFLOAT3 GetMouseMovement()
-	{
-		DirectX::XMFLOAT3 MouseMovement;
-		MouseMovement.x = mousePosition.x - prevMousePosition.x;
-		MouseMovement.y = mousePosition.y - prevMousePosition.y;
-		MouseMovement.z = mousePosition.z - prevMousePosition.z;
-		return MouseMovement;
-	}
+		DirectX::XMFLOAT3 GetMovement()
+		{
+			DirectX::XMFLOAT3 MouseMovement;
+			MouseMovement.x = mousePosition.x - prevMousePosition.x;
+			MouseMovement.y = mousePosition.y - prevMousePosition.y;
+			MouseMovement.z = mousePosition.z - prevMousePosition.z;
+			return MouseMovement;
+		}
 
-	bool IsMouseMove()
-	{
-		DirectX::XMFLOAT3 MouseMovement;
-		MouseMovement.x = mousePosition.x - prevMousePosition.x;
-		MouseMovement.y = mousePosition.y - prevMousePosition.y;
-		MouseMovement.z = mousePosition.z - prevMousePosition.z;
-		if (MouseMovement.x == 0 && MouseMovement.y == 0 && MouseMovement.z == 0) {
+		bool IsMove()
+		{
+			DirectX::XMFLOAT3 MouseMovement;
+			MouseMovement.x = mousePosition.x - prevMousePosition.x;
+			MouseMovement.y = mousePosition.y - prevMousePosition.y;
+			MouseMovement.z = mousePosition.z - prevMousePosition.z;
+			if (MouseMovement.x == 0 && MouseMovement.y == 0 && MouseMovement.z == 0) {
+				return false;
+			}
+			return true;
+		}
+
+		bool IsPush(int mouseBotton)
+		{
+			if (mouseState.rgbButtons[mouseBotton] & 0x80)	//16進数80との論理積
+			{
+				return true;
+			}
 			return false;
 		}
-		return true;
-	}
 
-	bool IsMouse(int mouseBotton)
-	{
-		if (mouseState.rgbButtons[mouseBotton] & 0x80)	//16進数80との論理積
+		bool Down(int mouseBotton)
 		{
-			return true;
+			if (IsPush(mouseBotton) && !(prevMouseState.rgbButtons[mouseBotton] & 0x80))
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
-	bool IsMouseDown(int mouseBotton)
-	{
-		if (IsMouse(mouseBotton) && !(prevMouseState.rgbButtons[mouseBotton] & 0x80))
+		bool Up(int mouseBotton)
 		{
-			return true;
+			if (!IsPush(mouseBotton) && prevMouseState.rgbButtons[mouseBotton] & 0x80)
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
-
-	bool IsMouseUp(int mouseBotton)
-	{
-		if (!IsMouse(mouseBotton) && prevMouseState.rgbButtons[mouseBotton] & 0x80)
-		{
-			return true;
-		}
-		return false;
 	}
 
 	//////////////////////////////////////////コントローラー////////////////////////////////////////////
-
-	bool IsCtrl(int ctrlBotton)
+	namespace Controller
 	{
-		if (controllerState_.Gamepad.wButtons & ctrlBotton)
+		bool IsPush(int ctrlBotton)
 		{
-			return true;
+			if (controllerState_.Gamepad.wButtons & ctrlBotton)
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
-	bool IsCtrlUp(int ctrlBotton)
-	{
-		if (IsCtrl(ctrlBotton) && !(prevControllerState_.Gamepad.wButtons & ctrlBotton))
+		bool Up(int ctrlBotton)
 		{
-			return true;
+			if (IsPush(ctrlBotton) && !(prevControllerState_.Gamepad.wButtons & ctrlBotton))
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
-	bool IsCtrlDown(int ctrlBotton)
-	{
-		if (!IsCtrl(ctrlBotton) && prevControllerState_.Gamepad.wButtons & ctrlBotton)
+		bool Down(int ctrlBotton)
 		{
-			return true;
+			if (!IsPush(ctrlBotton) && prevControllerState_.Gamepad.wButtons & ctrlBotton)
+			{
+				return true;
+			}
+			return false;
 		}
-		return false;
-	}
 
-	DirectX::XMFLOAT3 CtrlL_StickInclination()
-	{
-		if ((controllerState_.Gamepad.sThumbLX <  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
-			controllerState_.Gamepad.sThumbLX > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&
-			(controllerState_.Gamepad.sThumbLY <  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE&&
-			controllerState_.Gamepad.sThumbLY > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE))
+		DirectX::XMFLOAT3 Inclination_StickL()
 		{
-			controllerState_.Gamepad.sThumbLX = 0;
-			controllerState_.Gamepad.sThumbLY = 0;
+			if ((controllerState_.Gamepad.sThumbLX <  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+				controllerState_.Gamepad.sThumbLX > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&
+				(controllerState_.Gamepad.sThumbLY <  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+					controllerState_.Gamepad.sThumbLY > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE))
+			{
+				controllerState_.Gamepad.sThumbLX = 0;
+				controllerState_.Gamepad.sThumbLY = 0;
+			}
+			float x = (float)controllerState_.Gamepad.sThumbLX / 32767.0f;
+			float y = (float)controllerState_.Gamepad.sThumbLY / 32767.0f;
+			return DirectX::XMFLOAT3(x, y, 0);
 		}
-		float x = (float)controllerState_.Gamepad.sThumbLX / 32767.0f;
-		float y = (float)controllerState_.Gamepad.sThumbLY / 32767.0f;
-		return DirectX::XMFLOAT3(x, y, 0);
-	}
 
-	DirectX::XMFLOAT3 CtrlR_StickInclination()
-	{
-		if ((controllerState_.Gamepad.sThumbRX <  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
-			controllerState_.Gamepad.sThumbRX > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) &&
-			(controllerState_.Gamepad.sThumbRY <  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
-				controllerState_.Gamepad.sThumbRY > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE))
+		DirectX::XMFLOAT3 Inclination_StickR()
 		{
-			controllerState_.Gamepad.sThumbRX = 0;
-			controllerState_.Gamepad.sThumbRY = 0;
+			if ((controllerState_.Gamepad.sThumbRX <  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
+				controllerState_.Gamepad.sThumbRX > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) &&
+				(controllerState_.Gamepad.sThumbRY <  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
+					controllerState_.Gamepad.sThumbRY > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE))
+			{
+				controllerState_.Gamepad.sThumbRX = 0;
+				controllerState_.Gamepad.sThumbRY = 0;
+			}
+			float x = (float)controllerState_.Gamepad.sThumbRX / 32767.0f;
+			float y = (float)controllerState_.Gamepad.sThumbRY / 32767.0f;
+			return DirectX::XMFLOAT3(x, y, 0);
 		}
-		float x = (float)controllerState_.Gamepad.sThumbRX / 32767.0f;
-		float y = (float)controllerState_.Gamepad.sThumbRY / 32767.0f;
-		return DirectX::XMFLOAT3(x, y, 0);
-	}
 
-	float CtrlTriggerInclination(BYTE Trigger)
-	{
-		float value = Trigger;
-		if (value < XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		float Inclination_Trigger(BYTE Trigger)
 		{
-			value = 0.0f;
+			float value = Trigger;
+			if (value < XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+			{
+				value = 0.0f;
+			}
+			value = value / 255;
+			return value;
 		}
-		value = value / 255;
-		return value;
 	}
 
 	void Release()

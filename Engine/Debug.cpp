@@ -60,17 +60,17 @@ namespace Debug
 		if (ImGui::Button("Save"))
 			Overwrite();
 
-		if (Input::IsMouse(0))
+		if (Input::Mouse::IsPush(0))
 		{
 			//マウスを左クリックした時点で選択している画像番号が入る
-			if (Input::IsMouseDown(0))
+			if (Input::Mouse::Down(0))
 			{
 				SelectingImage = Image::IsHitCursorAny();
 
 				if (SelectingImage != -1)
 				{
 					XMFLOAT3 iPos = Math::TransformToPixel(Image::GetPosition(SelectingImage));
-					XMFLOAT3 mPos = Input::GetMousePosition();
+					XMFLOAT3 mPos = Input::Mouse::GetPosition();
 					InitialPos = { mPos.x - iPos.x, mPos.y - iPos.y,0 };
 				}
 			}
@@ -78,7 +78,7 @@ namespace Debug
 			//何らかの画像を選択している場合
 			if (SelectingImage != -1)
 			{
-				pos = Input::GetMousePosition();
+				pos = Input::Mouse::GetPosition();
 				pos = { pos.x - InitialPos.x, pos.y - InitialPos.y, 0 };
 
 				//移動単位で調整
@@ -92,7 +92,7 @@ namespace Debug
 		}
 
 		//マウスを離した時にその画像の位置が一時保存される
-		if (Input::IsMouseUp(0))
+		if (Input::Mouse::Up(0))
 		{
 			if (SelectingImage != -1)
 			{
