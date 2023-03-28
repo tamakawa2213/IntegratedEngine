@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "CallDef.h"
+#include "Direct3D.h"
 
 namespace Model
 {
@@ -41,20 +42,20 @@ namespace Model
         FileSet[hModel]->transform = transform;
     }
 
-    void Model::Draw(int hModel, const Light* lightpos, char SHADER_TYPE)
+    void Model::Draw(int hModel, const Light* lightpos, SHADER_TYPE type)
     {
-        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos, SHADER_TYPE);
+        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos, type);
     }
 
-    void Draw(int hModel, Transform transform, const Light* lightpos, char SHADER_TYPE)
+    void Draw(int hModel, Transform transform, const Light* lightpos, SHADER_TYPE type)
     {
         FileSet[hModel]->transform = transform;
-        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos, SHADER_TYPE);
+        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos, type);
     }
 
-    void Draw(int hModel, XMFLOAT3 Chroma, float Bright, const Light* lightpos, char SHADER_TYPE)
+    void Draw(int hModel, XMFLOAT3 Chroma, float Bright, const Light* lightpos, SHADER_TYPE type)
     {
-        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, Chroma, Bright, FileSet[hModel]->Alpha, lightpos, SHADER_TYPE);
+        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, Chroma, Bright, FileSet[hModel]->Alpha, lightpos, type);
     }
 
     void Release()

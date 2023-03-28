@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #include <fbxsdk.h>
 #include <string>
+#include "Direct3D.h"
 #include "Light.h"
 #include "Transform.h"
 
@@ -69,8 +70,8 @@ public:
 	HRESULT IntConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
 	void RayCast(RayCastData& rayData);
-	void Draw(Transform& transform, float Alpha, const Light *lightpos = nullptr, char SHADER_TYPE = 1);
-	void Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos = nullptr, char SHADER_TYPE = 1);	//transform, RGBの値, 明度(0 ～255)
+	void Draw(Transform& transform, float Alpha, const Light *lightpos, SHADER_TYPE TYPE);
+	void Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos, SHADER_TYPE TYPE);	//transform, RGBの値, 明度(0 ～255)
 	void Release();
 
 	void SetTexture(const Texture* tex);

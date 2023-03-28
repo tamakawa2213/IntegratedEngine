@@ -33,5 +33,6 @@ public:
 	//法線変形用行列を取得
 	XMMATRIX GetNormalMatrix();
 
+	//指定した座標に向けて回転させる
 	void LookAt(XMFLOAT3 target);
 };

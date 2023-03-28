@@ -18,9 +18,9 @@ namespace Model
 {
 	int Load(std::string filename);
 	void SetTransform(int hModel, Transform transform);
-	void Draw(int hModel, const Light* lightpos = nullptr, char SHADER_TYPE = 1);
-	void Draw(int hModel, Transform transform, const Light* lightpos = nullptr, char SHADER_TYPE = 1);
-	void Draw(int hModel, XMFLOAT3 Chroma, float Bright, const Light* lightpos = nullptr, char SHADER_TYPE = 1);
+	void Draw(int hModel, const Light* lightpos = nullptr, SHADER_TYPE type = SHADER_TYPE::Dimension3);
+	void Draw(int hModel, Transform transform, const Light* lightpos = nullptr, SHADER_TYPE type = SHADER_TYPE::Dimension3);
+	void Draw(int hModel, XMFLOAT3 Chroma, float Bright, const Light* lightpos = nullptr, SHADER_TYPE type = SHADER_TYPE::Dimension3);
 
 	void Release();
 

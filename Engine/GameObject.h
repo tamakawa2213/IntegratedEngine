@@ -43,10 +43,10 @@ public:
 	void SetPosition(XMFLOAT3 position) { transform_.position_ = position; }
 	void SetRotate(XMFLOAT3 rotate) { transform_.rotate_ = rotate; }
 	void SetScale(XMFLOAT3 scale) { transform_.scale_ = scale; }
-	XMFLOAT3 GetPosition() { return transform_.position_; }
-	XMFLOAT3 GetRotate() { return transform_.rotate_; }
-	XMFLOAT3 GetScale() { return transform_.scale_; }
-	Transform GetTransform() { return transform_; }
+	const XMFLOAT3 GetPosition() { return transform_.position_; }
+	const XMFLOAT3 GetRotate() { return transform_.rotate_; }
+	const XMFLOAT3 GetScale() { return transform_.scale_; }
+	const Transform GetTransform() { return transform_; }
 
 	///////////////////////////////////////////オブジェクトを消滅させるセット///////////////////////////////////////////////////
 	void KillMe() { KILL = true; }							//これが呼ばれたら該当オブジェクトは消滅
@@ -54,11 +54,11 @@ public:
 	void KillAllChildren(GameObject* object);				//引数で受け取ったオブジェクトの子オブジェクトを消滅させる
 
 	/////////////////////////////////////////////何かしら取得するもの///////////////////////////////////////////////////////////
-	GameObject* FindChildObject(std::string ObjectName);	//引数で受け取った名前と同じ名前のオブジェクトが自身の子供にいないか検索する関数
-	GameObject* GetRootJob();								//RootJobを探す関数
-	GameObject* FindObject(std::string ObjectName);			//引数で受け取った名前と同じ名前のオブジェクトを探す関数
-	std::string GetObjectName() { return objectName_; }		//オブジェクトの名前を取得
-	GameObject* GetParent() { return pParent_; }			//親アドレスを取得
+	GameObject* FindChildObject(std::string ObjectName);		//引数で受け取った名前と同じ名前のオブジェクトが自身の子供にいないか検索する関数
+	GameObject* GetRootJob();									//RootJobを探す関数
+	GameObject* FindObject(std::string ObjectName);				//引数で受け取った名前と同じ名前のオブジェクトを探す関数
+	const std::string GetObjectName() { return objectName_; }	//オブジェクトの名前を取得
+	GameObject* GetParent() { return pParent_; }				//親アドレスを取得
 	bool HasChild();
 
 	///////////////////////////////////////////////////Collision関係////////////////////////////////////////////////////////////

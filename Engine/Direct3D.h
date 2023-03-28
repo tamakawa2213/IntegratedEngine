@@ -5,7 +5,6 @@
 #include <assert.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
-#include <iterator>
 
 using namespace DirectX;
 
@@ -13,13 +12,13 @@ using namespace DirectX;
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-enum SHADER_TYPE {
-	SHADER_2D = 0,	//2D用シェーダー
-	SHADER_3D,		//3D用シェーダー
-	SHADER_POINT,	//点光源シェーダー
-	SHADER_FOG,		//フォグ(霧)
-	SHADER_BILLBOARD,
-	SHADER_MAX	//これは使わない
+enum class SHADER_TYPE {
+	Dimension2 = 0,	//2D用シェーダー
+	Dimension3,		//3D用シェーダー
+	POINT,			//点光源シェーダー
+	FOG,			//フォグ(霧)
+	BILLBOARD,
+	MAX				//これは使わない
 };
 
 enum VP_TYPE
@@ -59,13 +58,9 @@ namespace Direct3D
 
 	//シェーダー準備
 	HRESULT InitShader();
-	HRESULT InitShader2D();
-	HRESULT InitShader3D();
-	HRESULT InitShaderPoint();
-	HRESULT InitShaderFog();
-	HRESULT InitShaderBillboard();
+	
 
-	void SetShader(int type);
+	void SetShader(SHADER_TYPE type);
 
 	//描画開始
 	void BeginDraw();

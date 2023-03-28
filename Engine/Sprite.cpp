@@ -92,7 +92,7 @@ HRESULT Sprite::Load(LPCWSTR filename) {
 
 void Sprite::Draw(Transform& transform, float alpha)
 {
-	Direct3D::SetShader(SHADER_2D);
+	Direct3D::SetShader(SHADER_TYPE::Dimension2);
 	CONSTANT_BUFFER cb;
 
 	//行列の計算をして、ワールド行列を返す

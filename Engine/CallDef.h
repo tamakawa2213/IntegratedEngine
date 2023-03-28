@@ -13,7 +13,7 @@
 #define HR_FAILED_RELEASE(hr, text, p) if(FAILED(hr)){MessageBox(NULL, text, L"Error", MB_OKCANCEL); SAFE_RELEASE(p);return hr; }
 
 //シーン切り替えを行うマクロ
-#define SCENE_CHANGE(SCENE_ID) SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager"); pSceneManager->ChangeScene(SCENE_ID);
+#define SCENE_CHANGE(SCENE_ID) SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager"); pSceneManager->ChangeScene(SCENE_ID); SAFE_RELEASE(pSceneManager);
 
 //一定の範囲に収めるもの
 #define CLAMP(i, Min, Max) i = min(max( i, Min), Max);
