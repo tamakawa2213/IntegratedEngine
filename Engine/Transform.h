@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include "Position.h"
+#include "Scale.h"
 
 using namespace DirectX;
 
@@ -16,7 +17,7 @@ class Transform
 public:
 	Position position_;	//位置
 	XMFLOAT3 rotate_;	//向き
-	XMFLOAT3 scale_;	//拡大率
+	Scale scale_;		//拡大率
 	Transform* pParent_;
 
 	//コンストラクタ

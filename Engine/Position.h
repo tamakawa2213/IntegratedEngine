@@ -26,13 +26,13 @@ public:
 	Position& operator +=(DirectX::XMFLOAT3 fl);
 	Position& operator +=(Position& fl);
 	Position& operator -=(DirectX::XMFLOAT3 fl);
-	Position& operator -=(Position fl);
+	Position& operator -=(Position& fl);
 
 	//比較演算子のオーバーロード
 	bool operator ==(const DirectX::XMFLOAT3 fl) const;
 	bool operator ==(const Position& fl) const;
-	bool operator !=(DirectX::XMFLOAT3 fl) const;
-	bool operator !=(Position fl) const;
+	bool operator !=(const DirectX::XMFLOAT3 fl) const;
+	bool operator !=(const Position& fl) const;
 
 	//XMFLOAT3にキャスト可能にする
 	operator DirectX::XMFLOAT3() const;

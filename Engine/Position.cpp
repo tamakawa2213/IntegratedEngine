@@ -1,6 +1,6 @@
 #include "Position.h"
 
-Position::Position() : x(), y(), z()
+Position::Position() : x(0), y(0), z(0)
 {
 }
 
@@ -84,7 +84,7 @@ Position& Position::operator -=(DirectX::XMFLOAT3 fl)
 	return *this;
 }
 
-Position& Position::operator -=(Position fl)
+Position& Position::operator -=(Position& fl)
 {
 	x -= fl.x;
 	y -= fl.y;
@@ -102,12 +102,12 @@ bool Position::operator ==(const Position& fl) const
 	return (x == fl.x && y == fl.y && z == fl.z);
 }
 
-bool Position::operator !=(DirectX::XMFLOAT3 fl) const
+bool Position::operator !=(const DirectX::XMFLOAT3 fl) const
 {
 	return !(*this == fl);
 }
 
-bool Position::operator !=(Position fl) const
+bool Position::operator !=(const Position& fl) const
 {
 	return !(*this == fl);
 }
