@@ -42,6 +42,14 @@ Scale& Scale::operator=(const Scale& fl)
 	return *this;
 }
 
+Scale& Scale::operator=(const float i)
+{
+	x = i;
+	y = i;
+	z = i;
+	return *this;
+}
+
 Scale Scale::operator*=(const float i)
 {
 	x *= i;

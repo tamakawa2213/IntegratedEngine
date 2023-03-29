@@ -19,6 +19,7 @@ public:
 	//代入演算子のオーバーロード
 	Scale& operator =(const DirectX::XMFLOAT3 fl);
 	Scale& operator =(const Scale& fl);
+	Scale& operator =(const float i);
 
 	//複合代入演算子のオーバーロード
 	Scale operator *=(const float i);
