@@ -3,7 +3,7 @@
 #include "GameObject.h"
 
 Transform::Transform():matTranslate_(XMMatrixIdentity()),matRotate_(XMMatrixIdentity()),matScale_(XMMatrixIdentity()),
-position_(0, 0, 0), rotate_(), scale_(1, 1, 1), pParent_(nullptr)
+position_(), rotate_(), scale_(1, 1, 1), pParent_(nullptr)
 {
 }
 

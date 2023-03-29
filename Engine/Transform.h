@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include "Position.h"
 
 using namespace DirectX;
 
@@ -13,7 +14,7 @@ class Transform
 	XMMATRIX matScale_;		//Šg‘ås—ñ
 
 public:
-	XMFLOAT3 position_;	//ˆÊ’u
+	Position position_;	//ˆÊ’u
 	XMFLOAT3 rotate_;	//Œü‚«
 	XMFLOAT3 scale_;	//Šg‘å—¦
 	Transform* pParent_;
