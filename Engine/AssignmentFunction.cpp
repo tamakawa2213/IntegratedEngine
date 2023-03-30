@@ -23,16 +23,17 @@ AssignmentFunction::~AssignmentFunction()
 
 void AssignmentFunction::Update()
 {
-	for (auto itr = func_.begin(); itr != func_.end(); itr++)
+	//for (auto itr = func_.begin(); itr != func_.end(); itr++)
+	for (auto itr : func_)
 	{
 		//イテレータが指してる変数が0より大きい場合
-		if (*itr->first > 0)
+		if (*itr.first > 0)
 		{
 			//関連する関数を実行
-			(this->*func_.at((int)std::distance(func_.begin(), itr)).second)();
+			(this->*itr.second)();
 
 			//デクリメント
-			(*itr->first)--;
+			(*itr.first)--;
 		}
 	}
 	
