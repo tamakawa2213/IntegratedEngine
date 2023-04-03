@@ -18,9 +18,14 @@ namespace Time
 	void UnLock();
 
 	//ŒÄ‚Ño‚µ“_‚ÌŠÔ‚ğæ“¾
-	int GetTimei();
-	float GetTimef();
-	double GetTime();
+	int GetMilliSeconds();
+
+	template<typename T = int>
+	T GetSeconds()
+	{
+		return (T)GetMilliSeconds() / 1'000;
+	}
+	
 	int GetMinutes();
 	int GetHours();
 };

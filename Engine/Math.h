@@ -17,10 +17,10 @@ namespace Math
 
 	//ベクトルとポリゴンの当たり判定を行う関数
 	//第一引数 : ベクトルの始点　第二引数 : ベクトルの向き　第三～第五引数 : ポリゴンの各頂点
-	bool Intersect(XMFLOAT3 start, XMFLOAT3 dir, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2);
+	//bool Intersect(XMFLOAT3 start, XMFLOAT3 dir, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2);
 
 	//距離も返す当たり判定
-	bool Intersect(XMFLOAT3 start, XMFLOAT3 dir, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2, float* dist);
+	bool Intersect(XMFLOAT3 start, XMFLOAT3 dir, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2, float* dist = nullptr);
 
 	/// <summary>ウェーブレット関数を生成して指定した位置の値を返す関数</summary>
 	/// <param name="Incli">傾き</param>

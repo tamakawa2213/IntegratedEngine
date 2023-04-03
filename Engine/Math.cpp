@@ -16,7 +16,7 @@ namespace Math
             a.x * b.z * c.y;
     }
 
-    bool Intersect(XMFLOAT3 start, XMFLOAT3 dir, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2)
+   /* bool Intersect(XMFLOAT3 start, XMFLOAT3 dir, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2)
     {
         XMFLOAT3 a = XMFLOAT3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
         XMFLOAT3 b = XMFLOAT3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
@@ -32,7 +32,7 @@ namespace Math
             return true;
         }
         return false;
-    }
+    }*/
 
     bool Intersect(XMFLOAT3 start, XMFLOAT3 dir, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2, float* dist)
     {
@@ -47,12 +47,10 @@ namespace Math
         l = Det(a, b, d) / Det(a, b, dir);
         if (u + v <= 1 && l >= 0 && u >= 0 && v >= 0)
         {
-            if (*dist > l)
-            {
+            if (!dist && *dist > l)
                 *dist = l;
-                return true;
-            }
 
+            return true;
         }
         return false;
     }

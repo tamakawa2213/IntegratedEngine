@@ -42,18 +42,11 @@ namespace Time
 		Lock_ = false;
 	}
 
-	int GetTimei()
+	int GetMilliSeconds()
 	{
-		return (int)std::chrono::duration_cast<std::chrono::seconds>(MilliSeconds_).count();
+		return (int)MilliSeconds_.count();
 	}
-	float GetTimef()
-	{
-		return (float)MilliSeconds_.count() / 1000;
-	}
-	double GetTime()
-	{
-		return (double)MilliSeconds_.count() / 1000;
-	}
+
 	int GetMinutes()
 	{
 		return (int)std::chrono::duration_cast<std::chrono::minutes>(MilliSeconds_).count();
