@@ -1,13 +1,5 @@
 #include "Position.h"
 
-Position::Position() : x(0), y(0), z(0)
-{
-}
-
-Position::~Position()
-{
-}
-
 Position Position::operator +(DirectX::XMFLOAT3 fl)
 {
 	Position pos;

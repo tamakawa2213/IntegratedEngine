@@ -1,13 +1,5 @@
 #include "Scale.h"
 
-Scale::Scale() : x(1), y(1), z(1)
-{
-}
-
-Scale::~Scale()
-{
-}
-
 Scale Scale::operator*(const float i)
 {
 	Scale sc;

@@ -1,13 +1,9 @@
 #pragma once
 #include <DirectXMath.h>
 
-//拡大率に関する演算を実装したクラス
-class Scale
+//拡大率に関する演算を実装した構造体
+struct Scale
 {
-public:
-	Scale();
-	~Scale();
-
 	float x;
 	float y;
 	float z;
@@ -33,4 +29,8 @@ public:
 
 	//XMFLOAT3にキャスト可能にする
 	operator DirectX::XMFLOAT3() const;
+
+	Scale() : x(1), y(1), z(1) {}
+	Scale(DirectX::XMFLOAT3 fl) : x(fl.x), y(fl.y), z(fl.z) {}
+	Scale(float X, float Y, float Z) : x(X), y(Y), z(Z) {}
 };

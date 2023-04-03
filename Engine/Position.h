@@ -1,13 +1,9 @@
 #pragma once
 #include <DirectXMath.h>
 
-//位置に関する演算を実装したクラス
-class Position
+//位置に関する演算を実装した構造体
+struct Position
 {
-public:
-	Position();
-	~Position();
-
 	float x;
 	float y;
 	float z;
@@ -36,4 +32,8 @@ public:
 
 	//XMFLOAT3にキャスト可能にする
 	operator DirectX::XMFLOAT3() const;
+
+	Position() : x(0), y(0), z(0) {}
+	Position(DirectX::XMFLOAT3 fl) : x(fl.x), y(fl.y), z(fl.z) {}
+	Position(float X, float Y, float Z) : x(X), y(Y), z(Z) {}
 };
