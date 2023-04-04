@@ -3,6 +3,7 @@
 #include "CallDef.h"
 #include "Texture.h"
 #include "Math.h"
+#include <algorithm>
 
 Fbx::Fbx() :pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), pMaterialList_(nullptr), indexCount_(nullptr),
 vertexCount_(0), polygonCount_(0), materialCount_(0), pVertices_(nullptr), ppIndex_(nullptr)
@@ -69,7 +70,7 @@ HRESULT Fbx::Load(std::string fileName)
 void Fbx::InitVertex(fbxsdk::FbxMesh* pMesh)
 {
 	//頂点情報を入れる配列
-	pVertices_ = new VERTEX[vertexCount_];
+	pVertices_ = std::make_unique<VERTEX[]>(vertexCount_);
 
 	//全ポリゴン
 	for (DWORD poly = 0; poly < (unsigned)polygonCount_; poly++)
@@ -105,20 +106,20 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* pMesh)
 	bd_vertex.MiscFlags = 0;
 	bd_vertex.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA data_vertex;
-	data_vertex.pSysMem = pVertices_;
+	data_vertex.pSysMem = pVertices_.get();
 	Direct3D::pDevice->CreateBuffer(&bd_vertex, &data_vertex, &pVertexBuffer_);
 }
 
 void Fbx::InitIndex(fbxsdk::FbxMesh* pMesh)
 {
 	int VertexCount = polygonCount_ * 3;
-	pIndexBuffer_ = new ID3D11Buffer * [materialCount_];
-	indexCount_ = new int[materialCount_];
+	pIndexBuffer_ = std::make_unique<ID3D11Buffer*[]>(materialCount_);
+	indexCount_ = std::make_unique<int[]>(materialCount_);
 
-	ppIndex_ = new int* [materialCount_];
+	ppIndex_ = std::make_unique<std::unique_ptr<int[]>[]>(materialCount_);
 	for (int i = 0; i < materialCount_; i++)
 	{
-		ppIndex_[i] = new int[VertexCount];
+		ppIndex_[i] = std::make_unique<int[]>(VertexCount);
 	}
 
 	for (int i = 0; i < materialCount_; i++)
@@ -150,11 +151,11 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* pMesh)
 		bd.MiscFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA InitData;
-		InitData.pSysMem = ppIndex_[i];
+		InitData.pSysMem = ppIndex_[i].get();
 		InitData.SysMemPitch = 0;
 		InitData.SysMemSlicePitch = 0;
 		HRESULT hr;
-		hr = Direct3D::pDevice->CreateBuffer(&bd, &InitData, &pIndexBuffer_[i]);
+		hr = Direct3D::pDevice->CreateBuffer(&bd, &InitData, &pIndexBuffer_.get()[i]);
 		assert(hr == S_OK);
 	}
 }
@@ -177,7 +178,7 @@ HRESULT Fbx::IntConstantBuffer()
 
 void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 {
-	pMaterialList_ = new MATERIAL[materialCount_];
+	pMaterialList_ = std::make_unique<MATERIAL[]>(materialCount_);
 
 	for (int i = 0; i < materialCount_; i++)
 	{
@@ -205,12 +206,12 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			sprintf_s(name, "%s%s", name, ext);
 
 			//ファイルからテクスチャ作成
-			pMaterialList_[i].pTexture = new Texture;
+			pMaterialList_[i].pTexture = std::make_unique<Texture>();
 			wchar_t wtext[FILENAME_MAX];
 			size_t ret;
 			mbstowcs_s(&ret, wtext, name, strlen(textureFilePath));
 			HRESULT hr;
-			hr = pMaterialList_[i].pTexture->Load(wtext);
+			hr = pMaterialList_[i].pTexture.get()->Load(wtext);
 			assert(hr == S_OK);
 		}
 
@@ -233,11 +234,11 @@ void Fbx::RayCast(RayCastData& rayData)
 
 	for (int material = 0; material < materialCount_; material++)
 	{
-		for (int poly = 0; poly < indexCount_[material] / 3; poly++)
+		for (auto poly = 0; poly < indexCount_[material] / 3; poly++)
 		{
-			XMFLOAT3 v0; XMStoreFloat3(&v0, pVertices_[ppIndex_[material][poly * 3]].position);
-			XMFLOAT3 v1; XMStoreFloat3(&v1, pVertices_[ppIndex_[material][poly * 3 + 1]].position);
-			XMFLOAT3 v2; XMStoreFloat3(&v2, pVertices_[ppIndex_[material][poly * 3 + 2]].position);
+			XMFLOAT3 v0; XMStoreFloat3(&v0, pVertices_[ppIndex_[material][(long long)poly * 3]].position);
+			XMFLOAT3 v1; XMStoreFloat3(&v1, pVertices_[ppIndex_[material][(long long)poly * 3 + 1]].position);
+			XMFLOAT3 v2; XMStoreFloat3(&v2, pVertices_[ppIndex_[material][(long long)poly * 3 + 2]].position);
 			rayData.hit = Math::Intersect(rayData.start, rayData.dir, v0, v1, v2, &rayData.dist);
 
 			if (rayData.hit)
@@ -266,10 +267,10 @@ void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha,
 
 	for (int i = 0; i < materialCount_; i++)
 	{
-		CLAMP(Chroma.x, 0, 1);
-		CLAMP(Chroma.y, 0, 1);
-		CLAMP(Chroma.z, 0, 1);
-		CLAMP(Alpha, 0, 1);
+		Chroma.x = std::clamp(Chroma.x, 0.0f, 1.0f);
+		Chroma.y = std::clamp(Chroma.y, 0.0f, 1.0f);
+		Chroma.z = std::clamp(Chroma.z, 0.0f, 1.0f);
+		Alpha = std::clamp(Alpha, 0.0f, 1.0f);
 
 		CONSTANT_BUFFER cb;
 		transform.Calclation();
@@ -321,7 +322,7 @@ void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha,
 		//インデックスバッファをセット
 		stride = sizeof(int);
 		offset = 0;
-		Direct3D::pContext->IASetIndexBuffer(pIndexBuffer_[i], DXGI_FORMAT_R32_UINT, 0);
+		Direct3D::pContext->IASetIndexBuffer(pIndexBuffer_.get()[i], DXGI_FORMAT_R32_UINT, 0);
 
 		//コンスタントバッファ
 		Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
@@ -333,17 +334,7 @@ void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha,
 
 void Fbx::Release()
 {
-	for (int i = 0; i < materialCount_; i++)
-	{
-		SAFE_DELETE_ARRAY(ppIndex_);
-	}
-	SAFE_DELETE_ARRAY(ppIndex_);
-	SAFE_DELETE_ARRAY(pVertices_);
 	SAFE_RELEASE(pConstantBuffer_);
-	for (int i = 0; i < materialCount_; i++) {
-		SAFE_DELETE_ARRAY(pIndexBuffer_);
-	}
-	SAFE_DELETE_ARRAY(pIndexBuffer_);
 	SAFE_RELEASE(pVertexBuffer_);
 }
 
@@ -351,7 +342,7 @@ void Fbx::SetTexture(const Texture* tex)
 {
 	for (int i = 0; i < materialCount_; i++)
 	{
-		pMaterialList_[i].pTexture = (Texture*)tex;
+		pMaterialList_[i].pTexture.reset((Texture*)tex);
 	}
 }
 
@@ -367,9 +358,9 @@ XMVECTOR Fbx::NormalDotLight(Transform tr)
 		for (int poly = 0; poly < indexCount_[material] / 3; poly++)
 		{
 			XMVECTOR v[3], cross;
-			v[0] = pVertices_[ppIndex_[material][poly * 3]].position;
-			v[1] = pVertices_[ppIndex_[material][poly * 3 + 1]].position;
-			v[2] = pVertices_[ppIndex_[material][poly * 3 + 2]].position;
+			v[0] = pVertices_[ppIndex_[material][(long long)poly * 3]].position;
+			v[1] = pVertices_[ppIndex_[material][(long long)poly * 3 + 1]].position;
+			v[2] = pVertices_[ppIndex_[material][(long long)poly * 3 + 2]].position;
 			
 			cross = XMVector3Cross(v[2] - v[0], v[1] - v[0]);
 			cross = XMVector3Normalize(cross);

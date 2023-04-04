@@ -2,6 +2,7 @@
 
 #include <d3d11.h>
 #include <fbxsdk.h>
+#include <memory>
 #include <string>
 #include "Direct3D.h"
 #include "Light.h"
@@ -30,8 +31,8 @@ class Fbx
 	//マテリアル
 	struct MATERIAL
 	{
-		Texture* pTexture;
-		XMFLOAT4 diffuse;
+		std::unique_ptr<Texture> pTexture;
+		XMFLOAT4 diffuse = {};
 	};
 	struct CONSTANT_BUFFER
 	{
@@ -52,15 +53,15 @@ class Fbx
 	};
 
 	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
-	ID3D11Buffer** pIndexBuffer_;	//インデックスバッファ
+	std::unique_ptr<ID3D11Buffer*[]> pIndexBuffer_;	//インデックスバッファ
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
-	MATERIAL* pMaterialList_;
-	int* indexCount_;
+	std::unique_ptr<MATERIAL[]> pMaterialList_;
+	std::unique_ptr<int[]> indexCount_;
 	int vertexCount_;	//頂点数
 	int polygonCount_;	//ポリゴン数
 	int materialCount_;	//マテリアルの個数
-	VERTEX* pVertices_;	//頂点情報を持つ構造体のポインタ
-	int** ppIndex_;
+	std::unique_ptr<VERTEX[]> pVertices_;	//頂点情報を持つ構造体のポインタ
+	std::unique_ptr<std::unique_ptr<int[]>[]> ppIndex_;
 public:
 	Fbx();
 	~Fbx();

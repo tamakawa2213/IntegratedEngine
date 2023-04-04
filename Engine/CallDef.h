@@ -8,15 +8,12 @@
 #define SAFE_RELEASE(p) if(p != nullptr){ p->Release(); p = nullptr;}
 
 //HRESULTが失敗したときにReleaseなしで呼び出すマクロ
-#define HR_FAILED(hr, text) if(FAILED(hr)){MessageBox(NULL, text, L"Error", MB_OKCANCEL);return hr; }
+#define HR_FAILED(hr, text) if(FAILED(hr)) [[unlikely]] {MessageBox(NULL, text, L"Error", MB_OKCANCEL);return hr; }
 //HRESULTが失敗したときにReleaseありで呼び出すマクロ
-#define HR_FAILED_RELEASE(hr, text, p) if(FAILED(hr)){MessageBox(NULL, text, L"Error", MB_OKCANCEL); SAFE_RELEASE(p);return hr; }
+#define HR_FAILED_RELEASE(hr, text, p) if(FAILED(hr)) [[unlikely]] {MessageBox(NULL, text, L"Error", MB_OKCANCEL); SAFE_RELEASE(p);return hr; }
 
 //シーン切り替えを行うマクロ
 #define SCENE_CHANGE(SCENE_ID) SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager"); pSceneManager->ChangeScene(SCENE_ID); SAFE_RELEASE(pSceneManager);
-
-//一定の範囲に収めるもの
-#define CLAMP(i, Min, Max) i = min(max( i, Min), Max);
 
 //モデルをロードするもの
 //引数 : 格納したいモデル番号 ファイル名

@@ -47,7 +47,7 @@ namespace Math
         l = Det(a, b, d) / Det(a, b, dir);
         if (u + v <= 1 && l >= 0 && u >= 0 && v >= 0)
         {
-            if (!dist && *dist > l)
+            if (dist && *dist > l)
                 *dist = l;
 
             return true;
@@ -87,7 +87,7 @@ namespace Math
     float Wavelet(float Incli, float Coord)
     {
         //-1Ç©ÇÁ1Ç…é˚ÇﬂÇÈ
-        CLAMP(Coord, -1, 1);
+        Coord = std::clamp(Coord, -1.0f, 1.0f);
 
         //àÍéüä÷êîy = ax
         float y = Incli * Coord;
@@ -216,7 +216,7 @@ namespace Math
     float Func_Cubic(float Coord)
     {
         //-1Ç©ÇÁ1Ç…é˚ÇﬂÇÈ
-        CLAMP(Coord, -1, 1);
+        Coord = std::clamp(Coord, -1.0f, 1.0f);
 
         return 1 - (3 * Coord * Coord) + (2 * fabsf(powf(Coord, 3)));
     }

@@ -25,7 +25,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 	IWICBitmapFrameDecode* pFrame = nullptr;
 	IWICFormatConverter* pFormatConverter = nullptr;
 	hr = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, reinterpret_cast<void**>(&pFactory));
-	if(FAILED(hr)) {
+	if(FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
 		SAFE_RELEASE(pDecoder);
@@ -33,7 +33,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 		return hr;
 	}
 	hr = pFactory->CreateDecoderFromFilename(fileName, NULL, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pDecoder);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
 		SAFE_RELEASE(pDecoder);
@@ -41,7 +41,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 		return hr;
 	}
 	hr = pDecoder->GetFrame(0, &pFrame);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
 		SAFE_RELEASE(pDecoder);
@@ -49,7 +49,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 		return hr;
 	}
 	hr = pFactory->CreateFormatConverter(&pFormatConverter);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
 		SAFE_RELEASE(pDecoder);
@@ -57,7 +57,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 		return hr;
 	}
 	hr = pFormatConverter->Initialize(pFrame, GUID_WICPixelFormat32bppRGBA, WICBitmapDitherTypeNone, NULL, 1.0f, WICBitmapPaletteTypeMedianCut);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
 		SAFE_RELEASE(pDecoder);
@@ -67,7 +67,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 
 	//画像サイズを取得
 	hr = pFormatConverter->GetSize(&imgWidth_, &imgHeight_);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
 		SAFE_RELEASE(pDecoder);
@@ -91,7 +91,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 	texdec.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	texdec.MiscFlags = 0;
 	hr = Direct3D::pDevice->CreateTexture2D(&texdec, nullptr, &pTexture);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pTexture);
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
@@ -103,7 +103,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 	//テクスチャをデバイスコンテキストに渡す
 	D3D11_MAPPED_SUBRESOURCE hMappedres;
 	hr = Direct3D::pContext->Map(pTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &hMappedres);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pTexture);
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
@@ -112,7 +112,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 		return hr;
 	}
 	hr = pFormatConverter->CopyPixels(nullptr, imgWidth_ * 4, imgWidth_ * imgHeight_ * 4, (BYTE*)hMappedres.pData);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pTexture);
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
@@ -130,7 +130,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 	SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	hr = Direct3D::pDevice->CreateSamplerState(&SamDesc, &pSampler_);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pTexture);
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
@@ -145,7 +145,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 	srv.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srv.Texture2D.MipLevels = 1;
 	hr = Direct3D::pDevice->CreateShaderResourceView(pTexture, &srv, &pSRV_);
-	if (FAILED(hr)) {
+	if (FAILED(hr)) [[unlikely]] {
 		SAFE_RELEASE(pTexture);
 		SAFE_RELEASE(pFormatConverter);
 		SAFE_RELEASE(pFrame);
