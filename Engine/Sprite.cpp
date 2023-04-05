@@ -15,7 +15,7 @@ Sprite::~Sprite()
 }
 
 
-HRESULT Sprite::Initialize(LPCWSTR filename)
+HRESULT Sprite::Initialize(const LPCWSTR& filename)
 {
 	HRESULT hr;
 
@@ -64,7 +64,7 @@ HRESULT Sprite::Initialize(LPCWSTR filename)
 	return hr;
 }
 
-HRESULT Sprite::ConBuf(LPCWSTR filename) {
+HRESULT Sprite::ConBuf(const LPCWSTR& filename) {
 	HRESULT hr;
 	//コンスタントバッファ作成
 	D3D11_BUFFER_DESC cb;
@@ -77,13 +77,13 @@ HRESULT Sprite::ConBuf(LPCWSTR filename) {
 	hr = Direct3D::pDevice->CreateBuffer(&cb, nullptr, &pConstantBuffer_);
 	HR_FAILED(hr, L"コンスタントバッファの作成に失敗しました");
 
-	pTexture_ = new Texture;
+	pTexture_ = std::make_unique<Texture>();
 	hr = Load(filename);
 
 	return hr;
 }
 
-HRESULT Sprite::Load(LPCWSTR filename) {
+HRESULT Sprite::Load(const LPCWSTR& filename) {
 	HRESULT hr;
 	//テクスチャをロード
 	hr = pTexture_->Load(filename);
@@ -132,7 +132,6 @@ void Sprite::Draw(Transform& transform, float alpha)
 void Sprite::Release()
 {
 	SAFE_RELEASE(pTexture_);
-	SAFE_DELETE(pTexture_);	//newしたのでDELETEも行う
 	SAFE_RELEASE(pConstantBuffer_);
 	SAFE_RELEASE(pIndexBuffer_);
 	SAFE_RELEASE(pVertexBuffer_);

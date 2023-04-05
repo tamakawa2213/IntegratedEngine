@@ -1,7 +1,7 @@
 #include "SphereCollider.h"
 #include "GameObject.h"
 
-SphereCollider::SphereCollider(XMFLOAT3 position, float Radius) : Radius_(Radius), pGameObject_(nullptr)
+SphereCollider::SphereCollider(const XMFLOAT3& position, float Radius) : Radius_(Radius), pGameObject_(nullptr)
 {
 }
 

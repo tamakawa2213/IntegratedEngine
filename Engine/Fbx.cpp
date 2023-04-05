@@ -15,7 +15,7 @@ Fbx::~Fbx()
 	Release();
 }
 
-HRESULT Fbx::Load(std::string fileName)
+HRESULT Fbx::Load(const std::string& fileName)
 {
 	HRESULT hr;
 	//マネージャを生成
@@ -334,6 +334,10 @@ void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha,
 
 void Fbx::Release()
 {
+	for (int i = 0; i < materialCount_; i++)
+	{
+		SAFE_RELEASE(pIndexBuffer_[i]);
+	}
 	SAFE_RELEASE(pConstantBuffer_);
 	SAFE_RELEASE(pVertexBuffer_);
 }
@@ -346,7 +350,7 @@ void Fbx::SetTexture(const Texture* tex)
 	}
 }
 
-XMVECTOR Fbx::NormalDotLight(Transform tr)
+XMVECTOR Fbx::NormalDotLight(Transform& tr)
 {
 	XMMATRIX matInv = XMMatrixInverse(nullptr, tr.GetWorldMatrix());
 	float dot = 0.0f;

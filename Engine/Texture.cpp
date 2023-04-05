@@ -15,7 +15,7 @@ Texture::~Texture()
 	Release();
 }
 
-HRESULT Texture::Load(LPCWSTR fileName)
+HRESULT Texture::Load(const LPCWSTR& fileName)
 {
 	HRESULT hr;
 
@@ -164,7 +164,7 @@ HRESULT Texture::Load(LPCWSTR fileName)
 	return hr;
 }
 
-HRESULT Texture::Load(std::string fileName)
+HRESULT Texture::Load(const std::string& fileName)
 {
 	wchar_t file[CHAR_MAX];
 	size_t ret;

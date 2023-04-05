@@ -3,10 +3,21 @@
 #include "Input.h"
 #include "IniOperator.h"
 #include "Math.h"
+#include <memory>
 
 namespace
 {
-    std::vector<ImageSet*> FileSet;      //Fbxの構造体の動的配列
+    struct ImageSet
+    {
+        std::unique_ptr<Sprite> pSprite;	//Spriteのポインタ
+        Transform transform;		//transformクラス
+        std::string FileName;	//ファイルの名前
+        bool FindFbx;		//Fbxファイルを事前にロードしているか
+        float Alpha;			//画像の透明度
+
+        ImageSet() : pSprite(nullptr), transform(), FileName(), FindFbx(false), Alpha(1.0f) {}
+    };
+    std::vector<std::shared_ptr<ImageSet>> FileSet;      //Fbxの構造体の動的配列
 }
 
 namespace Image
@@ -16,10 +27,10 @@ namespace Image
 
 namespace Image
 {
-    int Load(std::string filename)
+    int Load(const std::string& filename)
     {
         HRESULT hr;
-        ImageSet* File = new ImageSet;
+        std::shared_ptr<ImageSet> File = std::make_shared<ImageSet>();
         File->FileName = filename;
 
         wchar_t file[CHAR_MAX];
@@ -27,35 +38,31 @@ namespace Image
         mbstowcs_s(&ret, file, filename.c_str(), filename.length());
 
         //同じファイルを使っていないか検索
-        auto itr = std::find(FileSet.begin(), FileSet.end(), File);
-        if (itr != end(FileSet))
+        if (auto itr = std::find(FileSet.begin(), FileSet.end(), File); itr != end(FileSet))
         {
             //同じ名前のファイルをすでにロードしていた場合
-            File->pSprite = (*itr)->pSprite;
-            File->FindFbx = true;
+            (*itr)->FindFbx = true;
             return (int)std::distance(FileSet.begin(), itr);
         }
         
         //見つからなかった場合、新しくロードする
-        File->pSprite = new Sprite;
+        File->pSprite = std::make_unique<Sprite>();
         hr = File->pSprite->Initialize(file);
         if (FAILED(hr)) //ロードに失敗した場合
         {
-            SAFE_DELETE(File->pSprite);
-            SAFE_DELETE(File);
             return -1;
         }
-        FileSet.push_back(File);
+        FileSet.push_back(std::move(File));
         CallStatus((int)FileSet.size() - 1);
         return (int)FileSet.size() - 1;
     }
 
-    void SetTransform(int hPict, Transform transform)
+    void SetTransform(int hPict, const Transform& transform)
     {
         FileSet[hPict]->transform = transform;
     }
 
-    void SetPosition(int hPict, XMFLOAT3 pos)
+    void SetPosition(int hPict, const XMFLOAT3& pos)
     {
         FileSet[hPict]->transform.position_ = pos;
     }
@@ -103,14 +110,6 @@ namespace Image
 
     void Release()
     {
-        for (auto i : FileSet)
-        {
-            if (!i->FindFbx)
-            {
-                SAFE_DELETE(i->pSprite);
-            }
-            SAFE_DELETE(i);
-        }
         FileSet.clear();
     }
 

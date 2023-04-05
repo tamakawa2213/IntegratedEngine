@@ -1,73 +1,77 @@
 #include "Model.h"
 #include "CallDef.h"
 #include "Direct3D.h"
+#include <memory>
+#include <vector>
 
+namespace
+{
+    struct Fileset
+    {
+        std::unique_ptr<Fbx> pFbx;	//Fbxのポインタ
+        Transform transform;		//transformクラス
+        std::string FileName;		//ファイルの名前
+        bool FindFbx;	        	//Fbxファイルを事前にロードしているか
+        float Alpha;		    	//モデルの透明度
+
+        Fileset() : pFbx(nullptr), transform(), FileName(), FindFbx(false), Alpha(1.0f) {}
+    };
+    std::vector<std::shared_ptr<Fileset>> FileSet;      //Fbxの構造体の動的配列
+}
 namespace Model
 {
-    std::vector<Fileset*> FileSet;      //Fbxの構造体の動的配列
 
-    int Model::Load(std::string filename)
+    int Load(const std::string& filename)
     {
         HRESULT hr;
-        Fileset* File = new Fileset;
+        std::shared_ptr<Fileset> File = std::make_shared<Fileset>();
         File->FileName = filename;
 
-        auto itr = std::find(FileSet.begin(), FileSet.end(), File);
+        
         //同じ名前のファイルをすでにロードしていた場合
-        if (itr != FileSet.end())
+        if (auto itr = std::find(FileSet.begin(), FileSet.end(), File); itr != FileSet.end())
         {
-            File->pFbx = (*itr)->pFbx;
-            File->FindFbx = true;
+            (*itr)->FindFbx = true;
             return (int)std::distance(FileSet.begin(), itr);
         }
         //見つからなかった場合、新しくロードする
         if (!File->FindFbx)
         {
-            File->pFbx = new Fbx;
+            File->pFbx = std::make_unique<Fbx>();
             hr = File->pFbx->Load(filename);
             if (FAILED(hr)) //ロードに失敗した場合
             {
-                SAFE_DELETE(File->pFbx);
-                SAFE_DELETE(File);
                 return -1;
             }
         }
 
-        FileSet.push_back(File);
+        FileSet.push_back(std::move(File));
         return (int)FileSet.size() - 1;
     }
 
-    void Model::SetTransform(int hModel, Transform transform)
+    void SetTransform(int hModel, const Transform& transform)
     {
         FileSet[hModel]->transform = transform;
     }
 
-    void Model::Draw(int hModel, const Light* lightpos, SHADER_TYPE type)
+    void Draw(int hModel, const Light* lightpos, SHADER_TYPE type)
     {
         FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos, type);
     }
 
-    void Draw(int hModel, Transform transform, const Light* lightpos, SHADER_TYPE type)
+    void Draw(int hModel, const Transform& transform, const Light* lightpos, SHADER_TYPE type)
     {
         FileSet[hModel]->transform = transform;
         FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos, type);
     }
 
-    void Draw(int hModel, XMFLOAT3 Chroma, float Bright, const Light* lightpos, SHADER_TYPE type)
+    void Draw(int hModel, const XMFLOAT3& Chroma, float Bright, const Light* lightpos, SHADER_TYPE type)
     {
         FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, Chroma, Bright, FileSet[hModel]->Alpha, lightpos, type);
     }
 
     void Release()
     {
-        for (auto i : FileSet)
-        {
-            if (!i->FindFbx)
-            {
-                SAFE_DELETE(i->pFbx);
-            }
-            SAFE_DELETE(i);
-        }
         FileSet.clear();
     }
 
@@ -95,9 +99,9 @@ namespace Model
 
     void AllAlterAlpha(float alpha)
     {
-        for (int i = 0; i < FileSet.size(); i++)
+        for (auto&& itr : FileSet)
         {
-            FileSet[i]->Alpha = alpha;
+            itr->Alpha = alpha;
         }
     }
 }

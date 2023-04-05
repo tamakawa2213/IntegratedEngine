@@ -1,6 +1,6 @@
 #include "GameTime.h"
-#include "../Graphics/imgui.h"
 #include "Debug.h"
+#include <imgui.h>
 
 namespace
 {

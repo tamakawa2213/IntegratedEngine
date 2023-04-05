@@ -72,7 +72,7 @@ class Text
     FontData* Setting = nullptr;
 
     //string->wstring変換
-    std::wstring StringToWString(std::string& str);
+    std::wstring StringToWString(const std::string& str);
 public:
     //デフォルトコンストラクタを制限
     Text() = delete;
@@ -99,7 +99,6 @@ public:
 
         //文字列の変換
         std::wstring wstr;
-        wstr.reserve(buf.size());
         wstr = StringToWString(buf);
 
         //ターゲットサイズの取得

@@ -1,18 +1,17 @@
 #include "Text.h"
 #include "CallDef.h"
 #include "Direct3D.h"
+#include <memory>
 
-std::wstring Text::StringToWString(std::string& str)
+std::wstring Text::StringToWString(const std::string& str)
 {
 	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, (wchar_t*)NULL, 0);
 
-	wchar_t* cpUCS2 = new wchar_t[iBufferSize];
+	std::unique_ptr<wchar_t[]> cpUCS2 = std::make_unique<wchar_t[]>(iBufferSize);
 
-	MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, cpUCS2, iBufferSize);
+	MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, cpUCS2.get(), iBufferSize);
 
-	std::wstring Ret(cpUCS2, cpUCS2 + iBufferSize - 1);
-
-	SAFE_DELETE_ARRAY(cpUCS2);
+	std::wstring Ret(std::move(cpUCS2.get()), cpUCS2.get() + iBufferSize - 1);
 
 	return Ret;
 }

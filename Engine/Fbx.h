@@ -65,7 +65,7 @@ class Fbx
 public:
 	Fbx();
 	~Fbx();
-	HRESULT Load(std::string fileName);
+	HRESULT Load(const std::string& fileName);
 	void InitVertex(fbxsdk::FbxMesh* pMesh);	//頂点バッファ準備
 	void InitIndex(fbxsdk::FbxMesh* pMesh);	//インデックスバッファ準備
 	HRESULT IntConstantBuffer();
@@ -77,5 +77,5 @@ public:
 
 	void SetTexture(const Texture* tex);
 
-	XMVECTOR NormalDotLight(Transform tr);
+	XMVECTOR NormalDotLight(Transform& tr);
 };

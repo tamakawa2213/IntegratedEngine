@@ -28,23 +28,23 @@ namespace Camera {
 	}
 
 	//à íuÇê›íË
-	void SetPosition(XMVECTOR position)
+	void SetPosition(const XMVECTOR& position)
 	{
 		position_ = position;
 	}
 
-	void SetPosition(XMFLOAT3 position)
+	void SetPosition(const XMFLOAT3& position)
 	{
 		position_ = XMLoadFloat3(&position);
 	}
 
 	//è≈ì_Çê›íË
-	void SetTarget(XMVECTOR target)
+	void SetTarget(const XMVECTOR& target)
 	{
 		target_ = target;
 	}
 
-	void SetTarget(XMFLOAT3 target)
+	void SetTarget(const XMFLOAT3& target)
 	{
 		target_ = XMLoadFloat3(&target);
 	}

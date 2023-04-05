@@ -4,20 +4,11 @@
 #include "Sprite.h"
 #include "Transform.h"
 
-struct ImageSet
-{
-	Sprite* pSprite = nullptr;	//Spriteのポインタ
-	Transform transform;		//transformクラス
-	std::string FileName = "";	//ファイルの名前
-	bool FindFbx = false;		//Fbxファイルを事前にロードしているか
-	float Alpha = 1.0f;			//画像の透明度
-};
-
 namespace Image
 {
-	int Load(std::string filename);
-	void SetTransform(int hPict, Transform transform);
-	void SetPosition(int hPict, XMFLOAT3 pos);
+	int Load(const std::string& filename);
+	void SetTransform(int hPict, const Transform& transform);
+	void SetPosition(int hPict, const XMFLOAT3& pos);
 
 	//指定した画像番号の位置を取得
 	XMFLOAT3 GetPosition(int hPict);

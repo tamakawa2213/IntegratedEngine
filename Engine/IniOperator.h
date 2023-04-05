@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <vector>
 
 //Iniファイルの読み込み/書き出しを管理する
 namespace IniOperator

@@ -24,14 +24,13 @@ void GameObject::UpdateSub()
 {
 	Update();
 
-	for (auto itr : childList_) {
+	for (auto&& itr : childList_) {
 		itr->UpdateSub();
 	}
 
 	for (auto itr = childList_.begin(); itr != childList_.end();) {
 		if ((*itr)->KILL) {
 			(*itr)->ReleaseSub();
-			SAFE_DELETE(*itr);
 			itr = childList_.erase(itr);
 		}
 		else {
@@ -55,14 +54,13 @@ void GameObject::FixedUpdateSub()
 	{
 		assFunc_.Update();
 
-		for (auto itr : childList_) {
+		for (auto&& itr : childList_) {
 			itr->FixedUpdateSub();
 		}
 
 		for (auto itr = childList_.begin(); itr != childList_.end();) {
 			if ((*itr)->KILL) {
 				(*itr)->ReleaseSub();
-				SAFE_DELETE(*itr);
 				itr = childList_.erase(itr);
 			}
 			else {
@@ -77,7 +75,7 @@ void GameObject::DrawSub()
 {
 	Draw();
 
-	for (auto itr : childList_) {
+	for (auto&& itr : childList_) {
 		itr->DrawSub();
 	}
 }
@@ -86,7 +84,7 @@ void GameObject::DrawUniqueSub()
 {
 	DrawUnique();
 
-	for (auto itr : childList_) {
+	for (auto&& itr : childList_) {
 		itr->DrawUniqueSub();
 	}
 }
@@ -95,7 +93,7 @@ void GameObject::ReleaseSub()
 {
 	Release();
 
-	for (auto itr : childList_) {
+	for (auto&& itr : childList_) {
 		itr->ReleaseSub();
 	}
 }
@@ -104,8 +102,7 @@ void GameObject::KillAllChildren()
 {
 	for (auto itr = childList_.begin(); itr != childList_.end();)
 	{
-		KillAllChildren(*itr);
-		SAFE_DELETE(*itr);
+		KillAllChildren((*itr).get());
 		itr = childList_.erase(itr);
 	}
 	childList_.clear();
@@ -115,27 +112,26 @@ void GameObject::KillAllChildren(GameObject* object)
 {
 	for (auto itr = object->childList_.begin(); itr != object->childList_.end();)
 	{
-		KillAllChildren(*itr);
-		SAFE_DELETE(*itr);
+		KillAllChildren((*itr).get());
 		itr = object->childList_.erase(itr);
 	}
 	object->childList_.clear();
 	SAFE_RELEASE(object);
 }
 
-GameObject* GameObject::FindChildObject(std::string ObjectName)
+GameObject* GameObject::FindChildObject(const std::string& ObjectName)
 {
-	for (auto itr : childList_)
+	for (auto&& itr : childList_)
 	{
 		if (itr->objectName_ == ObjectName)
 		{
 			//thisを返すと該当オブジェクトの親のアドレスが返ってきてしまう
-			return itr;
+			return itr.get();
 		}
 		else
 		{
 			GameObject* obj = itr->FindChildObject(ObjectName);
-			if (obj != nullptr)
+			if (obj)	//nullptrでなければ発見しているのでobjを返す
 			{
 				return obj;
 			}
@@ -146,7 +142,7 @@ GameObject* GameObject::FindChildObject(std::string ObjectName)
 
 GameObject* GameObject::GetRootJob()
 {
-	if (pParent_ != nullptr)
+	if (pParent_)
 	{
 		return pParent_->GetRootJob();
 	}
@@ -157,7 +153,7 @@ GameObject* GameObject::GetRootJob()
 	}
 }
 
-GameObject* GameObject::FindObject(std::string ObjectName)
+GameObject* GameObject::FindObject(const std::string& ObjectName)
 {
 	//RootJob(=全ての親)に戻り、そこから検索する
 	return GetRootJob()->FindChildObject(ObjectName);
@@ -193,7 +189,7 @@ void GameObject::Collision(GameObject* pTarget)
 		{
 			for (auto itr : pTarget->childList_)
 			{	//listの数だけ回帰処理
-				Collision(itr);
+				Collision(itr.get());
 			}
 		}
 	

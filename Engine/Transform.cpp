@@ -41,7 +41,7 @@ XMMATRIX Transform::GetNormalMatrix()
     return (XMMatrixInverse(nullptr, matScale_) * matRotate_);
 }
 
-void Transform::LookAt(XMFLOAT3 target)
+void Transform::LookAt(const XMFLOAT3& target)
 {
     float SightX = target.x - position_.x;
     float SightY = target.y - position_.y;

@@ -7,7 +7,7 @@
 #include "GameTime.h"
 #include "Math.h"
 #include "Text.h"
-#include "../Graphics/imgui.h"
+#include <imgui.h>
 #include <map>
 
 //外部から呼び出させない関数の前方宣言
@@ -39,7 +39,7 @@ namespace
 	};
 
 	DEBUG_MODE Mode = DEBUG_MODE::IMAGE_POSITIONING;	//現在のデバッグモード
-
+	
 	FontData* font;	//文字情報を格納する構造体
 	Text text(font);
 }

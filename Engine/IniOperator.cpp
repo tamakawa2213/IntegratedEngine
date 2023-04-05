@@ -1,6 +1,8 @@
 #include "IniOperator.h"
 #include <algorithm>
-#include <cstring>
+#include <string>
+#include <memory>
+#include <vector>
 #include <Windows.h>
 
 namespace
@@ -9,8 +11,10 @@ namespace
 	{
 		std::string FileName;		//開くファイルの名前
 		std::string SectionName;	//セクション名
+
+		ManagementSet() : FileName(), SectionName() {}
 	};
-	std::vector<ManagementSet*> SetList = {};	//ファイル名とセクション名のセットの配列
+	std::vector<std::shared_ptr<ManagementSet>> SetList = {};	//ファイル名とセクション名のセットの配列
 	std::string KeyName;	//キー名
 }
 
@@ -18,21 +22,17 @@ namespace IniOperator
 {
 	int AddList(std::string filename, std::string sectionname)
 	{
-		ManagementSet* List = new ManagementSet;
+		std::shared_ptr<ManagementSet> List = std::make_shared<ManagementSet>();
 		List->FileName = filename;
 		List->SectionName = sectionname;
-		for (auto itr = SetList.begin(); itr != SetList.end(); itr++)
+		if (auto itr = std::find(SetList.begin(), SetList.end(), List); itr != end(SetList))
 		{
-			//ファイル名、セクション名ともに一致していた場合
-			if (List->FileName == (*itr)->FileName && List->SectionName == (*itr)->SectionName)
-			{
-				//その番号を返す
-				return (int)std::distance(SetList.begin(), itr);
-			}
+			//その番号を返す
+			return (int)std::distance(SetList.begin(), itr);
 		}
 
 		//なければ追加
-		SetList.push_back(List);
+		SetList.push_back(std::move(List));
 		return (int)SetList.size() - 1;
 	}
 

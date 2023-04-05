@@ -35,5 +35,5 @@ public:
 	XMMATRIX GetNormalMatrix();
 
 	//w’è‚µ‚½À•W‚ÉŒü‚¯‚Ä‰ñ“]‚³‚¹‚é
-	void LookAt(XMFLOAT3 target);
+	void LookAt(const XMFLOAT3& target);
 };

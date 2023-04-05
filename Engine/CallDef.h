@@ -1,9 +1,5 @@
 #pragma once
 
-//DELETE処理を呼び出すマクロを作成
-#define SAFE_DELETE(p) if(p != nullptr){ delete p; p = nullptr;}
-//配列をDELETEするマクロ
-#define SAFE_DELETE_ARRAY(p) if(p != nullptr){ delete[] p; p = nullptr;}
 //RELEASEも同様にマクロ作成
 #define SAFE_RELEASE(p) if(p != nullptr){ p->Release(); p = nullptr;}
 

@@ -1,8 +1,8 @@
 //全てのゲームオブジェクトの親となるクラス
-
 #pragma once
 
 #include <list>
+#include <memory>
 #include <string>
 #include "AssignmentFunction.h"
 #include "CallDef.h"
@@ -18,7 +18,7 @@ class GameObject
 protected:
 	AssignmentFunction assFunc_;				//関数の指定回数実行クラス
 	Transform	transform_;						//Transform
-	std::list<GameObject*> childList_;			//ゲームオブジェクトのリスト構造
+	std::list<std::shared_ptr<GameObject>> childList_;			//ゲームオブジェクトのリスト構造
 	std::list<SphereCollider*> Colliderlist_;	//Colliderのリスト構造
 	SphereCollider* Collision_;					//Colliderのポインタ
 
@@ -40,12 +40,12 @@ public:
 	void ReleaseSub();
 
 	///////////////////////////////////////////transformに関するセッタ、ゲッタ//////////////////////////////////////////////////
-	void SetPosition(XMFLOAT3 position) { transform_.position_ = position; }
-	void SetRotate(XMFLOAT3 rotate) { transform_.rotate_ = rotate; }
-	void SetScale(XMFLOAT3 scale) { transform_.scale_ = scale; }
-	const XMFLOAT3 GetPosition() { return transform_.position_; }
+	void SetPosition(const Position& position) { transform_.position_ = position; }
+	void SetRotate(const XMFLOAT3& rotate) { transform_.rotate_ = rotate; }
+	void SetScale(const Scale& scale) { transform_.scale_ = scale; }
+	const Position GetPosition() { return transform_.position_; }
 	const XMFLOAT3 GetRotate() { return transform_.rotate_; }
-	const XMFLOAT3 GetScale() { return transform_.scale_; }
+	const Scale GetScale() { return transform_.scale_; }
 	const Transform GetTransform() { return transform_; }
 
 	///////////////////////////////////////////オブジェクトを消滅させるセット///////////////////////////////////////////////////
@@ -54,9 +54,9 @@ public:
 	void KillAllChildren(GameObject* object);				//引数で受け取ったオブジェクトの子オブジェクトを消滅させる
 
 	/////////////////////////////////////////////何かしら取得するもの///////////////////////////////////////////////////////////
-	GameObject* FindChildObject(std::string ObjectName);		//引数で受け取った名前と同じ名前のオブジェクトが自身の子供にいないか検索する関数
+	GameObject* FindChildObject(const std::string& ObjectName);		//引数で受け取った名前と同じ名前のオブジェクトが自身の子供にいないか検索する関数
 	GameObject* GetRootJob();									//RootJobを探す関数
-	GameObject* FindObject(std::string ObjectName);				//引数で受け取った名前と同じ名前のオブジェクトを探す関数
+	GameObject* FindObject(const std::string& ObjectName);				//引数で受け取った名前と同じ名前のオブジェクトを探す関数
 	const std::string GetObjectName() { return objectName_; }	//オブジェクトの名前を取得
 	GameObject* GetParent() { return pParent_; }				//親アドレスを取得
 	bool HasChild();
@@ -74,12 +74,12 @@ public:
 	template <class T>
 	T* Instantiate(GameObject* pParent)
 	{
-		T* pNewObject = new T(pParent);
+		std::shared_ptr<T> pNewObject = std::make_shared<T>(pParent);
 		if (pParent != nullptr)
 		{
 			pParent->childList_.push_back(pNewObject);
 		}
 		pNewObject->Initialize();
-		return pNewObject;
+		return pNewObject.get();
 	}
 };

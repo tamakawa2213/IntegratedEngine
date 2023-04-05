@@ -6,7 +6,7 @@
 
 namespace Math
 {
-    float Det(XMFLOAT3 a, XMFLOAT3 b, XMFLOAT3 c)
+    float Det(const XMFLOAT3& a, const XMFLOAT3& b, const XMFLOAT3& c)
     {
         return a.x * b.y * c.z +
             a.z * b.x * c.y +
@@ -16,35 +16,17 @@ namespace Math
             a.x * b.z * c.y;
     }
 
-   /* bool Intersect(XMFLOAT3 start, XMFLOAT3 dir, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2)
+    bool Intersect(const XMFLOAT3& start, const XMFLOAT3& dir, const XMFLOAT3& v0, const XMFLOAT3& v1, const XMFLOAT3& v2, float* dist)
     {
         XMFLOAT3 a = XMFLOAT3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
         XMFLOAT3 b = XMFLOAT3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
         XMFLOAT3 d = XMFLOAT3(start.x - v0.x, start.y - v0.y, start.z - v0.z);
-        dir = XMFLOAT3(-dir.x, -dir.y, -dir.z);
+        XMFLOAT3 Dir = XMFLOAT3(-dir.x, -dir.y, -dir.z);
 
         float u, v, l;
-        u = Det(d, b, dir) / Det(a, b, dir);
-        v = Det(a, d, dir) / Det(a, b, dir);
-        l = Det(a, b, d) / Det(a, b, dir);
-        if (u + v <= 1 && l >= 0 && u >= 0 && v >= 0)
-        {
-            return true;
-        }
-        return false;
-    }*/
-
-    bool Intersect(XMFLOAT3 start, XMFLOAT3 dir, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2, float* dist)
-    {
-        XMFLOAT3 a = XMFLOAT3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
-        XMFLOAT3 b = XMFLOAT3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
-        XMFLOAT3 d = XMFLOAT3(start.x - v0.x, start.y - v0.y, start.z - v0.z);
-        dir = XMFLOAT3(-dir.x, -dir.y, -dir.z);
-
-        float u, v, l;
-        u = Det(d, b, dir) / Det(a, b, dir);
-        v = Det(a, d, dir) / Det(a, b, dir);
-        l = Det(a, b, d) / Det(a, b, dir);
+        u = Det(d, b, Dir) / Det(a, b, Dir);
+        v = Det(a, d, Dir) / Det(a, b, Dir);
+        l = Det(a, b, d) / Det(a, b, Dir);
         if (u + v <= 1 && l >= 0 && u >= 0 && v >= 0)
         {
             if (dist && *dist > l)
@@ -55,7 +37,7 @@ namespace Math
         return false;
     }
 
-    bool SegmentToPlane(XMFLOAT3 segstart, XMFLOAT3 segend, XMFLOAT3 v0, XMFLOAT3 v1, XMFLOAT3 v2)
+    bool SegmentToPlane(const XMFLOAT3& segstart, const XMFLOAT3& segend, const XMFLOAT3& v0, const XMFLOAT3& v1, const XMFLOAT3& v2)
     {
         XMFLOAT3 a = XMFLOAT3(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z);
         XMFLOAT3 b = XMFLOAT3(v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
@@ -192,12 +174,12 @@ namespace Math
         return ans;
     }
 
-    float GetDistance(Transform tr1, Transform tr2)
+    float GetDistance(const Transform& tr1, const Transform& tr2)
     {
         return GetDistance(tr1.position_, tr2.position_);
     }
 
-    float GetDistance(XMFLOAT3 tr1, XMFLOAT3 tr2)
+    float GetDistance(const XMFLOAT3& tr1, const XMFLOAT3& tr2)
     {
         float ansX = tr1.x - tr2.x;
         float ansY = tr1.y - tr2.y;
@@ -208,7 +190,7 @@ namespace Math
         return sqrtf(ansX + ansY + ansZ);
     }
 
-    float GetDistanceSphere(XMFLOAT3 tr1, XMFLOAT3 tr2, float radius1, float radius2)
+    float GetDistanceSphere(const XMFLOAT3& tr1, const XMFLOAT3& tr2, float radius1, float radius2)
     {
         return max(GetDistance(tr1, tr2) - radius1 - radius2, 0);
     }
@@ -221,14 +203,14 @@ namespace Math
         return 1 - (3 * Coord * Coord) + (2 * fabsf(powf(Coord, 3)));
     }
 
-    void ArbRotationAxis(XMFLOAT3* pos, float rot, XMVECTOR axis, XMVECTOR end)
+    void ArbRotationAxis(XMFLOAT3* pos, float rot, XMVECTOR axis, const XMVECTOR& end)
     {
         //度数法→弧度法に変換
         float rad = XMConvertToRadians(rot);
 
         ArbRotationAxisR(pos, rad, axis, end);
     }
-    void ArbRotationAxisR(XMFLOAT3* pos, float rad, XMVECTOR axis, XMVECTOR end)
+    void ArbRotationAxisR(XMFLOAT3* pos, float rad, XMVECTOR axis, const XMVECTOR& end)
     {
         //endを原点に移動
         XMVECTOR vPos = XMLoadFloat3(pos);
@@ -264,7 +246,7 @@ namespace Math
         }
     }
 
-    XMFLOAT3 TransformToPixel(XMFLOAT3 transform)
+    XMFLOAT3 TransformToPixel(const XMFLOAT3& transform)
     {
         //position_を0~1に変更
         XMFLOAT3 pos = { (transform.x + 1) / 2, (-transform.y + 1) / 2, transform.z };
@@ -274,7 +256,7 @@ namespace Math
         return pos;
     }
 
-    XMFLOAT3 PixelToTransform(XMFLOAT3 pixel)
+    XMFLOAT3 PixelToTransform(const XMFLOAT3& pixel)
     {
         XMFLOAT3 pos = { pixel.x / Direct3D::scrWidth, pixel.y / Direct3D::scrHeight, pixel.z };
         pos = { pos.x * 2 - 1, -pos.y * 2 + 1, pos.z };
