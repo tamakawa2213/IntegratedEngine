@@ -10,12 +10,12 @@ namespace
     struct ImageSet
     {
         std::unique_ptr<Sprite> pSprite;	//Spriteのポインタ
-        Transform transform;		//transformクラス
-        std::string FileName;	//ファイルの名前
-        bool FindFbx;		//Fbxファイルを事前にロードしているか
-        float Alpha;			//画像の透明度
+        Transform transform;		        //transformクラス
+        std::string FileName;	            //ファイルの名前
+        float Alpha;			            //画像の透明度
 
-        ImageSet() : pSprite(nullptr), transform(), FileName(), FindFbx(false), Alpha(1.0f) {}
+        ImageSet() : pSprite(nullptr), transform(), FileName(), Alpha(1.0f) {}
+        ImageSet(const std::string& file) : pSprite(nullptr), transform(), FileName(file), Alpha(1.0f) {}
     };
     std::vector<std::shared_ptr<ImageSet>> FileSet;      //Fbxの構造体の動的配列
 }
@@ -29,9 +29,7 @@ namespace Image
 {
     int Load(const std::string& filename)
     {
-        HRESULT hr;
-        std::shared_ptr<ImageSet> File = std::make_shared<ImageSet>();
-        File->FileName = filename;
+        std::shared_ptr<ImageSet> File = std::make_shared<ImageSet>(filename);
 
         wchar_t file[CHAR_MAX];
         size_t ret;
@@ -41,14 +39,12 @@ namespace Image
         if (auto itr = std::find(FileSet.begin(), FileSet.end(), File); itr != end(FileSet))
         {
             //同じ名前のファイルをすでにロードしていた場合
-            (*itr)->FindFbx = true;
             return (int)std::distance(FileSet.begin(), itr);
         }
         
         //見つからなかった場合、新しくロードする
         File->pSprite = std::make_unique<Sprite>();
-        hr = File->pSprite->Initialize(file);
-        if (FAILED(hr)) //ロードに失敗した場合
+        if (FAILED(File->pSprite->Initialize(file))) //ロードに失敗した場合
         {
             return -1;
         }

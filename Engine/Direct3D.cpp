@@ -464,16 +464,20 @@ void Direct3D::EndDraw()
 //‰ğ•úˆ—
 void Direct3D::Release()
 {
-	for (int i = 0; i < (int)SHADER_TYPE::MAX; i++) {
-		SAFE_RELEASE(shader[i].pRasterizerState);
-		SAFE_RELEASE(shader[i].pVertexLayout);
-		SAFE_RELEASE(shader[i].pPixelShader);
-		SAFE_RELEASE(shader[i].pVertexShader);
+	for (auto&& itr : shader) {
+		SAFE_RELEASE(itr.pRasterizerState);
+		SAFE_RELEASE(itr.pVertexLayout);
+		SAFE_RELEASE(itr.pPixelShader);
+		SAFE_RELEASE(itr.pVertexShader);
 	}
-	for (int i = 0; i < BLEND_MAX; i++) {
-		SAFE_RELEASE(pBlendState[i]);
-		SAFE_RELEASE(pDepthStencilState[i]);
+	for (auto&& itr : pBlendState) {
+		SAFE_RELEASE(itr);
 	}
+	for (auto&& itr : pDepthStencilState) {
+		SAFE_RELEASE(itr);
+	}
+	SAFE_RELEASE(pDepthStencilView);
+	SAFE_RELEASE(pDepthStencil);
 	SAFE_RELEASE(pRenderTargetView);
 	SAFE_RELEASE(pSwapChain);
 	SAFE_RELEASE(pContext);

@@ -13,6 +13,7 @@ namespace
 		std::string SectionName;	//セクション名
 
 		ManagementSet() : FileName(), SectionName() {}
+		ManagementSet(const std::string& File, const std::string& Section) : FileName(File), SectionName(Section) {}
 	};
 	std::vector<std::shared_ptr<ManagementSet>> SetList = {};	//ファイル名とセクション名のセットの配列
 	std::string KeyName;	//キー名
@@ -20,11 +21,10 @@ namespace
 
 namespace IniOperator
 {
-	int AddList(std::string filename, std::string sectionname)
+	int AddList(const std::string& filename, const std::string& sectionname)
 	{
-		std::shared_ptr<ManagementSet> List = std::make_shared<ManagementSet>();
-		List->FileName = filename;
-		List->SectionName = sectionname;
+		std::shared_ptr<ManagementSet> List = std::make_shared<ManagementSet>(filename, sectionname);
+
 		if (auto itr = std::find(SetList.begin(), SetList.end(), List); itr != end(SetList))
 		{
 			//その番号を返す
@@ -36,12 +36,12 @@ namespace IniOperator
 		return (int)SetList.size() - 1;
 	}
 
-	int GetValue(int Listnum, std::string Key, int SpareValue)
+	int GetValue(int Listnum, const std::string& Key, int SpareValue)
 	{
 		return (int)GetPrivateProfileIntA(SetList.at(Listnum)->SectionName.c_str(), Key.c_str(), SpareValue, SetList.at(Listnum)->FileName.c_str());
 	}
 
-	void SetValue(int Listnum, std::string Key, int Value)
+	void SetValue(int Listnum, const std::string& Key, int Value)
 	{
 		WritePrivateProfileStringA(SetList.at(Listnum)->SectionName.c_str(), Key.c_str(), std::to_string(Value).c_str(), SetList.at(Listnum)->FileName.c_str());
 	}

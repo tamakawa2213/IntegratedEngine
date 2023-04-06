@@ -11,10 +11,10 @@ namespace
         std::unique_ptr<Fbx> pFbx;	//Fbxのポインタ
         Transform transform;		//transformクラス
         std::string FileName;		//ファイルの名前
-        bool FindFbx;	        	//Fbxファイルを事前にロードしているか
         float Alpha;		    	//モデルの透明度
 
-        Fileset() : pFbx(nullptr), transform(), FileName(), FindFbx(false), Alpha(1.0f) {}
+        Fileset() : pFbx(nullptr), transform(), FileName(), Alpha(1.0f) {}
+        Fileset(const std::string& file) : pFbx(nullptr), transform(), FileName(file), Alpha(1.0f) {}
     };
     std::vector<std::shared_ptr<Fileset>> FileSet;      //Fbxの構造体の動的配列
 }
@@ -23,26 +23,19 @@ namespace Model
 
     int Load(const std::string& filename)
     {
-        HRESULT hr;
-        std::shared_ptr<Fileset> File = std::make_shared<Fileset>();
-        File->FileName = filename;
+        std::shared_ptr<Fileset> File = std::make_shared<Fileset>(filename);
 
-        
         //同じ名前のファイルをすでにロードしていた場合
         if (auto itr = std::find(FileSet.begin(), FileSet.end(), File); itr != FileSet.end())
         {
-            (*itr)->FindFbx = true;
             return (int)std::distance(FileSet.begin(), itr);
         }
+
         //見つからなかった場合、新しくロードする
-        if (!File->FindFbx)
+        File->pFbx = std::make_unique<Fbx>();
+        if (FAILED(File->pFbx->Load(filename))) //ロードに失敗した場合
         {
-            File->pFbx = std::make_unique<Fbx>();
-            hr = File->pFbx->Load(filename);
-            if (FAILED(hr)) //ロードに失敗した場合
-            {
-                return -1;
-            }
+            return -1;
         }
 
         FileSet.push_back(std::move(File));

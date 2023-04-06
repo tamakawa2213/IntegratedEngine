@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <dwrite.h>
+#include <memory>
 #include <string>
 
 #pragma comment(lib, "d3d11.lib")
@@ -69,16 +70,14 @@ class Text
     IDXGISurface* pBackBuffer = nullptr;
 
     //フォントデータ
-    FontData* Setting = nullptr;
+    std::unique_ptr<FontData> Setting;
 
     //string->wstring変換
     std::wstring StringToWString(const std::string& str);
 public:
-    //デフォルトコンストラクタを制限
-    Text() = delete;
-
     //コンストラクタ
-    Text(FontData* set) : Setting(set) {};
+    Text() : Setting(std::make_unique<FontData>()) {};
+    Text(FontData* set) : Setting(std::move(set)) {};
 
     //デストラクタ
     ~Text();
