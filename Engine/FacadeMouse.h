@@ -7,11 +7,11 @@ class FacadeMouse
 	std::vector<std::pair<bool(*)(int), void(FacadeMouse::*)()>> FunctionLeft_;
 	std::vector<std::pair<bool(*)(int), void(FacadeMouse::*)()>> FunctionRight_;
 	std::vector<std::pair<bool(*)(int), void(FacadeMouse::*)()>> FunctionWheel_;
-protected:
-	void FacadeMethod();	//仮想関数の呼び出しを行う
 public:
 	FacadeMouse();
 	~FacadeMouse() {}
+
+	void FacadeMethod();	//仮想関数の呼び出しを行う
 
 	virtual void ClickLeftFirst() {}	//左クリック押下時に一度呼び出し
 	virtual void ClickLeft() {}			//左クリック中呼び出し

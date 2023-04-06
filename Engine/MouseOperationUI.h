@@ -5,7 +5,7 @@
 class MouseOperationUI : public GameObject, FacadeMouse
 {
 public:
-	MouseOperationUI(GameObject* parent, const std::string name);
+	MouseOperationUI(GameObject* parent, const std::string& name);
 	~MouseOperationUI();
 
 	void FixedUpdate() override;

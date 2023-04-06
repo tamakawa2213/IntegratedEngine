@@ -1,6 +1,6 @@
 #include "MouseOperationUI.h"
 
-MouseOperationUI::MouseOperationUI(GameObject* parent, const std::string name)
+MouseOperationUI::MouseOperationUI(GameObject* parent, const std::string& name)
 	:GameObject(parent, name)
 {
 }
