@@ -18,7 +18,6 @@ std::wstring Text::StringToWString(const std::string& str)
 
 Text::~Text()
 {
-	Release();
 }
 
 void Text::SetFont(FontData* set)
@@ -63,11 +62,11 @@ void Text::Initialize()
 
 void Text::Release()
 {
-	SAFE_RELEASE(pBackBuffer);
+	SAFE_RELEASE(pTextLayout);
 	SAFE_RELEASE(pSolidBrush);
-	SAFE_RELEASE(pRT);
 	SAFE_RELEASE(pTextFormat);
 	SAFE_RELEASE(pDWriteFactory);
+	SAFE_RELEASE(pRT);
+	SAFE_RELEASE(pBackBuffer);
 	SAFE_RELEASE(pD2DFactory);
-	SAFE_RELEASE(pTextLayout);
 }

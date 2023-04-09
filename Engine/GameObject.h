@@ -16,7 +16,6 @@ class GameObject
 	bool KILL;							//trueならオブジェクト消滅
 
 protected:
-	AssignmentFunction assFunc_;				//関数の指定回数実行クラス
 	Transform	transform_;						//Transform
 	std::list<std::shared_ptr<GameObject>> childList_;			//ゲームオブジェクトのリスト構造
 	std::list<SphereCollider*> Colliderlist_;	//Colliderのリスト構造
@@ -26,6 +25,7 @@ public:
 	GameObject();
 	GameObject(GameObject* parent, const std::string& name);
 	virtual ~GameObject();
+	AssignmentFunction assFunc_;				//関数の指定回数実行クラス
 
 	virtual void Initialize() {}	//初期化
 	virtual void Update() {}		//更新

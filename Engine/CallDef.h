@@ -8,8 +8,10 @@
 //HRESULTが失敗したときにReleaseありで呼び出すマクロ
 #define HR_FAILED_RELEASE(hr, text, p) if(FAILED(hr)) [[unlikely]] {MessageBox(NULL, text, L"Error", MB_OKCANCEL); SAFE_RELEASE(p);return hr; }
 
+#define SET_UI(UINAME) RootUI* pRootUI = (RootUI*)FindObject("RootUI"); pRootUI->Link<UINAME>();
+
 //シーン切り替えを行うマクロ
-#define SCENE_CHANGE(SCENE_ID) SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager"); pSceneManager->ChangeScene(SCENE_ID); SAFE_RELEASE(pSceneManager);
+#define SCENE_CHANGE(SCENE_ID) SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager"); pSceneManager->ChangeScene(SCENE_ID);
 
 //モデルをロードするもの
 //引数 : 格納したいモデル番号 ファイル名

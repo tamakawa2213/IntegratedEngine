@@ -9,7 +9,7 @@ class FacadeMouse
 	std::vector<std::pair<bool(*)(int), void(FacadeMouse::*)()>> FunctionWheel_;
 public:
 	FacadeMouse();
-	~FacadeMouse() {}
+	virtual ~FacadeMouse() {}
 
 	void FacadeMethod();	//‰¼‘zŠÖ”‚ÌŒÄ‚Ño‚µ‚ğs‚¤
 

@@ -29,7 +29,7 @@ protected:
 
 public:
 	Sprite();				//コンストラクタ
-	~Sprite();				//デストラクタ
+	virtual ~Sprite();				//デストラクタ
 	virtual HRESULT Initialize(const LPCWSTR& filename);	//初期化
 	HRESULT ConBuf(const LPCWSTR& filename);
 	virtual HRESULT Load(const LPCWSTR& filename);
