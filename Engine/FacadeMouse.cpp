@@ -23,19 +23,19 @@ FacadeMouse::FacadeMouse()
 void FacadeMouse::FacadeMethod()
 {
 	//それぞれの判定が真ならば対応するメソッドを呼び出す
-	for (auto itr : FunctionLeft_)
+	for (auto&& itr : FunctionLeft_)
 	{
 		if (itr.first(0))
 			(this->*itr.second)();
 	}
 
-	for (auto itr : FunctionRight_)
+	for (auto&& itr : FunctionRight_)
 	{
 		if (itr.first(1))
 			(this->*itr.second)();
 	}
 
-	for (auto itr : FunctionWheel_)
+	for (auto&& itr : FunctionWheel_)
 	{
 		if (itr.first(2))
 			(this->*itr.second)();

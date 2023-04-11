@@ -29,12 +29,12 @@ HRESULT Fbx::Load(const std::string& fileName)
 	FbxScene* pFbxScene = FbxScene::Create(pFbxManager, "fbxscene");
 	fbxImporter->Import(pFbxScene);
 	fbxImporter->Destroy();
-
+	
 	//メッシュ情報を取得
 	FbxNode* pRootNode = pFbxScene->GetRootNode();
 	FbxNode* pNode = pRootNode->GetChild(0);
 	FbxMesh* pMesh = pNode->GetMesh();
-
+	
 	//各情報の個数を取得
 	vertexCount_ = pMesh->GetControlPointsCount();	//頂点の数
 	polygonCount_ = pMesh->GetPolygonCount();		//ポリゴンの数
@@ -98,14 +98,14 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* pMesh)
 		}
 	}
 	// 頂点バッファ作成
-	D3D11_BUFFER_DESC bd_vertex;
+	D3D11_BUFFER_DESC bd_vertex{};
 	bd_vertex.ByteWidth = sizeof(VERTEX) * vertexCount_;
 	bd_vertex.Usage = D3D11_USAGE_DEFAULT;
 	bd_vertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd_vertex.CPUAccessFlags = 0;
 	bd_vertex.MiscFlags = 0;
 	bd_vertex.StructureByteStride = 0;
-	D3D11_SUBRESOURCE_DATA data_vertex;
+	D3D11_SUBRESOURCE_DATA data_vertex{};
 	data_vertex.pSysMem = pVertices_.get();
 	Direct3D::pDevice->CreateBuffer(&bd_vertex, &data_vertex, &pVertexBuffer_);
 }
@@ -143,14 +143,14 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* pMesh)
 			}
 		}
 		indexCount_[i] = count;
-		D3D11_BUFFER_DESC   bd;
+		D3D11_BUFFER_DESC   bd{};
 		bd.ByteWidth = sizeof(int) * VertexCount;
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags = 0;
 
-		D3D11_SUBRESOURCE_DATA InitData;
+		D3D11_SUBRESOURCE_DATA InitData{};
 		InitData.pSysMem = ppIndex_[i].get();
 		InitData.SysMemPitch = 0;
 		InitData.SysMemSlicePitch = 0;
@@ -163,7 +163,7 @@ void Fbx::InitIndex(fbxsdk::FbxMesh* pMesh)
 HRESULT Fbx::IntConstantBuffer()
 {
 	HRESULT hr;
-	D3D11_BUFFER_DESC cb;
+	D3D11_BUFFER_DESC cb{};
 	cb.ByteWidth = sizeof(CONSTANT_BUFFER);
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -269,7 +269,7 @@ void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha,
 		Chroma.z = std::clamp(Chroma.z, 0.0f, 1.0f);
 		Alpha = std::clamp(Alpha, 0.0f, 1.0f);
 
-		CONSTANT_BUFFER cb;
+		CONSTANT_BUFFER cb{};
 		transform.Calclation();
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());	//行列なので順番は固定
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
@@ -358,7 +358,7 @@ XMVECTOR Fbx::NormalDotLight(Transform& tr)
 	{
 		for (int poly = 0; poly < indexCount_[material] / 3; poly++)
 		{
-			XMVECTOR v[3], cross;
+			XMVECTOR v[3]{}, cross;
 			v[0] = pVertices_[ppIndex_[material][(long long)poly * 3]].position;
 			v[1] = pVertices_[ppIndex_[material][(long long)poly * 3 + 1]].position;
 			v[2] = pVertices_[ppIndex_[material][(long long)poly * 3 + 2]].position;

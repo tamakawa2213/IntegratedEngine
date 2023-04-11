@@ -82,10 +82,10 @@ namespace Image
     {
         UINT wid = (UINT)(FileSet[hPict]->pSprite->GetImgWidth() * FileSet[hPict]->transform.scale_.x / 2);
         UINT hgt = (UINT)(FileSet[hPict]->pSprite->GetImgHeight() * FileSet[hPict]->transform.scale_.y / 2);
-        float Left = (FileSet[hPict]->transform.position_.x + 1) * (Direct3D::scrWidth / 2) - wid;
-        float Right = (FileSet[hPict]->transform.position_.x + 1) * (Direct3D::scrWidth / 2) + wid;
-        float Top = (-FileSet[hPict]->transform.position_.y + 1) * (Direct3D::scrHeight / 2) - hgt;
-        float Bottom = (-FileSet[hPict]->transform.position_.y + 1) * (Direct3D::scrHeight / 2) + hgt;
+        float Left = (FileSet[hPict]->transform.position_.x + 1) * (Direct3D::scrWidth / 2.0f) - wid;
+        float Right = (FileSet[hPict]->transform.position_.x + 1) * (Direct3D::scrWidth / 2.0f) + wid;
+        float Top = (-FileSet[hPict]->transform.position_.y + 1) * (Direct3D::scrHeight / 2.0f) - hgt;
+        float Bottom = (-FileSet[hPict]->transform.position_.y + 1) * (Direct3D::scrHeight / 2.0f) + hgt;
         if (Left <= Input::Mouse::GetPosition().x && Input::Mouse::GetPosition().x <= Right &&
             Top <= Input::Mouse::GetPosition().y && Input::Mouse::GetPosition().y <= Bottom)
         {
@@ -116,7 +116,7 @@ namespace Image
 
     void AllAlterAlpha(float alpha)
     {
-        for (auto i : FileSet)
+        for (auto&& i : FileSet)
         {
             i->Alpha = alpha;
         }

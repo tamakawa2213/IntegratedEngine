@@ -130,7 +130,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 
 	//深度ステンシルビューの作成
 	{
-		D3D11_TEXTURE2D_DESC descDepth;
+		D3D11_TEXTURE2D_DESC descDepth{};
 		descDepth.Width = winW;
 		descDepth.Height = winH;
 		descDepth.MipLevels = 1;
