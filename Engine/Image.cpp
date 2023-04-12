@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "IniOperator.h"
 #include "Math.h"
+#include <filesystem>
 #include <memory>
 
 namespace
@@ -125,8 +126,8 @@ namespace Image
     void CallStatus(int hPict)
     {
         //"Assets\\"‚ðÈ‚¢‚½•¶Žš—ñ‚ðŽæ“¾
-        std::string file = FileSet[hPict]->FileName.substr(7);
-        int i = IniOperator::AddList("Assets\\ImageStatus.ini", file);
+        std::filesystem::path file = FileSet[hPict]->FileName;
+        int i = IniOperator::AddList("Assets\\ImageStatus.ini", file.filename().string());
         FileSet[hPict]->transform.position_ = Math::PixelToTransform({
         (float)IniOperator::GetValue(i, "x", 0),
         (float)IniOperator::GetValue(i, "y", 0), 0 });

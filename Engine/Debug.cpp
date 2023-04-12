@@ -8,6 +8,7 @@
 #include "Math.h"
 #include "Text.h"
 #include <imgui.h>
+#include <filesystem>
 #include <map>
 
 //ŠO•”‚©‚çŒÄ‚Ño‚³‚¹‚È‚¢ŠÖ”‚Ì‘O•ûéŒ¾
@@ -127,11 +128,11 @@ namespace Debug
 
 	void Overwrite()
 	{
-		for (auto itr : ChangedImageStatus)
+		for (auto&& itr : ChangedImageStatus)
 		{
 			//"Assets\\"‚ğÈ‚¢‚½•¶š—ñ‚ğæ“¾
-			std::string file = Image::GetFileName(itr.first).substr(7);
-			int num = IniOperator::AddList("Assets\\ImageStatus.ini", file);
+			std::filesystem::path file = Image::GetFileName(itr.first);
+			int num = IniOperator::AddList("Assets\\ImageStatus.ini", file.filename().string());
 			IniOperator::SetValue(num, "x", (int)itr.second.x);
 			IniOperator::SetValue(num, "y", (int)itr.second.y);
 		}
