@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Math.h"
 #include <algorithm>
+#include <filesystem>
 
 Fbx::Fbx() :pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), pMaterialList_(nullptr), indexCount_(nullptr),
 vertexCount_(0), polygonCount_(0), materialCount_(0), pVertices_(nullptr), ppIndex_(nullptr)
@@ -44,13 +45,9 @@ HRESULT Fbx::Load(const std::string& fileName)
 	GetCurrentDirectory(MAX_PATH, defaultCurrentDir);
 
 	//引数のfileNameからディレクトリ部分を取得
-	wchar_t wtext[FILENAME_MAX];
-	size_t ret;
-	mbstowcs_s(&ret, wtext, fileName.c_str(), fileName.length());
-	WCHAR dir[MAX_PATH];
-	_wsplitpath_s(wtext, nullptr, 0, dir, MAX_PATH, nullptr, 0, nullptr, 0);
+	std::filesystem::path file = fileName;
 	//カレントディレクトリ変更
-	SetCurrentDirectory(dir);
+	SetCurrentDirectory(file.parent_path().c_str());
 
 	InitVertex(pMesh);			//頂点バッファ準備
 	InitIndex(pMesh);			//インデックスバッファ準備
