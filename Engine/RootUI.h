@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "UserInterface.h"
-#include "../../Personal_Production/Engine/SceneManager.h"
+#include "SceneManager.h"
 #include <memory>
 
 class RootUI : public GameObject
@@ -22,7 +22,7 @@ public:
 	template <class T>
 	void Link()
 	{
-		std::unique_ptr<T> ui = std::make_unique<T>(this);
+		std::unique_ptr<T> ui = std::make_unique<T>();
 		pUI_ = std::move(ui);
 		pUI_->Initialize();
 	}

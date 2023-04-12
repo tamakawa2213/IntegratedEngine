@@ -1,5 +1,4 @@
 #pragma once
-//#include <functional>
 #include <vector>
 
 //指定した数だけ関数を呼び出すクラス

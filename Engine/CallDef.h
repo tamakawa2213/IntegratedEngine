@@ -11,7 +11,7 @@
 #define SET_UI(UINAME) RootUI* pRootUI = (RootUI*)FindObject("RootUI"); pRootUI->Link<UINAME>();
 
 //シーン切り替えを行うマクロ
-#define SCENE_CHANGE(SCENE_ID) SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager"); pSceneManager->ChangeScene(SCENE_ID);
+#define SCENE_CHANGE(SCENE_ID) PtrObserver::GetSceneManager()->ChangeScene(SCENE_ID);
 
 //モデルをロードするもの
 //引数 : 格納したいモデル番号 ファイル名

@@ -1,4 +1,5 @@
 #include "RootUI.h"
+#include "PtrObserver.h"
 
 RootUI::RootUI(GameObject* parent)
 	: GameObject(parent, "RootUI"), pUI_(nullptr)

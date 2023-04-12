@@ -1,14 +1,8 @@
 #pragma once
 
-class RootUI;
-
-class UserInterface
+struct UserInterface
 {
-protected:
-	RootUI* pRootUI_;
-
-public:
-	UserInterface(RootUI* ui) : pRootUI_(ui) {}
+	UserInterface() {}
 	virtual ~UserInterface() {}
 
 	virtual void Initialize() = 0;
