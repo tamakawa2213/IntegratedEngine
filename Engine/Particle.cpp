@@ -173,7 +173,7 @@ void Particle::EmitterUpdate()
 //パーティクル描画
 void Particle::Draw()
 {
-    Direct3D::SetShader(SHADER_BILLBOARD);
+    Direct3D::SetShader(SHADER_TYPE::BILLBOARD);
     Direct3D::SetBlendMode(BLEND_ADD);
 
  

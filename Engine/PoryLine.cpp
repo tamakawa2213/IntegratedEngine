@@ -108,7 +108,7 @@ HRESULT PoryLine::Load(std::string fileName)
 
 void PoryLine::Draw()
 {
-	Direct3D::SetShader(SHADER_BILLBOARD);
+	Direct3D::SetShader(SHADER_TYPE::BILLBOARD);
 	Direct3D::SetBlendMode(BLEND_DEFAULT);
 
 
@@ -155,7 +155,7 @@ void PoryLine::Draw()
 
 void PoryLine::Release()
 {
-	SAFE_DELETE(pTexture_);
+	//SAFE_DELETE(pTexture_);
 	SAFE_RELEASE(pConstantBuffer_);
 	SAFE_RELEASE(pVertexBuffer_);
 	positions_.clear();

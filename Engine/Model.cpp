@@ -15,6 +15,9 @@ namespace
 
         Fileset() : pFbx(nullptr), transform(), FileName(), Alpha(1.0f) {}
         Fileset(const std::string& file) : pFbx(nullptr), transform(), FileName(file), Alpha(1.0f) {}
+
+        bool operator ==(const Fileset& fl) const { return (FileName == fl.FileName); }
+        bool operator !=(const Fileset& fl) const { !(*this == fl); }
     };
     std::vector<std::shared_ptr<Fileset>> FileSet;      //Fbxの構造体の動的配列
 }
@@ -28,7 +31,7 @@ namespace Model
         //同じ名前のファイルをすでにロードしていた場合
         if (auto itr = std::find(FileSet.begin(), FileSet.end(), File); itr != FileSet.end())
         {
-            return (int)std::distance(FileSet.begin(), itr);
+             return (int)std::distance(FileSet.begin(), itr);
         }
 
         //見つからなかった場合、新しくロードする
