@@ -3,7 +3,7 @@
 #include "Math.h"
 #include "Position.h"
 
-SphereCollider::SphereCollider(const Position& position, float Radius) : Radius_(Radius), pGameObject_(nullptr)
+SphereCollider::SphereCollider(float Radius) : Radius_(Radius), pGameObject_(nullptr)
 {
 }
 
