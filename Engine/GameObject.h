@@ -18,8 +18,8 @@ class GameObject
 protected:
 	Transform	transform_;						//Transform
 	std::list<std::shared_ptr<GameObject>> childList_;			//ゲームオブジェクトのリスト構造
-	std::list<SphereCollider*> Colliderlist_;	//Colliderのリスト構造
-	SphereCollider* Collision_;					//Colliderのポインタ
+	std::list<std::shared_ptr<SphereCollider>> Colliderlist_;	//Colliderのリスト構造
+	//SphereCollider* Collision_;					//Colliderのポインタ
 
 public:
 	GameObject();
@@ -62,7 +62,7 @@ public:
 	bool HasChild();
 
 	///////////////////////////////////////////////////Collision関係////////////////////////////////////////////////////////////
-	void AddCollider(SphereCollider* Collider);				//ColliderとGameObjectを結びつけ、listに追加する
+	void AddCollider(std::shared_ptr<SphereCollider> Collider);		//ColliderとGameObjectを結びつけ、listに追加する
 	void Collision(GameObject* pTarget);					//当たり判定を行う
 	virtual void OnCollision(GameObject* pTarget) {}		//当たったらこれが呼ばれる(override専用)
 

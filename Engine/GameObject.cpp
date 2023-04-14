@@ -7,7 +7,7 @@ GameObject::GameObject() : GameObject(nullptr, "")
 }
 
 GameObject::GameObject(GameObject* parent, const std::string& name)
-	: childList_(), transform_(), pParent_(parent), objectName_(name), KILL(false), Collision_(nullptr), assFunc_()
+	: childList_(), transform_(), pParent_(parent), objectName_(name), KILL(false)/*, Collision_(nullptr)*/, assFunc_()
 {
 	if (parent)
 	{
@@ -164,7 +164,7 @@ bool GameObject::HasChild()
 	return !childList_.empty();
 }
 
-void GameObject::AddCollider(SphereCollider* Collider)
+void GameObject::AddCollider(std::shared_ptr<SphereCollider> Collider)
 {
 	Collider->SetGameObject(this);		//GameObjectに紐付け
 	Colliderlist_.push_back(Collider);	//Listに入れる
@@ -173,24 +173,34 @@ void GameObject::AddCollider(SphereCollider* Collider)
 void GameObject::Collision(GameObject* pTarget)
 {
 	//自分との当たり判定はしない
-	if (this != pTarget && pTarget->Collision_ != nullptr)
+	if (this != pTarget && !this->Colliderlist_.empty() && !pTarget->Colliderlist_.empty())
 	{
-		//リストのサイズだけループ
-		for (auto itr = Colliderlist_.begin(); itr != Colliderlist_.end(); itr++)	//外すとなぜかエラー
+		bool Called = false;	//OnCollisionが呼び出されていたらtrueにし、ループを抜け出す
+
+		//自身と対象のリストの総当たりで判定
+		for (auto&& myitr : this->Colliderlist_)
 		{
-			if (Collision_->Ishit(pTarget->Collision_))
+			for (auto&& taritr : pTarget->Colliderlist_)
 			{
-				OnCollision(pTarget);
+				if (myitr->Ishit(taritr.get()))
+				{
+					OnCollision(pTarget);
+					Called = true;
+					break;
+				}
 			}
+			if (Called)
+				break;
 		}
 	}
-		//子オブジェクトの判定も呼ぶ
-		if (!pTarget->childList_.empty())
-		{
-			for (auto itr : pTarget->childList_)
-			{	//listの数だけ回帰処理
-				Collision(itr.get());
-			}
+
+	//子オブジェクトの判定も呼ぶ
+	if (!pTarget->childList_.empty())
+	{
+		for (auto&& itr : pTarget->childList_)
+		{	//listの数だけ回帰処理
+			Collision(itr.get());
 		}
-	
+	}
+
 }

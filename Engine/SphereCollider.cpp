@@ -1,7 +1,9 @@
 #include "SphereCollider.h"
 #include "GameObject.h"
+#include "Math.h"
+#include "Position.h"
 
-SphereCollider::SphereCollider(const XMFLOAT3& position, float Radius) : Radius_(Radius), pGameObject_(nullptr)
+SphereCollider::SphereCollider(const Position& position, float Radius) : Radius_(Radius), pGameObject_(nullptr)
 {
 }
 
@@ -13,10 +15,7 @@ bool SphereCollider::Ishit(SphereCollider* pTarget)
 {
 	if (this != pTarget)
 	{
-		float distanceX = this->pGameObject_->GetPosition().x - pTarget->pGameObject_->GetPosition().x;
-		float distanceY = this->pGameObject_->GetPosition().y - pTarget->pGameObject_->GetPosition().y;
-		float distanceZ = this->pGameObject_->GetPosition().z - pTarget->pGameObject_->GetPosition().z;
-		if ((pow(distanceX, 2) + pow(distanceY, 2) + pow(distanceZ, 2)) < ((double)this->Radius_ + (double)pTarget->GetRadius()))
+		if (Math::GetDistanceSphere(this->pGameObject_->GetPosition(), pTarget->pGameObject_->GetPosition(), this->Radius_, pTarget->Radius_) == 0)
 		{
 			return true;
 		}
