@@ -1,6 +1,5 @@
 #include "IniOperator.h"
 #include <algorithm>
-#include <string>
 #include <memory>
 #include <vector>
 #include <Windows.h>
@@ -14,9 +13,15 @@ namespace
 
 		ManagementSet() : FileName(), SectionName() {}
 		ManagementSet(const std::string& File, const std::string& Section) : FileName(File), SectionName(Section) {}
+
+		bool operator ==(const ManagementSet& fl) const { return (FileName == fl.FileName); }
+		bool operator !=(const ManagementSet& fl) const { return !(*this == fl); }
 	};
+
+	bool operator ==(const std::shared_ptr<ManagementSet> fl, const std::shared_ptr<ManagementSet> fr) { return (fl->FileName == fr->FileName) && (fl->SectionName == fr->SectionName); }
+	bool operator !=(const std::shared_ptr<ManagementSet> fl, const std::shared_ptr<ManagementSet> fr) { return !(fl == fr); }
+
 	std::vector<std::shared_ptr<ManagementSet>> SetList = {};	//ファイル名とセクション名のセットの配列
-	std::string KeyName;	//キー名
 }
 
 namespace IniOperator

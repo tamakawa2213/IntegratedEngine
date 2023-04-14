@@ -1,5 +1,4 @@
 #include "Model.h"
-#include "CallDef.h"
 #include "Direct3D.h"
 #include <memory>
 #include <vector>
@@ -17,8 +16,14 @@ namespace
         Fileset(const std::string& file) : pFbx(nullptr), transform(), FileName(file), Alpha(1.0f) {}
 
         bool operator ==(const Fileset& fl) const { return (FileName == fl.FileName); }
-        bool operator !=(const Fileset& fl) const { !(*this == fl); }
+        bool operator !=(const Fileset& fl) const { return !(*this == fl); }
     };
+
+    //Filesetの等値比較のオーバーロード
+    //shared_ptrの比較が優先される為、フライウェイトにはこれが必要
+    bool operator ==(const std::shared_ptr<Fileset> fl, const std::shared_ptr<Fileset> fr) { return (fl->FileName == fr->FileName); }
+    bool operator !=(const std::shared_ptr<Fileset> fl, const std::shared_ptr<Fileset> fr) { return !(fl == fr); }
+
     std::vector<std::shared_ptr<Fileset>> FileSet;      //Fbxの構造体の動的配列
 }
 namespace Model

@@ -1,5 +1,4 @@
 #include "Image.h"
-#include "CallDef.h"
 #include "Input.h"
 #include "IniOperator.h"
 #include "Math.h"
@@ -17,7 +16,14 @@ namespace
 
         ImageSet() : pSprite(nullptr), transform(), FileName(), Alpha(1.0f) {}
         ImageSet(const std::string& file) : pSprite(nullptr), transform(), FileName(file), Alpha(1.0f) {}
+
+        bool operator ==(const ImageSet& fl) const { return (FileName == fl.FileName); }
+        bool operator !=(const ImageSet& fl) const { return !(*this == fl); }
     };
+
+    bool operator ==(const std::shared_ptr<ImageSet> fl, const std::shared_ptr<ImageSet> fr) { return (fl->FileName == fr->FileName); }
+    bool operator !=(const std::shared_ptr<ImageSet> fl, const std::shared_ptr<ImageSet> fr) { return !(fl == fr); }
+
     std::vector<std::shared_ptr<ImageSet>> FileSet;      //Fbxの構造体の動的配列
 }
 
@@ -128,6 +134,8 @@ namespace Image
         //"Assets\\"を省いた文字列を取得
         std::filesystem::path file = FileSet[hPict]->FileName;
         int i = IniOperator::AddList("Assets\\ImageStatus.ini", file.filename().string());
+
+        //iniファイルで取得した値をtransform値に変換
         FileSet[hPict]->transform.position_ = Math::PixelToTransform({
         (float)IniOperator::GetValue(i, "x", 0),
         (float)IniOperator::GetValue(i, "y", 0), 0 });
