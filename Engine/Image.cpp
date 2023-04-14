@@ -4,6 +4,8 @@
 #include "Math.h"
 #include <filesystem>
 #include <memory>
+#include <vector>
+#include "Sprite.h"
 
 namespace
 {

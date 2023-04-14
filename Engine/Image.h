@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include <vector>
-#include "Sprite.h"
 #include "Transform.h"
+
+class Texture;
 
 namespace Image
 {
