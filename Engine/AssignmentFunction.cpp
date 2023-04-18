@@ -3,10 +3,11 @@
 #include "Model.h"
 #include "Direct3D.h"
 
+#include <cmath>
+
 namespace
 {
 	int SettingFade = 0;	//フェードアウトが設定された時の値が格納される
-	float ChangeRate = 0;	//画面表示の変化率
 }
 
 AssignmentFunction::AssignmentFunction()
@@ -23,8 +24,7 @@ AssignmentFunction::~AssignmentFunction()
 
 void AssignmentFunction::Update()
 {
-	//for (auto itr = func_.begin(); itr != func_.end(); itr++)
-	for (auto itr : func_)
+	for (auto&& itr : func_)
 	{
 		//イテレータが指してる変数が0より大きい場合
 		if (*itr.first > 0)
@@ -43,7 +43,6 @@ void AssignmentFunction::SetFadeout(int frame)
 {
 	SettingFade = frame;
 	Fadeout_ = SettingFade;
-	ChangeRate = 1.0f / frame;
 }
 
 void AssignmentFunction::FadeOut()
@@ -52,7 +51,8 @@ void AssignmentFunction::FadeOut()
 	if (SettingFade == 0)
 		return;
 
-	float alp = fabsf((float)Fadeout_ / SettingFade * 2 - 1);
+	//-1~1の線形補間の絶対値をとる
+	float alp = (float)fabs(std::lerp(-1, 1, -Fadeout_ / (float)SettingFade + 1));
 	Image::AllAlterAlpha(alp);
 	Model::AllAlterAlpha(alp);
 	Direct3D::BackGroundColor[0] = 0;

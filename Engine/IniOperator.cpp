@@ -50,4 +50,4 @@ namespace IniOperator
 	{
 		WritePrivateProfileStringA(SetList.at(Listnum)->SectionName.c_str(), Key.c_str(), std::to_string(Value).c_str(), SetList.at(Listnum)->FileName.c_str());
 	}
-};
+}; // namespace IniOperator

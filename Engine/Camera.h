@@ -1,5 +1,4 @@
 #pragma once
-#include "Direct3D.h"
 #include <DirectXMath.h>
 
 using namespace DirectX;
@@ -42,4 +41,4 @@ namespace Camera
 
 	//ビルボード用回転行列を取得
 	XMMATRIX GetBillboardMatrix();
-};
+}; // namespace Camera

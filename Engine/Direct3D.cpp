@@ -34,7 +34,7 @@ namespace Direct3D
 	float BackGroundColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
 
 	D3D11_VIEWPORT vp[VP_MAX];
-}
+} // namespace Direct3D
 
 namespace Direct3D
 {

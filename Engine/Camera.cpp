@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "CallDef.h"
+#include "Direct3D.h"
 
 //•Ï”
 namespace Camera {
@@ -97,4 +98,4 @@ namespace Camera {
 	{
 		return billboard_;
 	}
-}
+} // namespace Camera

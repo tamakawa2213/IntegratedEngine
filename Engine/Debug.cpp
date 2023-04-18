@@ -147,4 +147,4 @@ namespace Debug
 		//ImGui::InputText("TextBox", data, sizeof(data));
 		//ImGui::End();
 	}
-};
+}; // namespace Debug
