@@ -3,6 +3,7 @@
 #include "CallDef.h"
 #include <d3dcompiler.h>
 #include <iterator>
+#include <vector>
 
 //変数
 namespace Direct3D
@@ -44,7 +45,8 @@ namespace Direct3D
 	HRESULT InitShaderPoint();
 	HRESULT InitShaderFog();
 	HRESULT InitShaderBillboard();
-	HRESULT InitPixelShader(LPCWSTR filename, SHADER_TYPE type);	//ピクセルシェーダの作成
+	HRESULT InitPixelShader(const LPCWSTR& filename, SHADER_TYPE type);	//ピクセルシェーダの作成
+	HRESULT InitVertexShader(const LPCWSTR& filename, SHADER_TYPE type, const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout);//頂点シェーダの作成
 }
 
 //初期化
@@ -224,7 +226,27 @@ HRESULT Direct3D::InitShader()
 	return S_OK;
 }
 
-HRESULT Direct3D::InitPixelShader(LPCWSTR filename, SHADER_TYPE type)
+HRESULT Direct3D::InitVertexShader(const LPCWSTR& filename, SHADER_TYPE type, const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout)
+{
+	HRESULT hr;
+
+	// 頂点シェーダ(VertexShader)の作成（コンパイル）
+	ID3DBlob* pCompileVS = nullptr;
+	D3DCompileFromFile(filename, nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
+	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[(int)type].pVertexShader);
+
+	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
+
+	hr = pDevice->CreateInputLayout(layout.data(), layout.size(), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shader[(int)type].pVertexLayout);
+	HR_FAILED(hr, L"頂点インプットレイアウトの作成に失敗しました");
+
+	SAFE_RELEASE(pCompileVS);		//コンパイルした頂点シェーダを解放
+
+	return hr;
+}
+
+HRESULT Direct3D::InitPixelShader(const LPCWSTR& filename, SHADER_TYPE type)
 {
 	HRESULT hr;
 
@@ -246,24 +268,13 @@ HRESULT Direct3D::InitShader2D()
 	HRESULT hr;
 	///////////////////////////////////////////////////// 2D用 /////////////////////////////////////////////////////////////////////
 
-	// 頂点シェーダ(VertexShader)の作成（コンパイル）
-	ID3DBlob* pCompileVS = nullptr;
-	D3DCompileFromFile(L"../IntegratedEngine/Shader/Simple2D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
-	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[(int)SHADER_TYPE::Dimension2].pVertexShader);
-
-	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました",pCompileVS);
-
 	//頂点インプットレイアウト
-	D3D11_INPUT_ELEMENT_DESC layout[] = {
+	std::vector<D3D11_INPUT_ELEMENT_DESC> layout = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },					//位置
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT	, 0, sizeof(XMVECTOR), D3D11_INPUT_PER_VERTEX_DATA, 0 },	//UV座標
 	};
 
-	hr = pDevice->CreateInputLayout(layout, (UINT)std::size(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shader[(int)SHADER_TYPE::Dimension2].pVertexLayout);
-	HR_FAILED(hr, L"頂点インプットレイアウトの作成に失敗しました");
-
-	SAFE_RELEASE(pCompileVS);		//コンパイルした頂点シェーダを解放
+	hr = InitVertexShader(L"../IntegratedEngine/Shader/Simple2D.hlsl", SHADER_TYPE::Dimension2, layout);
 
 	hr = InitPixelShader(L"../IntegratedEngine/Shader/Simple2D.hlsl", SHADER_TYPE::Dimension2);
 
@@ -284,24 +295,14 @@ HRESULT Direct3D::InitShader3D()
 	HRESULT hr;
 	///////////////////////////////////////////////// 3D用 /////////////////////////////////////////////////////////////////
 
-	// 頂点シェーダ(VertexShader)の作成（コンパイル）
-	ID3DBlob* pCompileVS = nullptr;
-	D3DCompileFromFile(L"../IntegratedEngine/Shader/Simple3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
-	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[(int)SHADER_TYPE::Dimension3].pVertexShader);
-	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
-
 	//頂点インプットレイアウト
-	D3D11_INPUT_ELEMENT_DESC layout[] = {
+	std::vector<D3D11_INPUT_ELEMENT_DESC> layout = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },						//位置
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT	, 0, sizeof(XMVECTOR), D3D11_INPUT_PER_VERTEX_DATA, 0 },		//UV座標
 		{ "NORMAL"	, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMVECTOR) * 2 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },	//法線
 	};
-	hr = pDevice->CreateInputLayout(layout, (UINT)std::size(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shader[(int)SHADER_TYPE::Dimension3].pVertexLayout);
 
-	HR_FAILED(hr, L"頂点インプットレイアウトの作成に失敗しました");
-
-	SAFE_RELEASE(pCompileVS);		//コンパイルした頂点シェーダを解放
+	hr = InitVertexShader(L"../IntegratedEngine/Shader/Simple3D.hlsl", SHADER_TYPE::Dimension3, layout);
 
 	hr = InitPixelShader(L"../IntegratedEngine/Shader/Simple3D.hlsl", SHADER_TYPE::Dimension3);
 
@@ -320,24 +321,13 @@ HRESULT Direct3D::InitShaderPoint()
 {
 	HRESULT hr;
 
-	// 頂点シェーダ(VertexShader)の作成（コンパイル）
-	ID3DBlob* pCompileVS = nullptr;
-	D3DCompileFromFile(L"../IntegratedEngine/Shader/Point3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
-	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[(int)SHADER_TYPE::POINT].pVertexShader);
-	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
-
 	//頂点インプットレイアウト
-	D3D11_INPUT_ELEMENT_DESC layout[] = {
+	std::vector<D3D11_INPUT_ELEMENT_DESC> layout = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },						//位置
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT	, 0, sizeof(XMVECTOR), D3D11_INPUT_PER_VERTEX_DATA, 0 },		//UV座標
 		{ "NORMAL"	, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMVECTOR) * 2 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },	//法線
 	};
-	hr = pDevice->CreateInputLayout(layout, (UINT)std::size(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shader[(int)SHADER_TYPE::POINT].pVertexLayout);
-
-	HR_FAILED(hr, L"頂点インプットレイアウトの作成に失敗しました");
-
-	SAFE_RELEASE(pCompileVS);		//コンパイルした頂点シェーダを解放
+	hr = InitVertexShader(L"../IntegratedEngine/Shader/Point3D.hlsl", SHADER_TYPE::POINT, layout);
 
 	hr = InitPixelShader(L"../IntegratedEngine/Shader/Point3D.hlsl", SHADER_TYPE::POINT);
 
@@ -356,24 +346,14 @@ HRESULT Direct3D::InitShaderFog()
 {
 	HRESULT hr;
 
-	// 頂点シェーダ(VertexShader)の作成（コンパイル）
-	ID3DBlob* pCompileVS = nullptr;
-	D3DCompileFromFile(L"../IntegratedEngine/Shader/Fog.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
-	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[(int)SHADER_TYPE::FOG].pVertexShader);
-	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
-
 	//頂点インプットレイアウト
-	D3D11_INPUT_ELEMENT_DESC layout[] = {
+	std::vector<D3D11_INPUT_ELEMENT_DESC> layout = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },						//位置
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT	, 0, sizeof(XMVECTOR), D3D11_INPUT_PER_VERTEX_DATA, 0 },		//UV座標
 		{ "NORMAL"	, 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(XMVECTOR) * 2 ,	D3D11_INPUT_PER_VERTEX_DATA, 0 },	//法線
 	};
-	hr = pDevice->CreateInputLayout(layout, (UINT)std::size(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shader[(int)SHADER_TYPE::FOG].pVertexLayout);
 
-	HR_FAILED(hr, L"頂点インプットレイアウトの作成に失敗しました");
-
-	SAFE_RELEASE(pCompileVS);		//コンパイルした頂点シェーダを解放
+	hr = InitVertexShader(L"../IntegratedEngine/Shader/Fog.hlsl", SHADER_TYPE::FOG, layout);
 
 	hr = InitPixelShader(L"../IntegratedEngine/Shader/Fog.hlsl", SHADER_TYPE::FOG);
 
@@ -392,23 +372,13 @@ HRESULT Direct3D::InitShaderBillboard()
 {
 	HRESULT hr;
 
-	// 頂点シェーダ(VertexShader)の作成（コンパイル）
-	ID3DBlob* pCompileVS = nullptr;
-	D3DCompileFromFile(L"../IntegratedEngine/Shader/Billboard.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
-	assert(pCompileVS != nullptr);	//ファイルを開けなかった場合、処理が終了する
-	hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shader[(int)SHADER_TYPE::BILLBOARD].pVertexShader);
-	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
-
 	//頂点インプットレイアウト
-	D3D11_INPUT_ELEMENT_DESC layout[] = {
+	std::vector<D3D11_INPUT_ELEMENT_DESC> layout = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },						//位置
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT	, 0, sizeof(XMVECTOR), D3D11_INPUT_PER_VERTEX_DATA, 0 },		//UV座標
 	};
-	hr = pDevice->CreateInputLayout(layout, (UINT)std::size(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shader[(int)SHADER_TYPE::BILLBOARD].pVertexLayout);
 
-	HR_FAILED(hr, L"頂点インプットレイアウトの作成に失敗しました");
-
-	SAFE_RELEASE(pCompileVS);		//コンパイルした頂点シェーダを解放
+	hr = InitVertexShader(L"../IntegratedEngine/Shader/Billboard.hlsl", SHADER_TYPE::BILLBOARD, layout);
 
 	hr = InitPixelShader(L"../IntegratedEngine/Shader/Billboard.hlsl", SHADER_TYPE::BILLBOARD);
 
