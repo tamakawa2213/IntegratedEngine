@@ -29,11 +29,11 @@ enum VP_TYPE
 	VP_MAX
 };
 
-enum SPLIT_SCREEN
+enum class SCREEN_MODE
 {
-	SCREEN_FULL,		//画面分割なし
-	SCREEN_SPLIT_2,		//二画面
-	SCREEN_MAX
+	FULL,		//画面分割なし
+	SPLIT_2,		//二画面
+	MAX
 };
 
 enum BLEND_MODE	//ブレンドモードの指定
@@ -50,7 +50,7 @@ namespace Direct3D
 	extern ID3D11DeviceContext* pContext;	//デバイスコンテキスト
 	extern IDXGISwapChain* pSwapChain;		//スワップチェイン
 	extern int scrWidth, scrHeight;			//スクリーンの幅と高さ
-	extern char SplitScrMode;
+	extern SCREEN_MODE SplitScrMode;
 	extern float BackGroundColor[4];
 
 	//初期化

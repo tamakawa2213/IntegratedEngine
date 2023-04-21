@@ -25,8 +25,8 @@ cbuffer global
 struct VS_OUT
 {
 	float4 pos	: SV_POSITION;	//位置
-	float4 posw : POSITION0;
-	float2 uv	: TEXCOORD;		//UV座標
+	float4 posw : TEXCOORD0;
+	float2 uv	: TEXCOORD1;	//UV座標
 	float4 normal: COLOR;		//色（明るさ）
 };
 

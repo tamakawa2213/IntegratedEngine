@@ -28,7 +28,7 @@ namespace Direct3D
 
 	int scrWidth, scrHeight;
 
-	char SplitScrMode = SCREEN_FULL;
+	SCREEN_MODE SplitScrMode = SCREEN_MODE::FULL;
 
 	//îwåiêF
 	float BackGroundColor[4] = { 0.0f, 0.5f, 0.5f, 1.0f };//R,G,B,A
