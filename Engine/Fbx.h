@@ -6,6 +6,7 @@
 #include <string>
 #include "Direct3D.h"
 #include "Light.h"
+#include "RayCastData.h"
 #include "Transform.h"
 
 #pragma comment(lib, "LibFbxSDK-MT.lib")
@@ -14,17 +15,6 @@
 
 //ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾
 class Texture;
-
-struct RayCastData
-{
-	XMFLOAT3 start;
-	XMFLOAT3 dir;
-	float dist;
-	bool hit;
-	XMFLOAT3 hitpos;
-
-	RayCastData() : start(), dir(), dist(9999.0f), hit(false), hitpos() {}
-};
 
 class Fbx
 {
