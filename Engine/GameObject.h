@@ -19,7 +19,6 @@ protected:
 	Transform	transform_;						//Transform
 	std::list<std::shared_ptr<GameObject>> childList_;			//ゲームオブジェクトのリスト構造
 	std::list<std::shared_ptr<SphereCollider>> Colliderlist_;	//Colliderのリスト構造
-	//SphereCollider* Collision_;					//Colliderのポインタ
 
 public:
 	GameObject();
@@ -54,17 +53,17 @@ public:
 	void KillAllChildren(GameObject* object);				//引数で受け取ったオブジェクトの子オブジェクトを消滅させる
 
 	/////////////////////////////////////////////何かしら取得するもの///////////////////////////////////////////////////////////
-	GameObject* FindChildObject(const std::string& ObjectName);		//引数で受け取った名前と同じ名前のオブジェクトが自身の子供にいないか検索する関数
+	GameObject* FindChildObject(const std::string& ObjectName);	//引数で受け取った名前と同じ名前のオブジェクトが自身の子供にいないか検索する関数
 	GameObject* GetRootJob();									//RootJobを探す関数
-	GameObject* FindObject(const std::string& ObjectName);				//引数で受け取った名前と同じ名前のオブジェクトを探す関数
+	GameObject* FindObject(const std::string& ObjectName);		//引数で受け取った名前と同じ名前のオブジェクトを探す関数
 	const std::string GetObjectName() { return objectName_; }	//オブジェクトの名前を取得
 	GameObject* GetParent() { return pParent_; }				//親アドレスを取得
 	bool HasChild();
 
 	///////////////////////////////////////////////////Collision関係////////////////////////////////////////////////////////////
-	void AddCollider(std::shared_ptr<SphereCollider> Collider);		//ColliderとGameObjectを結びつけ、listに追加する
-	void Collision(GameObject* pTarget);					//当たり判定を行う
-	virtual void OnCollision(GameObject* pTarget) {}		//当たったらこれが呼ばれる(override専用)
+	void AddCollider(std::shared_ptr<SphereCollider> Collider);	//ColliderとGameObjectを結びつけ、listに追加する
+	void Collision(GameObject* pTarget);						//当たり判定を行う
+	virtual void OnCollision(GameObject* pTarget) {}			//当たったらこれが呼ばれる(override専用)
 
 	//////////////////////////////////////////////////Debugモード専用///////////////////////////////////////////////////////////
 	virtual void ShowGraphical() {}							//ImGui表示

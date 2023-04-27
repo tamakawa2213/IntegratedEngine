@@ -7,7 +7,7 @@ GameObject::GameObject() : GameObject(nullptr, "")
 }
 
 GameObject::GameObject(GameObject* parent, const std::string& name)
-	: childList_(), transform_(), pParent_(parent), objectName_(name), KILL(false)/*, Collision_(nullptr)*/, assFunc_()
+	: childList_(), transform_(), pParent_(parent), objectName_(name), KILL(false), assFunc_()
 {
 	if (parent)
 	{
