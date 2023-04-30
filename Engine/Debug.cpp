@@ -27,11 +27,11 @@ namespace Debug
 namespace
 {
 	int SelectingImage = -1;	//選択中の画像番号
-	XMFLOAT3 pos = {};			//選択している画像の位置
-	XMFLOAT3 InitialPos = {};	//選択した画像の初期位置
+	XMINT3 pos = {};			//選択している画像の位置
+	XMINT3 InitialPos = {};	//選択した画像の初期位置
 	int MovementUnit_x = 1;		//x軸の移動単位
 	int MovementUnit_y = 1;		//y軸の移動単位
-	std::map<int, XMFLOAT3> ChangedImageStatus = {};	//変更を加えた画像番号
+	std::map<int, XMINT3> ChangedImageStatus = {};	//変更を加えた画像番号
 
 	//デバッグモードをキーとして関数を呼び出すmap
 	std::map<DEBUG_MODE, void(*)()> data = {
@@ -71,8 +71,8 @@ namespace Debug
 				if (SelectingImage != -1)
 				{
 					XMFLOAT3 iPos = Math::TransformToPixel(Image::GetPosition(SelectingImage));
-					XMFLOAT3 mPos = Input::Mouse::GetPosition();
-					InitialPos = { mPos.x - iPos.x, mPos.y - iPos.y,0 };
+					XMINT3 mPos = Input::Mouse::GetPosition();
+					InitialPos = { mPos.x - (int)iPos.x, mPos.y - (int)iPos.y,0 };
 				}
 			}
 
@@ -83,7 +83,7 @@ namespace Debug
 				pos = { pos.x - InitialPos.x, pos.y - InitialPos.y, 0 };
 
 				//移動単位で調整
-				pos = { (float)((int)pos.x - ((int)pos.x % MovementUnit_x)), (float)((int)pos.y - ((int)pos.y % MovementUnit_y)) , pos.z };
+				pos = { pos.x - (pos.x % MovementUnit_x), pos.y - (pos.y % MovementUnit_y), pos.z };
 
 				//Transform単位に変換
 				XMFLOAT3 trans = Math::PixelToTransform(pos);

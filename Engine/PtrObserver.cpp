@@ -2,15 +2,17 @@
 
 namespace
 {
-	SceneManager* pSceneManager;
-	RootUI* pRootUI;
+	SceneManager* pSceneManager = nullptr;
+	RootUI* pRootUI = nullptr;
 }
 
 namespace PtrObserver
 {
 	void SetSceneManager(SceneManager* ptr)
 	{
-		pSceneManager = ptr;
+		//一度紐付けたら書き換え不可にする
+		if(pSceneManager == nullptr)
+			pSceneManager = ptr;
 	}
 	SceneManager* GetSceneManager()
 	{
@@ -18,7 +20,9 @@ namespace PtrObserver
 	}
 	void SetRootUI(RootUI* ptr)
 	{
-		pRootUI = ptr;
+		//一度紐付けたら書き換え不可にする
+		if (pRootUI == nullptr)
+			pRootUI = ptr;
 	}
 	RootUI* GetRootUI()
 	{

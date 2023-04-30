@@ -92,4 +92,5 @@ namespace Math
 	XMFLOAT3 TransformToPixel(const XMFLOAT3& transform);
 	//‰æ‘œ‚ÌƒsƒNƒZƒ‹‚ðTransform‚É•ÏŠ·
 	XMFLOAT3 PixelToTransform(const XMFLOAT3& pixel);
+	XMFLOAT3 PixelToTransform(const XMINT3& pixel);
 };

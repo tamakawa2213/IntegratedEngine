@@ -238,7 +238,7 @@ HRESULT Direct3D::InitVertexShader(const LPCWSTR& filename, SHADER_TYPE type, co
 
 	HR_FAILED_RELEASE(hr, L"頂点シェーダの作成に失敗しました", pCompileVS);
 
-	hr = pDevice->CreateInputLayout(layout.data(), layout.size(), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shader[(int)type].pVertexLayout);
+	hr = pDevice->CreateInputLayout(layout.data(), (UINT)layout.size(), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shader[(int)type].pVertexLayout);
 	HR_FAILED(hr, L"頂点インプットレイアウトの作成に失敗しました");
 
 	SAFE_RELEASE(pCompileVS);		//コンパイルした頂点シェーダを解放

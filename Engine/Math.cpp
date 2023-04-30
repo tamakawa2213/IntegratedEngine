@@ -262,4 +262,8 @@ namespace Math
         pos = { pos.x * 2 - 1, -pos.y * 2 + 1, pos.z };
         return pos;
     }
+    XMFLOAT3 PixelToTransform(const XMINT3& pixel)
+    {
+        return PixelToTransform(XMFLOAT3{ (float)pixel.x, (float)pixel.y, (float)pixel.z });
+    }
 }

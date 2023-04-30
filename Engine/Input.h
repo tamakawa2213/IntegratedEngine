@@ -31,9 +31,9 @@ namespace Input
 	//マウス
 	namespace Mouse
 	{
-		DirectX::XMFLOAT3 GetPosition();		//マウスの位置を取得
+		DirectX::XMINT3 GetPosition();		//マウスの位置を取得
 		void SetPosition(int x, int y);			//マウスの位置を設定
-		DirectX::XMFLOAT3 GetMovement();		//マウスの移動量を取得
+		DirectX::XMINT3 GetMovement();		//マウスの移動量を取得
 		void SetWheel(int r);					//マウスホイールの回転量を設定
 		int GetWheel();							//マウスホイールの回転量を取得
 		bool IsMove();							//マウスが動いたか

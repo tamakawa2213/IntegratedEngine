@@ -16,8 +16,8 @@ namespace Input
 	LPDIRECTINPUTDEVICE8 pMouseDevice = nullptr;	//マウス
 	DIMOUSESTATE mouseState;						//マウスの状態
 	DIMOUSESTATE prevMouseState;					//前フレームのマウスの状態
-	DirectX::XMFLOAT3 mousePosition;				//マウスの位置
-	DirectX::XMFLOAT3 prevMousePosition;
+	DirectX::XMINT3 mousePosition;				//マウスの位置
+	DirectX::XMINT3 prevMousePosition;
 	int MouseWheel = 0;
 
 	//コントローラー
@@ -156,7 +156,7 @@ namespace Input
 	///////////////////////////////////////////////////////マウス関連//////////////////////////////////////////////////
 	namespace Mouse
 	{
-		DirectX::XMFLOAT3 GetPosition()
+		DirectX::XMINT3 GetPosition()
 		{
 			return mousePosition;
 		}
@@ -164,7 +164,7 @@ namespace Input
 		void SetPosition(int x, int y)
 		{
 			prevMousePosition = mousePosition;
-			mousePosition = DirectX::XMFLOAT3((float)x, (float)y, 0);
+			mousePosition = { x, y, 0 };
 		}
 
 		void SetWheel(int r)
@@ -179,22 +179,20 @@ namespace Input
 			return r;
 		}
 
-		DirectX::XMFLOAT3 GetMovement()
+		DirectX::XMINT3 GetMovement()
 		{
-			DirectX::XMFLOAT3 MouseMovement;
+			DirectX::XMINT3 MouseMovement{};
 			MouseMovement.x = mousePosition.x - prevMousePosition.x;
 			MouseMovement.y = mousePosition.y - prevMousePosition.y;
-			MouseMovement.z = mousePosition.z - prevMousePosition.z;
 			return MouseMovement;
 		}
 
 		bool IsMove()
 		{
-			DirectX::XMFLOAT3 MouseMovement;
+			DirectX::XMINT2 MouseMovement{};
 			MouseMovement.x = mousePosition.x - prevMousePosition.x;
 			MouseMovement.y = mousePosition.y - prevMousePosition.y;
-			MouseMovement.z = mousePosition.z - prevMousePosition.z;
-			if (MouseMovement.x == 0 && MouseMovement.y == 0 && MouseMovement.z == 0) {
+			if (MouseMovement.x == 0 && MouseMovement.y == 0) {
 				return false;
 			}
 			return true;

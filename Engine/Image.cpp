@@ -138,8 +138,8 @@ namespace Image
         int i = IniOperator::AddList("Assets\\ImageStatus.ini", file.filename().string());
 
         //iniファイルで取得した値をtransform値に変換
-        FileSet[hPict]->transform.position_ = Math::PixelToTransform({
-        (float)IniOperator::GetValue(i, "x", 0),
-        (float)IniOperator::GetValue(i, "y", 0), 0 });
+        FileSet[hPict]->transform.position_ = Math::PixelToTransform(XMINT3{
+        IniOperator::GetValue(i, "x", 0),
+        IniOperator::GetValue(i, "y", 0), 0 });
     }
 }

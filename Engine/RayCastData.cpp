@@ -31,27 +31,27 @@ void RayCastData::CreateMouseRay()
 	XMMATRIX mat = invVp * invPrj * invView;
 
 
-	XMFLOAT3 mousePosFront{}, mousePosBack{};
+	XMINT3 mousePosFront{}, mousePosBack{};
 
 	{
-		XMFLOAT3 mousePosition = Input::Mouse::GetPosition();
+		XMINT3 mousePosition = Input::Mouse::GetPosition();
 
 		//二画面ならx座標をスクリーンの横幅で繰り返させる
 		if (Direct3D::SplitScrMode == SCREEN_MODE::SPLIT_2)
-			mousePosition.x = (int)mousePosition.x % (int)(Direct3D::scrWidth / 2.0f);
+			mousePosition.x = mousePosition.x % (int)(Direct3D::scrWidth / 2.0f);
 
 		mousePosFront = mousePosBack = mousePosition;
 	}
 
 	//マウスのレイの手前側を作成
 	mousePosFront.z = 0;
-	XMVECTOR vPos = XMLoadFloat3(&mousePosFront);
+	XMVECTOR vPos = XMLoadSInt3(&mousePosFront);
 	vPos = XMVector3TransformCoord(vPos, mat);
 	XMVECTOR front = vPos;
 
 	//奥側を作成
-	mousePosBack.z = 1.0f;
-	vPos = XMLoadFloat3(&mousePosBack);
+	mousePosBack.z = 1;
+	vPos = XMLoadSInt3(&mousePosBack);
 	vPos = XMVector3TransformCoord(vPos, mat);
 	XMVECTOR back = vPos;
 
