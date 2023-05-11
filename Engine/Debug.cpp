@@ -103,7 +103,7 @@ namespace Debug
 
 		//‰½‚©‚µ‚ç‚Ì‰æ‘œ‚ð‘I‘ð‚µ‚Ä‚¢‚ê‚Î‚»‚Ì‰æ‘œ‚ÌˆÊ’u‚ª•\Ž¦‚³‚ê‚é
 		if (SelectingImage != -1)
-			ImGui::Text("position x = %g, y = %g", pos.x, pos.y);
+			ImGui::Text("position x = %d, y = %d", pos.x, pos.y);
 		ImGui::End();
 
 	}

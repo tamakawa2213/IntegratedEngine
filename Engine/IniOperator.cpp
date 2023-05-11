@@ -1,5 +1,6 @@
 #include "IniOperator.h"
 #include <algorithm>
+#include <filesystem>
 #include <memory>
 #include <vector>
 #include <Windows.h>
@@ -29,6 +30,13 @@ namespace IniOperator
 	int AddList(const std::string& filename, const std::string& sectionname)
 	{
 		std::shared_ptr<ManagementSet> List = std::make_shared<ManagementSet>(filename, sectionname);
+
+		std::filesystem::directory_entry dir;
+		dir.assign(filename);
+		auto i = dir.file_size();
+
+		if (!std::filesystem::exists(filename))
+			return -1;
 
 		if (auto itr = std::find(SetList.begin(), SetList.end(), List); itr != end(SetList))
 		{
