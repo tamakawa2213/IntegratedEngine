@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <type_traits>
 
 #include "../Json/json.hpp"
 
@@ -12,44 +13,54 @@ namespace JsonOperator
 
 	nlohmann::json GetData(const std::string& filename);
 
-	template<typename T>
-	T GetData(const std::string& filename, const std::string& section, const std::string& key)
+	template<class T, class ... Args>
+	T GetData(const nlohmann::json& data, const T& Spare, const std::string& key, const Args& ... args)
+	{
+		if (auto itr = data.find(key); itr != data.end())
+		{
+			return GetData<T>(itr->at(key), Spare, args ...);
+		}
+
+		return Spare;
+	}
+
+	template<class T>
+	T GetData(const nlohmann::json& data, const T& Spare, const std::string& key)
+	{
+		if (auto itr = data.find(key); itr != data.end())
+		{
+			return itr->get<T>();
+		}
+
+		return Spare;
+	}
+
+	template<class T, class ... Args>
+	T GetData(const std::string& filename, const T& Spare, const std::string& key, const Args& ... args)
 	{
 		std::filesystem::path file = filename;
 
 		if (auto itr = GetData(file.stem().string()); itr != false)
 		{
-			return itr[section][key];
+			return GetData<T>(itr.at(key), Spare, args ...);
 		}
 
-		return 0;
+		return Spare;
 	}
 
-	//template<typename T, typename ... Args>
-	//T GetData(const std::string& filename, Args ... args)
-	//{
-	//	std::filesystem::path file = filename;
-
-	//	if (auto itr = GetData(file.stem().string()); itr != false)
-	//	{
-	//		return itr[args ...]; //©‚±‚±‚Åˆø”‚Éó‚¯æ‚Á‚½”‚¾‚¯[‚¢ŠK‘w‚Ì’l‚ğæ“¾‚µ‚½‚¢
-	//	}
-
-	//	return 0;
-	//}
-
-	template<typename T>
-	T GetData(const std::string& filename, const std::string& key)
+	template<class T>
+	T GetData(const std::string& filename, const T& Spare, const std::string& key)
 	{
 		std::filesystem::path file = filename;
 
 		if (auto itr = GetData(file.stem().string()); itr != false)
 		{
-			return itr[key];
+			return itr.at(key).get<T>();
 		}
 
-		return 0;
+		return Spare;
 	}
+
 	bool OverWrite(const std::string& filename, const nlohmann::json& data);
 	/*template <typename ... Args>
 	bool OverWrite(const std::string& filename, Args ... args)
