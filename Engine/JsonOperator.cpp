@@ -78,6 +78,28 @@ namespace JsonOperator
 		return false;
 	}
 
+	float GetData(const nlohmann::json& data, const float& Spare, const std::string& key)
+	{
+		if (auto itr = data.find(key); itr != data.end())
+		{
+			return itr->get<float>();
+		}
+
+		return Spare;
+	}
+
+	float GetData(const std::string& filename, const float& Spare, const std::string& key)
+	{
+		std::filesystem::path file = filename;
+
+		if (auto itr = GetData(file.stem().string()); itr != false)
+		{
+			return itr.at(key).get<float>();
+		}
+
+		return Spare;
+	}
+
 	bool OverWrite(const std::string& filename, const nlohmann::json& data)
 	{
 		std::filesystem::path file = filename;

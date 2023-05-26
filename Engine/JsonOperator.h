@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <utility>
 
 #include "../Json/json.hpp"
 
@@ -11,50 +12,28 @@ namespace JsonOperator
 	std::string Load(const std::string& filename);
 
 	nlohmann::json GetData(const std::string& filename);
+	float GetData(const nlohmann::json& data, const float& Spare, const std::string& key);
+	float GetData(const std::string& filename, const float& Spare, const std::string& key);
 
-	template<class T, class ... Args>
-	T GetData(const nlohmann::json& data, const T& Spare, const std::string& key, const Args& ... args)
+	template<typename ... Args>
+	float GetData(const nlohmann::json& data, const float& Spare, const std::string& key, const Args& ... args)
 	{
 		if (auto itr = data.find(key); itr != data.end())
 		{
-			return GetData<T>(itr->at(key), Spare, args ...);
+			return GetData(*itr, Spare, std::forward<const std::string>(args)...);
 		}
 
 		return Spare;
 	}
 
-	template<class T>
-	T GetData(const nlohmann::json& data, const T& Spare, const std::string& key)
-	{
-		if (auto itr = data.find(key); itr != data.end())
-		{
-			return itr->get<T>();
-		}
-
-		return Spare;
-	}
-
-	template<class T, class ... Args>
-	T GetData(const std::string& filename, const T& Spare, const std::string& key, const Args& ... args)
+	template<typename ... Args>
+	float GetData(const std::string& filename, const float& Spare, const std::string& key, const Args& ... args)
 	{
 		std::filesystem::path file = filename;
 
 		if (auto itr = GetData(file.stem().string()); itr != false)
 		{
-			return GetData<T>(itr.at(key), Spare, args ...);
-		}
-
-		return Spare;
-	}
-
-	template<class T>
-	T GetData(const std::string& filename, const T& Spare, const std::string& key)
-	{
-		std::filesystem::path file = filename;
-
-		if (auto itr = GetData(file.stem().string()); itr != false)
-		{
-			return itr.at(key).get<T>();
+			return GetData(itr.at(key), Spare, std::forward<const std::string>(args)...);
 		}
 
 		return Spare;
@@ -66,6 +45,4 @@ namespace JsonOperator
 	{
 
 	}*/
-
-	
 };
