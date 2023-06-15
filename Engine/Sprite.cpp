@@ -127,6 +127,8 @@ void Sprite::Draw(Transform& transform, float alpha)
 	Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
 	Direct3D::pContext->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
 	Direct3D::pContext->DrawIndexed(index_, 0, 0);
+
+	Direct3D::SetShader(SHADER_TYPE::Dimension3);
 }
 
 void Sprite::Release()

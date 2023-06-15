@@ -61,8 +61,8 @@ public:
 	HRESULT IntConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
 	void RayCast(RayCastData& rayData);
-	void Draw(Transform& transform, float Alpha, const Light *lightpos, SHADER_TYPE TYPE);
-	void Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos, SHADER_TYPE TYPE);	//transform, RGBの値, 明度(0 ～255)
+	void Draw(Transform& transform, float Alpha, const Light *lightpos);
+	void Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos);	//transform, RGBの値, 明度(0 ～255)
 	void Release();
 
 	void SetTexture(const Texture* tex);

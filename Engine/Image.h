@@ -10,6 +10,8 @@ namespace Image
 	void SetTransform(int hPict, const Transform& transform);
 	void SetPosition(int hPict, const XMFLOAT3& pos);
 
+	void SetAlpha(int hPict, float alpha);
+
 	//w’è‚µ‚½‰æ‘œ”Ô†‚ÌˆÊ’u‚ğæ“¾
 	XMFLOAT3 GetPosition(int hPict);
 	std::string GetFileName(int hPict);

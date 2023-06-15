@@ -55,20 +55,20 @@ namespace Model
         FileSet[hModel]->transform = transform;
     }
 
-    void Draw(int hModel, const Light* lightpos, SHADER_TYPE type)
+    void Draw(int hModel, const Light* lightpos)
     {
-        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos, type);
+        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos);
     }
 
-    void Draw(int hModel, const Transform& transform, const Light* lightpos, SHADER_TYPE type)
+    void Draw(int hModel, const Transform& transform, const Light* lightpos)
     {
         FileSet[hModel]->transform = transform;
-        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos, type);
+        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos);
     }
 
-    void Draw(int hModel, const XMFLOAT3& Chroma, float Bright, const Light* lightpos, SHADER_TYPE type)
+    void Draw(int hModel, const XMFLOAT3& Chroma, float Bright, const Light* lightpos)
     {
-        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, Chroma, Bright, FileSet[hModel]->Alpha, lightpos, type);
+        FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, Chroma, Bright, FileSet[hModel]->Alpha, lightpos);
     }
 
     void Release()

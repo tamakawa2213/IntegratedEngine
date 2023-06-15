@@ -72,6 +72,11 @@ namespace Image
         FileSet[hPict]->transform.position_ = pos;
     }
 
+    void SetAlpha(int hPict, float alpha)
+    {
+        FileSet[hPict]->Alpha = alpha;
+    }
+
     XMFLOAT3 GetPosition(int hPict)
     {
         return FileSet[hPict]->transform.position_;

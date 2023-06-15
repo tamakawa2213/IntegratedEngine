@@ -249,15 +249,14 @@ void Fbx::RayCast(RayCastData& rayData)
 }
 
 
-void Fbx::Draw(Transform& transform, float Alpha, const Light* lightpos, SHADER_TYPE type)
+void Fbx::Draw(Transform& transform, float Alpha, const Light* lightpos)
 {
-	Draw(transform, XMFLOAT3(0.3f, 0.3f, 0.3f), UCHAR_MAX, Alpha, lightpos, type);
+	Draw(transform, XMFLOAT3(0.3f, 0.3f, 0.3f), UCHAR_MAX, Alpha, lightpos);
 }
 
-void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos, SHADER_TYPE type)
+void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos)
 {
 	Direct3D::SetBlendMode(BLEND_DEFAULT);
-	Direct3D::SetShader(type);
 
 	for (int i = 0; i < materialCount_; i++)
 	{
