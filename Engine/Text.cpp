@@ -46,18 +46,7 @@ void Text::Initialize()
 	//IDWriteFactory�̍쐬
 	DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pDWriteFactory));
 
-	pDWriteFactory->CreateTextFormat(FontList[(int)Setting->font],
-		Setting->fontCollection,
-		Setting->fontWeight,
-		Setting->fontStyle,
-		Setting->fontStretch,
-		Setting->fontSize,
-		Setting->localeName,
-		&pTextFormat);
-
-	pTextFormat->SetTextAlignment(Setting->textAlignment);
-
-	pRT->CreateSolidColorBrush(Setting->Color, &pSolidBrush);
+	SetFont(Setting);
 }
 
 void Text::Release()
