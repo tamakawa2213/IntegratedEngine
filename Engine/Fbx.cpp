@@ -257,6 +257,7 @@ void Fbx::Draw(Transform& transform, float Alpha, const Light* lightpos)
 void Fbx::Draw(Transform& transform, XMFLOAT3 Chroma, float Bright, float Alpha, const Light* lightpos)
 {
 	Direct3D::SetBlendMode(BLEND_DEFAULT);
+	Direct3D::SetShader(SHADER_TYPE::Dimension3);
 
 	for (int i = 0; i < materialCount_; i++)
 	{
