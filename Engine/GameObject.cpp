@@ -100,20 +100,18 @@ void GameObject::ReleaseSub()
 
 void GameObject::KillAllChildren()
 {
-	for (auto itr = childList_.begin(); itr != childList_.end();)
+	for (auto&& itr : childList_)
 	{
-		KillAllChildren((*itr).get());
-		itr = childList_.erase(itr);
+		KillAllChildren(itr.get());
 	}
 	childList_.clear();
 }
 
 void GameObject::KillAllChildren(GameObject* object)
 {
-	for (auto itr = object->childList_.begin(); itr != object->childList_.end();)
+	for (auto&& itr : object->childList_)
 	{
-		KillAllChildren((*itr).get());
-		itr = object->childList_.erase(itr);
+		KillAllChildren(itr.get());
 	}
 	object->childList_.clear();
 	SAFE_RELEASE(object);
