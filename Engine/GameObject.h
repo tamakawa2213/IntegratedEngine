@@ -11,7 +11,7 @@
 
 class GameObject
 {
-	GameObject* pParent_;				//親クラスのポインタ
+	GameObject* const pParent_;			//親クラスのポインタ
 	const std::string	objectName_;	//オブジェクトの名前
 	bool KILL;							//trueならオブジェクト消滅
 
@@ -42,10 +42,10 @@ public:
 	void SetPosition(const Position& position) { transform_.position_ = position; }
 	void SetRotate(const XMFLOAT3& rotate) { transform_.rotate_ = rotate; }
 	void SetScale(const Scale& scale) { transform_.scale_ = scale; }
-	const Position GetPosition() { return transform_.position_; }
-	const XMFLOAT3 GetRotate() { return transform_.rotate_; }
-	const Scale GetScale() { return transform_.scale_; }
-	const Transform GetTransform() { return transform_; }
+	const Position GetPosition() const { return transform_.position_; }
+	const XMFLOAT3 GetRotate() const { return transform_.rotate_; }
+	const Scale GetScale() const { return transform_.scale_; }
+	const Transform GetTransform() const { return transform_; }
 
 	///////////////////////////////////////////オブジェクトを消滅させるセット///////////////////////////////////////////////////
 	void KillMe() { KILL = true; }							//これが呼ばれたら該当オブジェクトは消滅
@@ -56,8 +56,8 @@ public:
 	GameObject* FindChildObject(const std::string& ObjectName);	//引数で受け取った名前と同じ名前のオブジェクトが自身の子供にいないか検索する関数
 	GameObject* GetRootJob();									//RootJobを探す関数
 	GameObject* FindObject(const std::string& ObjectName);		//引数で受け取った名前と同じ名前のオブジェクトを探す関数
-	const std::string GetObjectName() { return objectName_; }	//オブジェクトの名前を取得
-	GameObject* GetParent() { return pParent_; }				//親アドレスを取得
+	const std::string GetObjectName() const { return objectName_; }	//オブジェクトの名前を取得
+	GameObject* GetParent() const { return pParent_; }				//親アドレスを取得
 	bool HasChild();
 
 	///////////////////////////////////////////////////Collision関係////////////////////////////////////////////////////////////
