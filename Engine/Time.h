@@ -26,20 +26,20 @@ namespace Time
 		void UnLock();
 
 		//呼び出し時点の時間を取得
-		int GetMilliSeconds();
+		int GetMilliSeconds() const;
 
 		template<typename T = int>
-		T GetSeconds()
+		T GetSeconds() const
 		{
 			return (T)GetMilliSeconds() / 1'000;
 		}
 
-		int GetMinutes();
-		int GetHours();
+		int GetMinutes() const;
+		int GetHours() const;
 
 		//カウントダウン状態かどうか
-		bool IsCountDown();
-		bool IsLock() { return Lock_; }
+		bool IsCountDown() const;
+		bool IsLock() const { return Lock_; }
 	};	//class Watch
 
 	//更新(Mainで呼び出し)

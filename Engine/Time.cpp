@@ -104,22 +104,22 @@ namespace Time
 		Lock_ = false;
 	}
 
-	int Watch::GetMilliSeconds()
+	int Watch::GetMilliSeconds() const
 	{
 		return MilliSeconds_;
 	}
 
-	int Watch::GetMinutes()
+	int Watch::GetMinutes() const
 	{
 		return (int)std::chrono::duration_cast<std::chrono::minutes>(std::chrono::milliseconds(MilliSeconds_)).count();
 	}
 
-	int Watch::GetHours()
+	int Watch::GetHours() const
 	{
 		return (int)std::chrono::duration_cast<std::chrono::hours>(std::chrono::milliseconds(MilliSeconds_)).count();
 	}
 
-	bool Watch::IsCountDown()
+	bool Watch::IsCountDown() const
 	{
 		return CountDown_;
 	}
