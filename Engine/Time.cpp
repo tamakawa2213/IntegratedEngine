@@ -25,7 +25,7 @@ namespace Time
 		if(!WatchList.empty())
 		for (auto&& itr : WatchList)
 		{
-			if (!Lock_)
+			if (!itr->IsLock())
 			{
 				if(!itr->IsCountDown())
 					itr->MilliSeconds_ += (int)std::chrono::duration_cast<std::chrono::milliseconds>(Now - Prev).count();

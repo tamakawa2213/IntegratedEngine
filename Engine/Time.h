@@ -39,6 +39,7 @@ namespace Time
 
 		//カウントダウン状態かどうか
 		bool IsCountDown();
+		bool IsLock() { return Lock_; }
 	};	//class Watch
 
 	//更新(Mainで呼び出し)
