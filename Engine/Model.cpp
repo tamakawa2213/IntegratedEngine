@@ -50,23 +50,23 @@ namespace Model
         return (int)FileSet.size() - 1;
     }
 
-    void SetTransform(int hModel, const Transform& transform)
+    void SetTransform(unsigned hModel, const Transform& transform)
     {
         FileSet[hModel]->transform = transform;
     }
 
-    void Draw(int hModel, const Light* lightpos)
+    void Draw(unsigned hModel, const Light* lightpos)
     {
         FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos);
     }
 
-    void Draw(int hModel, const Transform& transform, const Light* lightpos)
+    void Draw(unsigned hModel, const Transform& transform, const Light* lightpos)
     {
         FileSet[hModel]->transform = transform;
         FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, FileSet[hModel]->Alpha, lightpos);
     }
 
-    void Draw(int hModel, const XMFLOAT3& Chroma, float Bright, const Light* lightpos)
+    void Draw(unsigned hModel, const XMFLOAT3& Chroma, float Bright, const Light* lightpos)
     {
         FileSet[hModel]->pFbx->Draw(FileSet[hModel]->transform, Chroma, Bright, FileSet[hModel]->Alpha, lightpos);
     }
@@ -76,7 +76,7 @@ namespace Model
         FileSet.clear();
     }
 
-    void RayCast(int hModel, RayCastData& Raydata)
+    void RayCast(unsigned hModel, RayCastData& Raydata)
     {
         XMMATRIX matInv = XMMatrixInverse(nullptr, FileSet[hModel]->transform.GetWorldMatrix());
 
@@ -93,7 +93,7 @@ namespace Model
         FileSet[hModel]->pFbx->RayCast(Raydata);
     }
 
-    void SetTexture(int hModel, const Texture* tex)
+    void SetTexture(unsigned hModel, const Texture* tex)
     {
         FileSet[hModel]->pFbx->SetTexture(tex);
     }

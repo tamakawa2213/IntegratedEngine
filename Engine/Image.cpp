@@ -31,7 +31,7 @@ namespace
 
 namespace Image
 {
-    void CallStatus(int hPict); //iniファイルに保存された初期位置を呼び出す
+    void CallStatus(unsigned hPict); //iniファイルに保存された初期位置を呼び出す
 }
 
 namespace Image
@@ -62,37 +62,37 @@ namespace Image
         return (int)FileSet.size() - 1;
     }
 
-    void SetTransform(int hPict, const Transform& transform)
+    void SetTransform(unsigned hPict, const Transform& transform)
     {
         FileSet[hPict]->transform = transform;
     }
 
-    void SetPosition(int hPict, const XMFLOAT3& pos)
+    void SetPosition(unsigned hPict, const XMFLOAT3& pos)
     {
         FileSet[hPict]->transform.position_ = pos;
     }
 
-    void SetAlpha(int hPict, float alpha)
+    void SetAlpha(unsigned hPict, float alpha)
     {
         FileSet[hPict]->Alpha = alpha;
     }
 
-    XMFLOAT3 GetPosition(int hPict)
+    XMFLOAT3 GetPosition(unsigned hPict)
     {
         return FileSet[hPict]->transform.position_;
     }
 
-    std::string GetFileName(int hPict)
+    std::string GetFileName(unsigned hPict)
     {
         return FileSet[hPict]->FileName;
     }
 
-    void Draw(int hPict)
+    void Draw(unsigned hPict)
     {
         FileSet[hPict]->pSprite->Draw(FileSet[hPict]->transform, FileSet[hPict]->Alpha);
     }
 
-    bool IsHitCursor(int hPict)
+    bool IsHitCursor(unsigned hPict)
     {
         UINT wid = (UINT)(FileSet[hPict]->pSprite->GetImgWidth() * FileSet[hPict]->transform.scale_.x / 2);
         UINT hgt = (UINT)(FileSet[hPict]->pSprite->GetImgHeight() * FileSet[hPict]->transform.scale_.y / 2);
@@ -123,7 +123,7 @@ namespace Image
         FileSet.clear();
     }
 
-    const Texture* GetpTexture(int hPict)
+    const Texture* GetpTexture(unsigned hPict)
     {
         return FileSet[hPict]->pSprite->GetpTexture();
     }
@@ -136,7 +136,7 @@ namespace Image
         }
     }
 
-    void CallStatus(int hPict)
+    void CallStatus(unsigned hPict)
     {
         //"Assets\\"を省いた文字列を取得
         std::filesystem::path file = FileSet[hPict]->FileName;
