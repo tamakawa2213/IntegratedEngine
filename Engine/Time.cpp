@@ -9,13 +9,19 @@ namespace
 
 	std::chrono::steady_clock::time_point Prev = std::chrono::steady_clock::now();	//前フレームのシステム時間を保存
 	std::chrono::steady_clock::time_point Now = std::chrono::steady_clock::now();	//現在のシステム時間を保存
-	std::chrono::milliseconds MilliSeconds_ = std::chrono::milliseconds::zero();	//経過時間
 
 	std::list<Time::Watch*> WatchList = {};	//生成されたWatchクラスを管理しておく配列
+
+	std::unique_ptr<Time::Watch> WorldTime;
 }
 
 namespace Time
 {
+	void Initialize()
+	{
+		WorldTime = std::make_unique<Time::Watch>();
+	}
+
 	void Update()
 	{
 		//2つのシステム時間を更新
@@ -33,42 +39,35 @@ namespace Time
 					itr->MilliSeconds_ -= (int)std::chrono::duration_cast<std::chrono::milliseconds>(Now - Prev).count();
 			}
 		}
-
-		//Lockされていたら更新しない
-		if (Lock_)
-			return;
-
-		//現在と直前の差を加算
-		MilliSeconds_ += std::chrono::duration_cast<std::chrono::milliseconds>(Now - Prev);
 	}
 
 	void Reset()
 	{
-		MilliSeconds_ = std::chrono::milliseconds::zero();
+		WorldTime->Reset();
 	}
 
 	void Lock()
 	{
-		Lock_ = true;
+		WorldTime->Lock();
 	}
 
 	void UnLock()
 	{
-		Lock_ = false;
+		WorldTime->UnLock();
 	}
 
 	int GetMilliSeconds()
 	{
-		return (int)MilliSeconds_.count();
+		return WorldTime->GetMilliSeconds();
 	}
 
 	int GetMinutes()
 	{
-		return (int)std::chrono::duration_cast<std::chrono::minutes>(MilliSeconds_).count();
+		return WorldTime->GetMinutes();
 	}
 	int GetHours()
 	{
-		return (int)std::chrono::duration_cast<std::chrono::hours>(MilliSeconds_).count();
+		return WorldTime->GetHours();
 	}
 	
 

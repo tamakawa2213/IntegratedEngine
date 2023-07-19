@@ -42,6 +42,9 @@ namespace Time
 		bool IsLock() const { return Lock_; }
 	};	//class Watch
 
+	//‰Šú‰»
+	void Initialize();
+
 	//XV(Main‚ÅŒÄ‚Ño‚µ)
 	void Update();
 
