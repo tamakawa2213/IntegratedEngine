@@ -74,6 +74,8 @@ namespace Direct3D
 	void SetViewPort(char lr);
 
 	void SetBlendMode(char blendMode);
+
+	void ResizeVievport(VP_TYPE V, float width, float height, float minDepth = 0, float maxDepth = 1.0f, float topLeftX = 0, float topLeftY = 0);
 };
 
 //#endif

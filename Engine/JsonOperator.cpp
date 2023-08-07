@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <Windows.h>
 
 namespace
 {
@@ -62,7 +63,7 @@ namespace JsonOperator
 		nlohmann::json j;
 		j = nlohmann::json::parse(sData);
 
-		ManagementSet List = { file.stem().string(), j};
+		ManagementSet List = { file.stem().string(), j };
 
 		SetList.push_back(List);
 		return file.stem().string();
@@ -80,40 +81,72 @@ namespace JsonOperator
 
 	bool OverWrite(const std::string& filename, const nlohmann::json& data)
 	{
+		//	std::filesystem::path file = filename;
+
+		//	std::ofstream ofs;
+		//	ofs.open(filename, std::ios::out);
+
+		//	if (auto itr = std::find(SetList.begin(), SetList.end(), file.stem().string()); itr != end(SetList))
+		//	{
+		//		std::string val = data.dump();
+		//		//itr->Data.push_back(data);
+
+		//		/*for (auto&& it : data)
+		//		{
+		//			if (auto i = itr->Data.find(it); i != end(itr->Data))
+		//			{
+		//				i = it;
+		//			}
+		//		}*/
+		//		
+		//		for (auto&& str : val)
+		//		{
+		//			if (str == '{' || str == '}' || str == ',')
+		//			{
+		//				ofs << str << std::endl;
+		//			}
+		//			else
+		//			{
+		//				ofs << str;
+		//			}
+		//		}
+		//		ofs.close();
+		//		return true;
+		//	}
+
+
+		//	return false;
+		//}
 		std::filesystem::path file = filename;
+		HANDLE hFile;
+		hFile = CreateFile(file.c_str(),
+			GENERIC_WRITE,
+			0,
+			NULL,
+			CREATE_NEW,
+			FILE_ATTRIBUTE_NORMAL,
+			NULL);
 
-		std::ofstream ofs;
-		ofs.open(filename, std::ios::out);
+		//ここに入力データを作る関数置く
 
-		if (auto itr = std::find(SetList.begin(), SetList.end(), file.stem().string()); itr != end(SetList))
+		DWORD byte = 0;
+		std::ofstream writingFile;
+
+		std::string exptData = data.dump();
+
+		BOOL successWrite = WriteFile(hFile,
+			exptData.c_str(),
+			exptData.length(),
+			&byte,
+			NULL);
+		if (successWrite == FALSE)
 		{
-			std::string val = data.dump();
-			//itr->Data.push_back(data);
-
-			/*for (auto&& it : data)
-			{
-				if (auto i = itr->Data.find(it); i != end(itr->Data))
-				{
-					i = it;
-				}
-			}*/
-			
-			for (auto&& str : val)
-			{
-				if (str == '{' || str == '}' || str == ',')
-				{
-					ofs << str << std::endl;
-				}
-				else
-				{
-					ofs << str;
-				}
-			}
-			ofs.close();
-			return true;
 		}
 
-
-		return false;
+		BOOL successClose = CloseHandle(hFile);
+		if (successClose == FALSE)
+		{
+		}
+		return true;
 	}
 }

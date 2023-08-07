@@ -412,6 +412,17 @@ void Direct3D::SetBlendMode(char blendMode)
 	pContext->OMSetDepthStencilState(pDepthStencilState[blendMode], 0);
 }
 
+void Direct3D::ResizeVievport(VP_TYPE V, float width, float height, float minDepth, float maxDepth, float topLeftX, float topLeftY)
+{
+	
+	vp[V].Width = width;	//•
+	vp[V].Height = height;	//‚‚³
+	vp[V].MinDepth = minDepth;		//è‘O
+	vp[V].MaxDepth = maxDepth;		//‰œ
+	vp[V].TopLeftX = topLeftX;			//¶
+	vp[V].TopLeftY = topLeftY;			//ã
+}
+
 //•`‰æŠJn
 void Direct3D::BeginDraw()
 {

@@ -33,10 +33,12 @@ namespace IniOperator
 
 		std::filesystem::directory_entry dir;
 		dir.assign(filename);
-		auto i = dir.file_size();
 
 		if (!std::filesystem::exists(filename))
-			return -1;
+		{
+			//ÉtÉ@ÉCÉãÇê∂ê¨
+			CreateFile(std::filesystem::path(filename).c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+		}
 
 		if (auto itr = std::find(SetList.begin(), SetList.end(), List); itr != end(SetList))
 		{

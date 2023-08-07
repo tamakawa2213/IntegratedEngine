@@ -6,12 +6,13 @@
 #include <memory>
 #include <vector>
 #include "Sprite.h"
+#include "Direct3D.h"
 
 namespace
 {
     struct ImageSet
     {
-        std::unique_ptr<Sprite> pSprite;	//Spriteのポインタ
+        std::shared_ptr<Sprite> pSprite;	//Spriteのポインタ
         Transform transform;		        //transformクラス
         std::string FileName;	            //ファイルの名前
         float Alpha;			            //画像の透明度
@@ -40,22 +41,22 @@ namespace Image
     {
         std::shared_ptr<ImageSet> File = std::make_shared<ImageSet>(filename);
 
-        wchar_t file[CHAR_MAX];
-        size_t ret;
-        mbstowcs_s(&ret, file, filename.c_str(), filename.length());
+        std::filesystem::path file = filename;
 
         //同じファイルを使っていないか検索
         if (auto itr = std::find(FileSet.begin(), FileSet.end(), File); itr != end(FileSet))
         {
             //同じ名前のファイルをすでにロードしていた場合
-            return (int)std::distance(FileSet.begin(), itr);
+            File->pSprite = itr->get()->pSprite;
         }
-        
-        //見つからなかった場合、新しくロードする
-        File->pSprite = std::make_unique<Sprite>();
-        if (FAILED(File->pSprite->Initialize(file))) //ロードに失敗した場合
+        else
         {
-            return -1;
+            //見つからなかった場合、新しくロードする
+            File->pSprite = std::make_unique<Sprite>();
+            if (FAILED(File->pSprite->Initialize(file.c_str()))) //ロードに失敗した場合
+            {
+                return -1;
+            }
         }
         FileSet.push_back(std::move(File));
         CallStatus((int)FileSet.size() - 1);
@@ -144,7 +145,7 @@ namespace Image
 
         //iniファイルで取得した値をtransform値に変換
         FileSet[hPict]->transform.position_ = Math::PixelToTransform(XMINT3{
-        IniOperator::GetValue(i, "x", 0),
-        IniOperator::GetValue(i, "y", 0), 0 });
+        IniOperator::GetValue(i, "x", (int)(Direct3D::scrWidth * 0.5f)),
+        IniOperator::GetValue(i, "y", (int)(Direct3D::scrHeight * 0.5f)), 0 });
     }
 }
